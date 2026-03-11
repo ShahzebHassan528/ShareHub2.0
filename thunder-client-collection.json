@@ -1,0 +1,260 @@
+{
+  "clientName": "Thunder Client",
+  "collectionName": "Marketplace API Collection",
+  "collectionId": "marketplace-api",
+  "dateExported": "2024-03-04",
+  "version": "1.0",
+  "folders": [
+    {
+      "id": "auth-folder",
+      "name": "🔐 Authentication",
+      "requests": []
+    },
+    {
+      "id": "products-folder",
+      "name": "🛍️ Products",
+      "requests": []
+    },
+    {
+      "id": "swaps-folder",
+      "name": "🔄 Swaps",
+      "requests": []
+    },
+    {
+      "id": "donations-folder",
+      "name": "💝 Donations",
+      "requests": []
+    },
+    {
+      "id": "orders-folder",
+      "name": "🛒 Orders",
+      "requests": []
+    },
+    {
+      "id": "admin-folder",
+      "name": "👑 Admin",
+      "requests": []
+    }
+  ],
+  "requests": [
+    {
+      "id": "1",
+      "name": "Signup",
+      "url": "http://localhost:5000/api/v1/auth/signup",
+      "method": "POST",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"full_name\": \"Test User\",\n  \"email\": \"test@example.com\",\n  \"password\": \"password123\",\n  \"role\": \"buyer\"\n}"
+      },
+      "folderId": "auth-folder"
+    },
+    {
+      "id": "2",
+      "name": "Signin (Login)",
+      "url": "http://localhost:5000/api/v1/auth/signin",
+      "method": "POST",
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"email\": \"admin@marketplace.com\",\n  \"password\": \"admin123\"\n}"
+      },
+      "folderId": "auth-folder"
+    },
+    {
+      "id": "3",
+      "name": "Get Current User",
+      "url": "http://localhost:5000/api/v1/auth/me",
+      "method": "GET",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer YOUR_TOKEN_HERE"
+        }
+      ],
+      "folderId": "auth-folder"
+    },
+    {
+      "id": "4",
+      "name": "Create Product",
+      "url": "http://localhost:5000/api/v1/products",
+      "method": "POST",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer YOUR_TOKEN_HERE"
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"title\": \"iPhone 13 Pro\",\n  \"description\": \"Excellent condition\",\n  \"price\": 85000,\n  \"product_condition\": \"like_new\",\n  \"quantity\": 1,\n  \"category_id\": 1\n}"
+      },
+      "folderId": "products-folder"
+    },
+    {
+      "id": "5",
+      "name": "Get All Products",
+      "url": "http://localhost:5000/api/v1/products",
+      "method": "GET",
+      "folderId": "products-folder"
+    },
+    {
+      "id": "6",
+      "name": "Update Product",
+      "url": "http://localhost:5000/api/v1/products/1",
+      "method": "PUT",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer YOUR_TOKEN_HERE"
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"title\": \"iPhone 13 Pro - Updated\",\n  \"price\": 80000\n}"
+      },
+      "folderId": "products-folder"
+    },
+    {
+      "id": "7",
+      "name": "Delete Product",
+      "url": "http://localhost:5000/api/v1/products/1",
+      "method": "DELETE",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer YOUR_TOKEN_HERE"
+        }
+      ],
+      "folderId": "products-folder"
+    },
+    {
+      "id": "8",
+      "name": "Create Swap Request",
+      "url": "http://localhost:5000/api/v1/swaps",
+      "method": "POST",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer YOUR_TOKEN_HERE"
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"requested_product_id\": 5,\n  \"offered_product_id\": 3,\n  \"message\": \"Want to swap\"\n}"
+      },
+      "folderId": "swaps-folder"
+    },
+    {
+      "id": "9",
+      "name": "Accept Swap",
+      "url": "http://localhost:5000/api/v1/swaps/1/accept",
+      "method": "PUT",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer YOUR_TOKEN_HERE"
+        }
+      ],
+      "folderId": "swaps-folder"
+    },
+    {
+      "id": "10",
+      "name": "Create Donation",
+      "url": "http://localhost:5000/api/v1/donations",
+      "method": "POST",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer YOUR_TOKEN_HERE"
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"ngo_id\": 1,\n  \"product_id\": 2,\n  \"message\": \"Want to donate\"\n}"
+      },
+      "folderId": "donations-folder"
+    },
+    {
+      "id": "11",
+      "name": "Create Order",
+      "url": "http://localhost:5000/api/v1/orders",
+      "method": "POST",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer YOUR_TOKEN_HERE"
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"items\": [\n    {\n      \"product_id\": 1,\n      \"quantity\": 1,\n      \"price\": 85000\n    }\n  ],\n  \"shipping_address\": \"Lahore, Pakistan\",\n  \"payment_method\": \"cash_on_delivery\"\n}"
+      },
+      "folderId": "orders-folder"
+    },
+    {
+      "id": "12",
+      "name": "Block User (Admin)",
+      "url": "http://localhost:5000/api/v1/admin/users/5/block",
+      "method": "PUT",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer YOUR_ADMIN_TOKEN"
+        },
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "body": {
+        "type": "json",
+        "raw": "{\n  \"reason\": \"Violating terms\"\n}"
+      },
+      "folderId": "admin-folder"
+    },
+    {
+      "id": "13",
+      "name": "Approve Product (Admin)",
+      "url": "http://localhost:5000/api/v1/admin/products/1/approve",
+      "method": "PUT",
+      "headers": [
+        {
+          "name": "Authorization",
+          "value": "Bearer YOUR_ADMIN_TOKEN"
+        }
+      ],
+      "folderId": "admin-folder"
+    }
+  ]
+}

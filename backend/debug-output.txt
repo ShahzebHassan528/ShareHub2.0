@@ -1,0 +1,83 @@
+﻿≡ƒöì Validating environment variables...
+Γ£à Environment validation passed!
+
+≡ƒôï Loaded Configuration:
+   DB_HOST: 127.0.0.1
+   DB_PORT: 3306
+   DB_USER: root
+   DB_PASSWORD: (empty)
+   DB_NAME: marketplace_db
+   NODE_ENV: development
+   JWT_SECRET: ***hidden***
+
+≡ƒöº Database Configuration (Validated):
+   Host: 127.0.0.1
+   Port: 3306
+   User: root
+   Password: (empty - XAMPP default)
+   Database: marketplace_db
+
+Γ£à Sequelize instance created with XAMPP-optimized settings
+================================================================================
+≡ƒöì COMPLETE AUTH FLOW DEBUG - WINDOWS
+================================================================================
+
+≡ƒôª STEP 1: DATABASE QUERY
+--------------------------------------------------------------------------------
+Query: SELECT * FROM user WHERE email = admin@marketplace.com
+
+≡ƒö╖ Sequelize Query: Executing (default): SELECT `id`, `email`, `password`, `full_name`, `phone`, `role`, `is_active`, `is_verified`, `created_at`, `updated_at` FROM `user...
+Γ£à User found in database
+
+≡ƒôï COMPLETE USER RECORD:
+{
+  "id": 34,
+  "email": "admin@marketplace.com",
+  "password": "$2b$10$6n2uTWyRr07QRoP4VHNn1OvYmW8TD0Sxj0ESa8OZrTiMhRJHDtiM.",
+  "full_name": "Admin User",
+  "phone": "1234567890",
+  "role": "admin",
+  "is_active": 1,
+  "is_verified": 1,
+  "created_at": "2026-02-27 15:24:32",
+  "updated_at": "2026-02-27 15:24:32"
+}
+
+≡ƒôª STEP 2: PASSWORD ANALYSIS
+--------------------------------------------------------------------------------
+Stored password value: $2b$10$6n2uTWyRr07QRoP4VHNn1OvYmW8TD0Sxj0ESa8OZrTiMhRJHDtiM.
+Stored password length: 60
+Stored password first 7 chars: $2b$10$
+
+≡ƒöÉ Hash type detected: bcrypt
+
+≡ƒôª STEP 3: PASSWORD COMPARISON
+--------------------------------------------------------------------------------
+Incoming password: admin123
+Incoming password length: 8
+Incoming password bytes: 61646d696e313233
+
+≡ƒöÉ Using bcrypt.compare()
+
+Γ£à bcrypt.compare() result: true
+
+≡ƒôª STEP 4: DATABASE CONFIRMATION
+--------------------------------------------------------------------------------
+≡ƒö╖ Sequelize Query: Executing (default): SELECT DATABASE() as db_name...
+Database name: marketplace_db
+≡ƒö╖ Sequelize Query: Executing (default): SHOW TABLES LIKE "user"...
+Table exists: NO
+≡ƒö╖ Sequelize Query: Executing (default): SELECT count(*) AS `count` FROM `users` AS `User`;...
+Total users in table: 7
+User ID being matched: 34
+
+≡ƒôª STEP 5: EMAIL CASE SENSITIVITY CHECK
+--------------------------------------------------------------------------------
+Test email: admin@marketplace.com
+Stored email: admin@marketplace.com
+Exact match: true
+Case-insensitive match: true
+
+================================================================================
+≡ƒÅü DEBUG COMPLETE
+================================================================================

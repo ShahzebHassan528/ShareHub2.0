@@ -1,0 +1,206 @@
+{
+  "info": {
+    "name": "Marketplace API Demo - API Versioning",
+    "description": "Demo collection showing API versioning (v1 vs Legacy)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. API Info Endpoints",
+      "item": [
+        {
+          "name": "Legacy API Info",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5000/api",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api"]
+            },
+            "description": "Shows legacy API info with deprecation notice"
+          }
+        },
+        {
+          "name": "v1 API Info",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5000/api/v1",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "v1"]
+            },
+            "description": "Shows v1 API info with all available endpoints"
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Products API Comparison",
+      "item": [
+        {
+          "name": "Legacy - Get All Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5000/api/products",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "products"]
+            },
+            "description": "Get products using legacy API endpoint"
+          }
+        },
+        {
+          "name": "v1 - Get All Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5000/api/v1/products",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "v1", "products"]
+            },
+            "description": "Get products using v1 API endpoint (same response)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Authentication Comparison",
+      "item": [
+        {
+          "name": "Legacy - Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/auth/login",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "auth", "login"]
+            },
+            "description": "Login using legacy API"
+          }
+        },
+        {
+          "name": "v1 - Login",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user@example.com\",\n  \"password\": \"password123\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:5000/api/v1/auth/login",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "v1", "auth", "login"]
+            },
+            "description": "Login using v1 API (same response)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Swaps API Comparison",
+      "item": [
+        {
+          "name": "Legacy - Get My Swap Requests",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "JWT token from login"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:5000/api/swaps/my/requests",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "swaps", "my", "requests"]
+            },
+            "description": "Get swap requests using legacy API"
+          }
+        },
+        {
+          "name": "v1 - Get My Swap Requests",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "description": "JWT token from login"
+              }
+            ],
+            "url": {
+              "raw": "http://localhost:5000/api/v1/swaps/my/requests",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "v1", "swaps", "my", "requests"]
+            },
+            "description": "Get swap requests using v1 API (same response)"
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. Database Test",
+      "item": [
+        {
+          "name": "Test Database Connection",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:5000/api/test-db",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "5000",
+              "path": ["api", "test-db"]
+            },
+            "description": "Test if database is connected properly"
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    }
+  ]
+}

@@ -1,0 +1,128 @@
+.product-card {
+  display: block;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+  text-decoration: none;
+  color: inherit;
+}
+
+.product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+.product-card-image {
+  position: relative;
+  width: 100%;
+  padding-top: 75%;
+  background: #f8f9fa;
+  overflow: hidden;
+}
+
+.product-card-image img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.product-card:hover .product-card-image img {
+  transform: scale(1.05);
+}
+
+.product-card-no-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+  color: #dee2e6;
+}
+
+.product-card-badge {
+  position: absolute;
+  top: 8px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.condition-badge {
+  left: 8px;
+  background: rgba(255, 255, 255, 0.9);
+  color: #495057;
+}
+
+.featured-badge {
+  right: 8px;
+  background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
+  color: white;
+}
+
+.product-card-body {
+  padding: 12px;
+}
+
+.product-card-price {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1a1a1a;
+  margin-bottom: 8px;
+}
+
+.product-card-title {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #495057;
+  margin: 0 0 8px 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  line-height: 1.4;
+}
+
+.product-card-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+  color: #6c757d;
+}
+
+.product-card-location {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.product-card-time {
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .product-card-price {
+    font-size: 1.1rem;
+  }
+
+  .product-card-title {
+    font-size: 0.9rem;
+  }
+
+  .product-card-body {
+    padding: 10px;
+  }
+}

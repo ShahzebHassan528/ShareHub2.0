@@ -1,0 +1,128 @@
+/* AdminLayout Styles */
+
+.admin-layout {
+  min-height: 100vh;
+  background: #f0f2f5;
+}
+
+.admin-wrapper {
+  display: flex;
+  padding-top: 70px;
+  min-height: calc(100vh - 70px);
+}
+
+.admin-main {
+  flex: 1;
+  transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  min-height: calc(100vh - 70px);
+}
+
+.admin-main.sidebar-open {
+  margin-left: 260px;
+}
+
+.admin-main.sidebar-closed {
+  margin-left: 70px;
+}
+
+/* Admin Header */
+.admin-header {
+  background: white;
+  border-bottom: 1px solid #e8ebed;
+  padding: 20px 24px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+}
+
+.admin-header-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.admin-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 24px;
+  font-weight: 700;
+  color: #002f34;
+  margin: 0;
+}
+
+.admin-title i {
+  color: #10b981;
+  font-size: 28px;
+}
+
+.admin-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.admin-btn {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: #f7f8f9;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.admin-btn:hover {
+  background: #10b981;
+  color: white;
+}
+
+.admin-btn i {
+  font-size: 20px;
+}
+
+.admin-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  background: #ef4444;
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 10px;
+  min-width: 20px;
+  text-align: center;
+}
+
+/* Admin Content */
+.admin-content {
+  padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .admin-main.sidebar-open,
+  .admin-main.sidebar-closed {
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .admin-header {
+    padding: 16px;
+  }
+
+  .admin-title {
+    font-size: 20px;
+  }
+
+  .admin-content {
+    padding: 16px;
+  }
+}

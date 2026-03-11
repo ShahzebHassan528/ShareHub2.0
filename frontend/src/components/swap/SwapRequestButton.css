@@ -1,0 +1,37 @@
+.swap-request-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 2px 4px rgba(102, 126, 234, 0.2);
+}
+
+.swap-request-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(102, 126, 234, 0.3);
+}
+
+.swap-request-button:active {
+  transform: translateY(0);
+}
+
+.swap-request-button i {
+  font-size: 1.125rem;
+}
+
+@media (max-width: 768px) {
+  .swap-request-button {
+    font-size: 0.95rem;
+    padding: 0.625rem 1.25rem;
+  }
+}

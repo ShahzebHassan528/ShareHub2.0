@@ -1,0 +1,46 @@
+/* DashboardLayout Styles */
+
+.dashboard-layout {
+  min-height: 100vh;
+  background: #f7f8f9;
+}
+
+.dashboard-wrapper {
+  display: flex;
+  padding-top: 70px; /* Account for fixed navbar */
+  min-height: calc(100vh - 70px);
+}
+
+.dashboard-main {
+  flex: 1;
+  transition: margin-left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  min-height: calc(100vh - 70px);
+}
+
+.dashboard-main.sidebar-open {
+  margin-left: 260px;
+}
+
+.dashboard-main.sidebar-closed {
+  margin-left: 70px;
+}
+
+.dashboard-content {
+  padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .dashboard-main.sidebar-open,
+  .dashboard-main.sidebar-closed {
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-content {
+    padding: 16px;
+  }
+}
