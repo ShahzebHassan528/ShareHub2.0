@@ -114,7 +114,7 @@ const NgoDashboard = () => {
         {/* Welcome Section */}
         <div className="welcome-section">
           <div>
-            <h1>Welcome, {user?.name}! 🎁</h1>
+            <h1>Welcome, {user?.full_name}! 🎁</h1>
             <p className="welcome-subtitle">Manage donation requests and help the community</p>
           </div>
           <Link to="/ngo/donations" className="btn-view-all">
@@ -272,10 +272,10 @@ const NgoDashboard = () => {
               <div className="card-content">
                 <div className="ngo-profile">
                   <div className="profile-avatar">
-                    {user?.name?.charAt(0) || 'N'}
+                    {user?.full_name?.charAt(0) || 'N'}
                   </div>
                   <div className="profile-info">
-                    <h3>{user?.name}</h3>
+                    <h3>{user?.full_name}</h3>
                     <p className="profile-email">{user?.email}</p>
                     <span className="profile-badge">Verified NGO</span>
                   </div>

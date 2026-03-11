@@ -18,7 +18,7 @@ const AdminNGOs = () => {
     try {
       setLoading(true);
       const res = tab === 'pending' ? await adminAPI.getPendingNGOs() : await adminAPI.getApprovedNGOs();
-      setNgos(res.data || []);
+      setNgos(res.ngos || res.data || []);
     } catch (e) {
       toast.showToast('Failed to load NGOs', 'error');
     } finally {
@@ -86,7 +86,7 @@ const AdminNGOs = () => {
             <div key={ngo.id} className="seller-card">
               <div className="seller-card-header">
                 <div className="seller-avatar ngo">{ngo.ngo_name?.charAt(0)?.toUpperCase() || 'N'}</div>
-                <div>
+                <div className="seller-card-title">
                   <h3>{ngo.ngo_name}</h3>
                   <p>{ngo.email}</p>
                 </div>

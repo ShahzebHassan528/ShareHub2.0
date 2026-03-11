@@ -44,7 +44,7 @@ const SellerDashboard = () => {
     <div className="seller-dashboard">
       {/* Welcome Section */}
       <div className="dashboard-header">
-        <h1>Welcome back, {user?.name}!</h1>
+        <h1>Welcome back, {user?.full_name}!</h1>
         <p>Manage your products, orders, and sales</p>
         <button onClick={refresh} className="btn btn-sm btn-outline-primary">
           <i className="bi bi-arrow-clockwise me-1"></i>

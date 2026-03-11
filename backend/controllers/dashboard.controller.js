@@ -34,14 +34,14 @@ class DashboardController {
       Order.count(),
       Donation.count(),
       ProductSwap.count(),
-      Product.count({ where: { availability_status: 'available' } }),
-      Order.count({ where: { order_status: 'pending' } }),
-      Order.count({ where: { order_status: 'delivered' } })
+      Product.count({ where: { is_available: true } }),
+      Order.count({ where: { status: 'pending' } }),
+      Order.count({ where: { status: 'delivered' } })
     ]);
 
     // Calculate revenue (sum of completed orders)
     const revenueResult = await Order.sum('total_amount', {
-      where: { order_status: 'delivered' }
+      where: { status: 'delivered' }
     });
     const totalRevenue = revenueResult || 0;
 
@@ -116,7 +116,7 @@ class DashboardController {
       totalViews
     ] = await Promise.all([
       Product.count({ where: { seller_id: sellerId } }),
-      Product.count({ where: { seller_id: sellerId, availability_status: 'available' } }),
+      Product.count({ where: { seller_id: sellerId, is_available: true } }),
       Order.count({ 
         include: [{
           model: Product,
@@ -124,14 +124,14 @@ class DashboardController {
         }]
       }),
       Order.count({ 
-        where: { order_status: 'pending' },
+        where: { status: 'pending' },
         include: [{
           model: Product,
           where: { seller_id: sellerId }
         }]
       }),
       Order.count({ 
-        where: { order_status: 'delivered' },
+        where: { status: 'delivered' },
         include: [{
           model: Product,
           where: { seller_id: sellerId }
@@ -142,7 +142,7 @@ class DashboardController {
 
     // Calculate revenue
     const revenueResult = await Order.sum('total_amount', {
-      where: { order_status: 'delivered' },
+      where: { status: 'delivered' },
       include: [{
         model: Product,
         where: { seller_id: sellerId }
@@ -189,21 +189,21 @@ class DashboardController {
       totalSwaps
     ] = await Promise.all([
       Order.count({ where: { buyer_id: userId } }),
-      Order.count({ where: { buyer_id: userId, order_status: 'pending' } }),
-      Order.count({ where: { buyer_id: userId, order_status: 'delivered' } }),
+      Order.count({ where: { buyer_id: userId, status: 'pending' } }),
+      Order.count({ where: { buyer_id: userId, status: 'delivered' } }),
       Donation.count({ where: { donor_id: userId } }),
       ProductSwap.count({ where: { requester_id: userId } })
     ]);
 
     // Calculate total spent
     const spentResult = await Order.sum('total_amount', {
-      where: { buyer_id: userId, order_status: 'delivered' }
+      where: { buyer_id: userId, status: 'delivered' }
     });
     const totalSpent = spentResult || 0;
 
     // Calculate total donated
     const donatedResult = await Donation.sum('amount', {
-      where: { donor_id: userId, donation_status: 'completed' }
+      where: { donor_id: userId, status: 'completed' }
     });
     const totalDonated = donatedResult || 0;
 
@@ -247,14 +247,14 @@ class DashboardController {
       completedDonations
     ] = await Promise.all([
       Donation.count({ where: { ngo_id: ngoId } }),
-      Donation.count({ where: { ngo_id: ngoId, donation_status: 'pending' } }),
-      Donation.count({ where: { ngo_id: ngoId, donation_status: 'accepted' } }),
-      Donation.count({ where: { ngo_id: ngoId, donation_status: 'completed' } })
+      Donation.count({ where: { ngo_id: ngoId, status: 'pending' } }),
+      Donation.count({ where: { ngo_id: ngoId, status: 'accepted' } }),
+      Donation.count({ where: { ngo_id: ngoId, status: 'completed' } })
     ]);
 
     // Calculate total received
     const receivedResult = await Donation.sum('amount', {
-      where: { ngo_id: ngoId, donation_status: 'completed' }
+      where: { ngo_id: ngoId, status: 'completed' }
     });
     const totalReceived = receivedResult || 0;
 

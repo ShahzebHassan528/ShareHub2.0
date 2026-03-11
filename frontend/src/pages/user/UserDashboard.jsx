@@ -91,7 +91,7 @@ const UserDashboard = () => {
         {/* Welcome Section */}
         <div className="welcome-section">
           <div>
-            <h1>Welcome back, {user?.name}! 👋</h1>
+            <h1>Welcome back, {user?.full_name}! 👋</h1>
             <p className="welcome-subtitle">Here's what's happening with your marketplace activity</p>
           </div>
         </div>

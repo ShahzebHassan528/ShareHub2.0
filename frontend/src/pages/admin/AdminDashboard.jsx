@@ -44,8 +44,10 @@ const AdminDashboard = () => {
     <div className="admin-dashboard">
       {/* Welcome Section */}
       <div className="dashboard-header">
-        <h1>Welcome back, {user?.name}!</h1>
-        <p>System administration and management</p>
+        <div>
+          <h1>Welcome back, {user?.full_name}!</h1>
+          <p>System administration and management</p>
+        </div>
         <button onClick={refresh} className="btn btn-sm btn-outline-primary">
           <i className="bi bi-arrow-clockwise me-1"></i>
           Refresh
@@ -140,25 +142,17 @@ const AdminDashboard = () => {
             <i className="bi bi-people"></i>
             Manage Users
           </a>
+          <a href="/admin/sellers" className="action-btn">
+            <i className="bi bi-shop"></i>
+            Approve Sellers
+          </a>
+          <a href="/admin/ngos" className="action-btn">
+            <i className="bi bi-building"></i>
+            Verify NGOs
+          </a>
           <a href="/admin/products" className="action-btn">
             <i className="bi bi-box-seam"></i>
-            Manage Products
-          </a>
-          <a href="/admin/orders" className="action-btn">
-            <i className="bi bi-bag"></i>
-            Manage Orders
-          </a>
-          <a href="/admin/reports" className="action-btn">
-            <i className="bi bi-file-text"></i>
-            View Reports
-          </a>
-          <a href="/admin/settings" className="action-btn">
-            <i className="bi bi-gear"></i>
-            System Settings
-          </a>
-          <a href="/admin/logs" className="action-btn">
-            <i className="bi bi-journal-text"></i>
-            System Logs
+            Moderate Products
           </a>
         </div>
       </div>

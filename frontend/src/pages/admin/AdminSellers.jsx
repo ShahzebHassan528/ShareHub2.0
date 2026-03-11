@@ -18,7 +18,7 @@ const AdminSellers = () => {
     try {
       setLoading(true);
       const res = tab === 'pending' ? await adminAPI.getPendingSellers() : await adminAPI.getAllSellers();
-      setSellers(res.data || []);
+      setSellers(res.sellers || res.data || []);
     } catch (e) {
       toast.showToast('Failed to load sellers', 'error');
     } finally {
@@ -88,7 +88,7 @@ const AdminSellers = () => {
             <div key={seller.id} className="seller-card">
               <div className="seller-card-header">
                 <div className="seller-avatar">{seller.business_name?.charAt(0)?.toUpperCase() || 'S'}</div>
-                <div>
+                <div className="seller-card-title">
                   <h3>{seller.business_name}</h3>
                   <p>{seller.email}</p>
                 </div>
