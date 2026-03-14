@@ -84,17 +84,20 @@ class ProductController {
    * POST /api/v1/products
    */
   static createProduct = catchAsync(async (req, res, next) => {
-    const productData = {
-      ...req.body,
-      seller_id: req.user.seller_id
-    };
-    
-    if (!productData.seller_id) {
+    const { Seller } = require('../database/models');
+    const seller = await Seller.findOne({ where: { user_id: req.user.id } });
+
+    if (!seller) {
       return next(new AppError('Seller profile required to create products', 400));
     }
-    
+
+    const productData = {
+      ...req.body,
+      seller_id: seller.id
+    };
+
     const product = await ProductService.createProduct(productData);
-    
+
     res.status(201).json({
       success: true,
       message: 'Product created successfully',
@@ -138,12 +141,58 @@ class ProductController {
   });
 
   /**
+   * Get current seller's products
+   * GET /api/v1/products/my
+   */
+  static getMyProducts = catchAsync(async (req, res, next) => {
+    const userId = req.user.id;
+    const { Seller } = require('../database/models');
+
+    // Look up seller record by user_id
+    const seller = await Seller.findOne({ where: { user_id: userId } });
+    if (!seller) {
+      return next(new AppError('Seller profile not found', 400));
+    }
+
+    const Product = require('../models/Product.sequelize.wrapper');
+    const products = await Product.findBySeller(seller.id);
+
+    res.status(200).json({
+      success: true,
+      count: products.length,
+      products
+    });
+  });
+
+  /**
+   * Toggle product status (available/unavailable)
+   * PUT /api/v1/products/:id/status
+   */
+  static toggleProductStatus = catchAsync(async (req, res, next) => {
+    const Product = require('../models/Product.sequelize.wrapper');
+    const product = await Product.findById(req.params.id);
+
+    if (!product) {
+      return next(new AppError('Product not found', 404));
+    }
+
+    const newAvailability = !product.is_available;
+    await Product.updateAvailability(req.params.id, newAvailability);
+
+    res.status(200).json({
+      success: true,
+      message: `Product ${newAvailability ? 'activated' : 'deactivated'} successfully`,
+      is_available: newAvailability
+    });
+  });
+
+  /**
    * Get products by seller
    * GET /api/v1/products/seller/:sellerId
    */
   static getProductsBySeller = catchAsync(async (req, res, next) => {
     const products = await ProductService.getProductsBySeller(req.params.sellerId);
-    
+
     res.status(200).json({
       success: true,
       count: products.length,

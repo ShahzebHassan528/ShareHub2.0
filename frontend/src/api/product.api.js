@@ -82,8 +82,8 @@ const productAPI = {
    * @returns {Promise} User's products
    */
   getMyProducts: async () => {
-    const response = await apiClient.get('/products/my');
-    return response.data;
+    const response = await apiClient.get('/v1/products/my');
+    return response;
   },
 
   /**
@@ -92,8 +92,8 @@ const productAPI = {
    * @returns {Promise} Updated product
    */
   toggleProductStatus: async (id) => {
-    const response = await apiClient.put(`/products/${id}/status`);
-    return response.data;
+    const response = await apiClient.put(`/v1/products/${id}/status`);
+    return response;
   },
 };
 

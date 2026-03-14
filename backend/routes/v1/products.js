@@ -21,6 +21,9 @@ router.get('/', cacheMiddleware(), ProductController.getAllProducts);
 // GET /api/v1/products/nearby - Location-based search (CACHED)
 router.get('/nearby', cacheMiddleware(), ProductController.getNearbyProducts);
 
+// GET /api/v1/products/my - Get current seller's products
+router.get('/my', authenticate, ProductController.getMyProducts);
+
 // GET /api/v1/products/:id - Get single product (CACHED)
 router.get('/:id', cacheMiddleware(), ProductController.getProductById);
 
@@ -43,6 +46,12 @@ router.delete('/:id',
   authenticate,
   checkAbility('delete', 'Product'),
   ProductController.deleteProduct
+);
+
+// PUT /api/v1/products/:id/status - Toggle product status
+router.put('/:id/status',
+  authenticate,
+  ProductController.toggleProductStatus
 );
 
 // GET /api/v1/products/seller/:sellerId - Get products by seller
