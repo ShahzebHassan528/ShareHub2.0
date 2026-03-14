@@ -130,21 +130,13 @@ const SellerDashboard = () => {
       <div className="dashboard-section">
         <h2>Quick Actions</h2>
         <div className="quick-actions">
-          <a href="/seller/products/new" className="action-btn">
+          <a href="/seller/products/add" className="action-btn">
             <i className="bi bi-plus-circle"></i>
             Add Product
           </a>
           <a href="/seller/products" className="action-btn">
             <i className="bi bi-box-seam"></i>
             My Products
-          </a>
-          <a href="/seller/orders" className="action-btn">
-            <i className="bi bi-bag"></i>
-            Manage Orders
-          </a>
-          <a href="/seller/analytics" className="action-btn">
-            <i className="bi bi-graph-up"></i>
-            View Analytics
           </a>
         </div>
       </div>

@@ -100,13 +100,19 @@ class DashboardController {
    * GET /api/v1/dashboard/seller-stats
    */
   static getSellerStats = catchAsync(async (req, res, next) => {
-    const sellerId = req.user.seller_id;
+    const userId = req.user.id;
 
-    if (!sellerId) {
+    // Look up the seller record by user_id
+    const seller = await Seller.findOne({ where: { user_id: userId } });
+    if (!seller) {
       return next(new AppError('Seller profile not found', 400));
     }
+    const sellerId = seller.id;
 
     // Get seller statistics
+    // Orders are linked to products through OrderItem, not directly
+    const { OrderItem } = require('../database/models');
+
     const [
       totalProducts,
       activeProducts,
@@ -117,38 +123,52 @@ class DashboardController {
     ] = await Promise.all([
       Product.count({ where: { seller_id: sellerId } }),
       Product.count({ where: { seller_id: sellerId, is_available: true } }),
-      Order.count({ 
+      Order.count({
         include: [{
-          model: Product,
+          model: OrderItem,
+          as: 'items',
+          required: true,
           where: { seller_id: sellerId }
         }]
       }),
-      Order.count({ 
+      Order.count({
         where: { status: 'pending' },
         include: [{
-          model: Product,
+          model: OrderItem,
+          as: 'items',
+          required: true,
           where: { seller_id: sellerId }
         }]
       }),
-      Order.count({ 
+      Order.count({
         where: { status: 'delivered' },
         include: [{
-          model: Product,
+          model: OrderItem,
+          as: 'items',
+          required: true,
           where: { seller_id: sellerId }
         }]
       }),
-      Product.sum('view_count', { where: { seller_id: sellerId } })
+      Product.sum('views', { where: { seller_id: sellerId } })
     ]);
 
-    // Calculate revenue
-    const revenueResult = await Order.sum('total_amount', {
-      where: { status: 'delivered' },
+    // Calculate revenue: sum(price * quantity) for this seller's delivered orders
+    const { sequelize } = require('../database/models');
+    const revenueResult = await OrderItem.findOne({
+      attributes: [
+        [sequelize.fn('SUM', sequelize.literal('`OrderItem`.`price` * `OrderItem`.`quantity`')), 'total']
+      ],
+      where: { seller_id: sellerId },
       include: [{
-        model: Product,
-        where: { seller_id: sellerId }
-      }]
+        model: Order,
+        as: 'order',
+        required: true,
+        where: { status: 'delivered' },
+        attributes: []
+      }],
+      raw: true
     });
-    const totalRevenue = revenueResult || 0;
+    const totalRevenue = revenueResult?.total || 0;
 
     res.status(200).json({
       success: true,
@@ -233,11 +253,14 @@ class DashboardController {
    * GET /api/v1/dashboard/ngo-stats
    */
   static getNGOStats = catchAsync(async (req, res, next) => {
-    const ngoId = req.user.ngo_id;
+    const userId = req.user.id;
 
-    if (!ngoId) {
+    // Look up the NGO record by user_id
+    const ngo = await NGO.findOne({ where: { user_id: userId } });
+    if (!ngo) {
       return next(new AppError('NGO profile not found', 400));
     }
+    const ngoId = ngo.id;
 
     // Get NGO statistics
     const [

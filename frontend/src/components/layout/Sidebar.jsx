@@ -13,8 +13,8 @@ const Sidebar = ({ isOpen, onToggle }) => {
   // Menu items based on user role
   const getMenuItems = () => {
     const commonItems = [
-      { path: '/dashboard', icon: 'bi-speedometer2', label: 'Dashboard', roles: ['buyer', 'seller', 'admin'] },
-      { path: '/profile', icon: 'bi-person', label: 'Profile', roles: ['buyer', 'seller', 'admin'] },
+      { path: '/dashboard', icon: 'bi-speedometer2', label: 'Dashboard', roles: ['buyer', 'seller', 'ngo'] },
+      { path: '/profile', icon: 'bi-person', label: 'Profile', roles: ['buyer', 'seller', 'ngo'] },
     ];
 
     const buyerItems = [
@@ -23,9 +23,12 @@ const Sidebar = ({ isOpen, onToggle }) => {
     ];
 
     const sellerItems = [
-      { path: '/my-products', icon: 'bi-box-seam', label: 'My Products', roles: ['seller'] },
-      { path: '/add-product', icon: 'bi-plus-circle', label: 'Add Product', roles: ['seller'] },
-      { path: '/sales', icon: 'bi-graph-up', label: 'Sales', roles: ['seller'] },
+      { path: '/seller/products', icon: 'bi-box-seam', label: 'My Products', roles: ['seller'] },
+      { path: '/seller/products/add', icon: 'bi-plus-circle', label: 'Add Product', roles: ['seller'] },
+    ];
+
+    const ngoItems = [
+      { path: '/ngo/donations', icon: 'bi-gift', label: 'Donations', roles: ['ngo'] },
     ];
 
     const adminItems = [
@@ -36,7 +39,7 @@ const Sidebar = ({ isOpen, onToggle }) => {
       { path: '/admin/products', icon: 'bi-box-seam', label: 'Products', roles: ['admin'] },
     ];
 
-    const allItems = [...commonItems, ...buyerItems, ...sellerItems, ...adminItems];
+    const allItems = [...commonItems, ...buyerItems, ...sellerItems, ...ngoItems, ...adminItems];
     
     // Filter based on user role
     return allItems.filter(item => item.roles.includes(user?.role));
@@ -68,11 +71,11 @@ const Sidebar = ({ isOpen, onToggle }) => {
           <div className="sidebar-user-info">
             <img 
               src={user?.avatar || '/default-avatar.png'} 
-              alt={user?.name}
+              alt={user?.full_name}
               className="sidebar-user-avatar"
             />
             <div className="sidebar-user-details">
-              <p className="sidebar-user-name">{user?.name}</p>
+              <p className="sidebar-user-name">{user?.full_name}</p>
               <span className="sidebar-user-role">{user?.role}</span>
             </div>
           </div>

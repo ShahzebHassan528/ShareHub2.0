@@ -15,8 +15,8 @@ export const ROLES = {
 export const ROLE_DASHBOARDS = {
   [ROLES.USER]: '/user/dashboard',
   [ROLES.BUYER]: '/buyer/dashboard',
-  [ROLES.SELLER]: '/seller/products',
-  [ROLES.NGO]: '/ngo/donations',
+  [ROLES.SELLER]: '/seller/dashboard',
+  [ROLES.NGO]: '/ngo/dashboard',
   [ROLES.ADMIN]: '/admin/dashboard',
 };
 
