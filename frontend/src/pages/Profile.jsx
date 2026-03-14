@@ -53,14 +53,15 @@ const Profile = () => {
     try {
       setLoading(true);
       const data = await getMyProfile();
-      setProfile(data.profile);
+      const profileData = data.data || data.profile || data;
+      setProfile(profileData);
       setFormData({
-        full_name: data.profile.full_name || '',
-        phone: data.profile.phone || '',
-        address: data.profile.address || '',
-        profile_image: data.profile.profile_image || ''
+        full_name: profileData.full_name || '',
+        phone: profileData.phone || '',
+        address: profileData.address || '',
+        profile_image: profileData.profile_image || ''
       });
-      setImagePreview(data.profile.profile_image);
+      setImagePreview(profileData.profile_image);
     } catch (err) {
       toast.error('Failed to load profile');
     } finally {
@@ -137,7 +138,8 @@ const Profile = () => {
     try {
       setSaving(true);
       const data = await updateMyProfile(formData);
-      setProfile(data.profile);
+      const updatedProfile = data.data || data.profile || data;
+      setProfile(updatedProfile);
       setIsEditing(false);
       toast.success('Profile updated successfully');
     } catch (err) {
