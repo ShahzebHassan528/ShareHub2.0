@@ -22,9 +22,10 @@ const SellerProducts = () => {
       setLoading(true);
       setError(null);
       const data = await productAPI.getMyProducts();
-      setProducts(data.products || []);
+      setProducts(data.products || data.data || []);
     } catch (err) {
-      const errorMsg = err.response?.data?.error || 'Failed to load products';
+      console.error('Failed to load products:', err);
+      const errorMsg = err.message || 'Failed to load products';
       setError(errorMsg);
       showToast(errorMsg, 'error');
     } finally {
@@ -47,7 +48,8 @@ const SellerProducts = () => {
       showToast('Product deleted successfully', 'success');
       setDeleteModal({ isOpen: false, product: null });
     } catch (err) {
-      const errorMsg = err.response?.data?.error || 'Failed to delete product';
+      console.error('Failed to delete product:', err);
+      const errorMsg = err.message || 'Failed to delete product';
       showToast(errorMsg, 'error');
     } finally {
       setActionLoading(prev => ({ ...prev, [`delete-${product.id}`]: false }));
@@ -67,7 +69,8 @@ const SellerProducts = () => {
       
       showToast(`Product ${product.status === 'active' ? 'deactivated' : 'activated'}`, 'success');
     } catch (err) {
-      const errorMsg = err.response?.data?.error || 'Failed to update status';
+      console.error('Failed to update status:', err);
+      const errorMsg = err.message || 'Failed to update status';
       showToast(errorMsg, 'error');
     } finally {
       setActionLoading(prev => ({ ...prev, [`status-${product.id}`]: false }));

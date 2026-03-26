@@ -63,7 +63,8 @@ const Profile = () => {
       });
       setImagePreview(profileData.profile_image);
     } catch (err) {
-      toast.error('Failed to load profile');
+      console.error('Failed to load profile:', err);
+      toast.error(err.message || 'Failed to load profile');
     } finally {
       setLoading(false);
     }
@@ -75,16 +76,17 @@ const Profile = () => {
       
       if (activeTab === 'products') {
         const response = await productAPI.getMyProducts();
-        setProducts(response.products || []);
+        setProducts(response.products || response.data || []);
       } else if (activeTab === 'swaps') {
         const response = await swapAPI.getMySwaps();
-        setSwaps(response.swaps || []);
+        setSwaps(response.swaps || response.data || []);
       } else if (activeTab === 'donations') {
         const response = await donationAPI.getMyDonations();
-        setDonations(response.donations || []);
+        setDonations(response.donations || response.data || []);
       }
     } catch (err) {
-      toast.error(`Failed to load ${activeTab}`);
+      console.error(`Failed to load ${activeTab}:`, err);
+      toast.error(err.message || `Failed to load ${activeTab}`);
     } finally {
       setTabLoading(false);
     }
@@ -143,7 +145,8 @@ const Profile = () => {
       setIsEditing(false);
       toast.success('Profile updated successfully');
     } catch (err) {
-      toast.error(err.response?.data?.error || 'Failed to update profile');
+      console.error('Failed to update profile:', err);
+      toast.error(err.message || 'Failed to update profile');
     } finally {
       setSaving(false);
     }
