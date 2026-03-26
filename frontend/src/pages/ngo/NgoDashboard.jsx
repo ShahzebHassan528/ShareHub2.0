@@ -14,48 +14,39 @@ import './NgoDashboard.css';
 const NgoDashboard = () => {
   const { user } = useAuth();
   const { showToast } = useToast();
-  
+
   const [donations, setDonations] = useState([]);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState({});
   const [confirmModal, setConfirmModal] = useState({ isOpen: false, donation: null, action: null });
 
-  // Stats
-  const [stats, setStats] = useState({
-    total: 0,
-    pending: 0,
-    accepted: 0,
-    rejected: 0
-  });
+  const [stats, setStats] = useState({ total: 0, pending: 0, accepted: 0, rejected: 0 });
 
   useEffect(() => {
     fetchDonations();
   }, []);
 
   useEffect(() => {
-    calculateStats();
-  }, [donations]);
-
-  const fetchDonations = async () => {
-    try {
-      setLoading(true);
-      const data = await getNGODonations();
-      setDonations(data.donations || []);
-    } catch (err) {
-      const errorMsg = err.response?.data?.error || 'Failed to load donations';
-      showToast(errorMsg, 'error');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const calculateStats = () => {
     setStats({
       total: donations.length,
       pending: donations.filter(d => d.status === 'pending').length,
       accepted: donations.filter(d => d.status === 'accepted').length,
       rejected: donations.filter(d => d.status === 'rejected').length
     });
+  }, [donations]);
+
+  const fetchDonations = async () => {
+    try {
+      setLoading(true);
+      const data = await getNGODonations();
+      // FIX: controller returns { success, count, donations: [...] }
+      setDonations(data.donations || []);
+    } catch (err) {
+      // FIX: client.js converts errors to plain Error objects — use err.message
+      showToast(err.message || 'Failed to load donations', 'error');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleAccept = (donation) => {
@@ -68,10 +59,10 @@ const NgoDashboard = () => {
 
   const confirmAction = async () => {
     const { donation, action } = confirmModal;
-    
+
     try {
       setActionLoading(prev => ({ ...prev, [donation.id]: true }));
-      
+
       if (action === 'accept') {
         await acceptDonation(donation.id);
         showToast('Donation accepted successfully', 'success');
@@ -79,18 +70,16 @@ const NgoDashboard = () => {
         await rejectDonation(donation.id);
         showToast('Donation rejected', 'info');
       }
-      
-      // Update local state
-      setDonations(prev => prev.map(d => 
-        d.id === donation.id 
+
+      setDonations(prev => prev.map(d =>
+        d.id === donation.id
           ? { ...d, status: action === 'accept' ? 'accepted' : 'rejected' }
           : d
       ));
-      
+
       setConfirmModal({ isOpen: false, donation: null, action: null });
     } catch (err) {
-      const errorMsg = err.response?.data?.error || `Failed to ${action} donation`;
-      showToast(errorMsg, 'error');
+      showToast(err.message || `Failed to ${action} donation`, 'error');
     } finally {
       setActionLoading(prev => ({ ...prev, [donation.id]: false }));
     }
@@ -98,11 +87,7 @@ const NgoDashboard = () => {
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
-    });
+    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
   };
 
   const pendingDonations = donations.filter(d => d.status === 'pending');
@@ -125,39 +110,28 @@ const NgoDashboard = () => {
         {/* Stats Cards */}
         <div className="stats-grid">
           <div className="stat-card">
-            <div className="stat-icon total">
-              <span>📦</span>
-            </div>
+            <div className="stat-icon total"><span>📦</span></div>
             <div className="stat-content">
               <h3>{stats.total}</h3>
               <p>Total Donations</p>
             </div>
           </div>
-
           <div className="stat-card">
-            <div className="stat-icon pending">
-              <span>⏳</span>
-            </div>
+            <div className="stat-icon pending"><span>⏳</span></div>
             <div className="stat-content">
               <h3>{stats.pending}</h3>
               <p>Pending Requests</p>
             </div>
           </div>
-
           <div className="stat-card">
-            <div className="stat-icon accepted">
-              <span>✅</span>
-            </div>
+            <div className="stat-icon accepted"><span>✅</span></div>
             <div className="stat-content">
               <h3>{stats.accepted}</h3>
               <p>Accepted Donations</p>
             </div>
           </div>
-
           <div className="stat-card">
-            <div className="stat-icon rejected">
-              <span>❌</span>
-            </div>
+            <div className="stat-icon rejected"><span>❌</span></div>
             <div className="stat-content">
               <h3>{stats.rejected}</h3>
               <p>Rejected</p>
@@ -206,8 +180,8 @@ const NgoDashboard = () => {
                         <div className="donation-body">
                           <div className="product-info">
                             {donation.product_image && (
-                              <img 
-                                src={donation.product_image} 
+                              <img
+                                src={donation.product_image}
                                 alt={donation.product_title}
                                 className="product-image"
                               />
@@ -299,7 +273,7 @@ const NgoDashboard = () => {
                     {recentDonations.map(donation => (
                       <div key={donation.id} className="activity-item">
                         <div className="activity-icon">
-                          {donation.status === 'accepted' ? '✅' : 
+                          {donation.status === 'accepted' ? '✅' :
                            donation.status === 'rejected' ? '❌' : '⏳'}
                         </div>
                         <div className="activity-content">

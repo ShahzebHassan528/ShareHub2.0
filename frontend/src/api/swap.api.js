@@ -1,70 +1,77 @@
 import apiClient from './client';
 
+// NOTE: apiClient already returns response.data via interceptor — no .data needed.
+// All routes prefixed with /v1/swaps to match backend route registration.
+
 /**
- * Get available swap items for home page
+ * Get available swap items
  */
 export const getAvailableSwaps = async (params = {}) => {
-  const response = await apiClient.get('/swaps', { params });
-  return response.data;
+  const response = await apiClient.get('/v1/swaps', { params });
+  return response;
 };
 
 /**
  * Get user's own products for swap
  */
 export const getMyProducts = async () => {
-  const response = await apiClient.get('/products/my');
-  return response.data;
+  const response = await apiClient.get('/v1/products/my');
+  return response;
 };
 
 /**
  * Create a swap request
  */
 export const createSwapRequest = async (swapData) => {
-  const response = await apiClient.post('/swaps', swapData);
-  return response.data;
+  const response = await apiClient.post('/v1/swaps', swapData);
+  return response;
 };
 
 /**
- * Get swap requests made by current user
+ * Get swap requests SENT by current user
+ * FIX: route is GET /sent, not GET /my/requests
  */
 export const getMySwapRequests = async () => {
-  const response = await apiClient.get('/swaps/my/requests');
-  return response.data;
+  const response = await apiClient.get('/v1/swaps/sent');
+  return response;
 };
 
 /**
- * Get swap offers received by current user
+ * Get swap offers RECEIVED by current user
+ * FIX: route is GET /received, not GET /my/offers
  */
 export const getMySwapOffers = async () => {
-  const response = await apiClient.get('/swaps/my/offers');
-  return response.data;
+  const response = await apiClient.get('/v1/swaps/received');
+  return response;
 };
 
 /**
  * Accept a swap request
+ * FIX: route is PUT /:id/accept, not PUT /accept/:id
  */
 export const acceptSwap = async (swapId) => {
-  const response = await apiClient.put(`/swaps/accept/${swapId}`);
-  return response.data;
+  const response = await apiClient.put(`/v1/swaps/${swapId}/accept`);
+  return response;
 };
 
 /**
  * Reject a swap request
+ * FIX: route is PUT /:id/reject, not PUT /reject/:id
  */
 export const rejectSwap = async (swapId) => {
-  const response = await apiClient.put(`/swaps/reject/${swapId}`);
-  return response.data;
+  const response = await apiClient.put(`/v1/swaps/${swapId}/reject`);
+  return response;
 };
 
 /**
  * Cancel a swap request
+ * FIX: route is PUT /:id/cancel, not PUT /cancel/:id
  */
 export const cancelSwap = async (swapId) => {
-  const response = await apiClient.put(`/swaps/cancel/${swapId}`);
-  return response.data;
+  const response = await apiClient.put(`/v1/swaps/${swapId}/cancel`);
+  return response;
 };
 
-// Default export for convenience
 const swapAPI = {
   getAvailableSwaps,
   getMyProducts,

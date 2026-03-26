@@ -21,9 +21,11 @@ const MySwaps = () => {
       setLoading(true);
       setError(null);
       const data = await getMySwapRequests();
-      setSwaps(data.swaps || []);
+      // FIX: controller returns { success, count, data: [...] }
+      setSwaps(data.data || []);
     } catch (err) {
-      const errorMsg = err.response?.data?.error || 'Failed to load swap requests';
+      // FIX: client.js converts errors to plain Error objects
+      const errorMsg = err.message || 'Failed to load swap requests';
       setError(errorMsg);
       showToast(errorMsg, 'error');
     } finally {
@@ -37,21 +39,16 @@ const MySwaps = () => {
 
   const confirmCancel = async () => {
     const { swap } = confirmModal;
-    
     try {
       setActionLoading(prev => ({ ...prev, [swap.id]: true }));
       await cancelSwap(swap.id);
-      
-      // Update local state
-      setSwaps(prev => prev.map(s => 
+      setSwaps(prev => prev.map(s =>
         s.id === swap.id ? { ...s, status: 'cancelled' } : s
       ));
-      
       showToast('Swap request cancelled', 'info');
       setConfirmModal({ isOpen: false, swap: null });
     } catch (err) {
-      const errorMsg = err.response?.data?.error || 'Failed to cancel swap';
-      showToast(errorMsg, 'error');
+      showToast(err.message || 'Failed to cancel swap', 'error');
     } finally {
       setActionLoading(prev => ({ ...prev, [swap.id]: false }));
     }
@@ -60,9 +57,7 @@ const MySwaps = () => {
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
+      year: 'numeric', month: 'short', day: 'numeric'
     });
   };
 
@@ -89,9 +84,7 @@ const MySwaps = () => {
             <div className="error-icon">⚠️</div>
             <h2>Failed to Load Swaps</h2>
             <p>{error}</p>
-            <button onClick={fetchSwaps} className="btn-retry">
-              Try Again
-            </button>
+            <button onClick={fetchSwaps} className="btn-retry">Try Again</button>
           </div>
         </div>
       </div>
@@ -140,8 +133,8 @@ const MySwaps = () => {
                     <h4>You Want</h4>
                     <div className="item-card">
                       {swap.requested_item_image && (
-                        <img 
-                          src={swap.requested_item_image} 
+                        <img
+                          src={swap.requested_item_image}
                           alt={swap.requested_item_title}
                           className="item-image"
                         />
@@ -163,8 +156,8 @@ const MySwaps = () => {
                     <h4>You Offer</h4>
                     <div className="item-card">
                       {swap.offered_item_image && (
-                        <img 
-                          src={swap.offered_item_image} 
+                        <img
+                          src={swap.offered_item_image}
                           alt={swap.offered_item_title}
                           className="item-image"
                         />
@@ -186,7 +179,6 @@ const MySwaps = () => {
                     <span className="detail-label">Seller:</span>
                     <span className="detail-value">{swap.owner_name || 'N/A'}</span>
                   </div>
-
                   {swap.message && (
                     <div className="detail-row">
                       <span className="detail-label">Message:</span>
@@ -212,14 +204,11 @@ const MySwaps = () => {
         </div>
       </div>
 
-      {/* Confirmation Modal */}
       {confirmModal.isOpen && (
         <div className="confirm-modal-overlay" onClick={() => setConfirmModal({ isOpen: false, swap: null })}>
           <div className="confirm-modal-content" onClick={(e) => e.stopPropagation()}>
             <h3>Cancel Swap Request</h3>
-            <p>
-              Are you sure you want to cancel this swap request?
-            </p>
+            <p>Are you sure you want to cancel this swap request?</p>
             <div className="modal-actions">
               <button
                 onClick={() => setConfirmModal({ isOpen: false, swap: null })}
@@ -227,10 +216,7 @@ const MySwaps = () => {
               >
                 No, Keep It
               </button>
-              <button
-                onClick={confirmCancel}
-                className="btn-modal-confirm"
-              >
+              <button onClick={confirmCancel} className="btn-modal-confirm">
                 Yes, Cancel Request
               </button>
             </div>

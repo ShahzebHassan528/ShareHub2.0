@@ -24,7 +24,8 @@ const SellerProducts = () => {
       const data = await productAPI.getMyProducts();
       setProducts(data.products || []);
     } catch (err) {
-      const errorMsg = err.response?.data?.error || 'Failed to load products';
+      // client.js converts errors to plain Error objects — use err.message
+      const errorMsg = err.message || 'Failed to load products';
       setError(errorMsg);
       showToast(errorMsg, 'error');
     } finally {
@@ -38,17 +39,14 @@ const SellerProducts = () => {
 
   const confirmDelete = async () => {
     const { product } = deleteModal;
-    
     try {
       setActionLoading(prev => ({ ...prev, [`delete-${product.id}`]: true }));
       await productAPI.deleteProduct(product.id);
-      
       setProducts(prev => prev.filter(p => p.id !== product.id));
       showToast('Product deleted successfully', 'success');
       setDeleteModal({ isOpen: false, product: null });
     } catch (err) {
-      const errorMsg = err.response?.data?.error || 'Failed to delete product';
-      showToast(errorMsg, 'error');
+      showToast(err.message || 'Failed to delete product', 'error');
     } finally {
       setActionLoading(prev => ({ ...prev, [`delete-${product.id}`]: false }));
     }
@@ -58,17 +56,15 @@ const SellerProducts = () => {
     try {
       setActionLoading(prev => ({ ...prev, [`status-${product.id}`]: true }));
       await productAPI.toggleProductStatus(product.id);
-      
-      setProducts(prev => prev.map(p => 
-        p.id === product.id 
-          ? { ...p, status: p.status === 'active' ? 'inactive' : 'active' }
+      // FIX: backend toggles is_available, not status
+      setProducts(prev => prev.map(p =>
+        p.id === product.id
+          ? { ...p, is_available: !p.is_available }
           : p
       ));
-      
-      showToast(`Product ${product.status === 'active' ? 'deactivated' : 'activated'}`, 'success');
+      showToast(`Product ${product.is_available ? 'deactivated' : 'activated'}`, 'success');
     } catch (err) {
-      const errorMsg = err.response?.data?.error || 'Failed to update status';
-      showToast(errorMsg, 'error');
+      showToast(err.message || 'Failed to update status', 'error');
     } finally {
       setActionLoading(prev => ({ ...prev, [`status-${product.id}`]: false }));
     }
@@ -77,9 +73,7 @@ const SellerProducts = () => {
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric'
+      year: 'numeric', month: 'short', day: 'numeric'
     });
   };
 
@@ -106,9 +100,7 @@ const SellerProducts = () => {
             <div className="error-icon">⚠️</div>
             <h2>Failed to Load Products</h2>
             <p>{error}</p>
-            <button onClick={fetchProducts} className="btn-retry">
-              Try Again
-            </button>
+            <button onClick={fetchProducts} className="btn-retry">Try Again</button>
           </div>
         </div>
       </div>
@@ -121,10 +113,7 @@ const SellerProducts = () => {
         <div className="container">
           <div className="page-header">
             <h1>My Products</h1>
-            <button 
-              onClick={() => navigate('/seller/products/add')}
-              className="btn-add-product"
-            >
+            <button onClick={() => navigate('/seller/products/add')} className="btn-add-product">
               + Add Product
             </button>
           </div>
@@ -132,10 +121,7 @@ const SellerProducts = () => {
             <div className="empty-icon">📦</div>
             <h2>No Products Listed</h2>
             <p>You haven't listed any products yet.</p>
-            <button 
-              onClick={() => navigate('/seller/products/add')}
-              className="btn-empty-action"
-            >
+            <button onClick={() => navigate('/seller/products/add')} className="btn-empty-action">
               List Your First Product
             </button>
           </div>
@@ -152,10 +138,7 @@ const SellerProducts = () => {
             <h1>My Products</h1>
             <p className="page-subtitle">{products.length} products listed</p>
           </div>
-          <button 
-            onClick={() => navigate('/seller/products/add')}
-            className="btn-add-product"
-          >
+          <button onClick={() => navigate('/seller/products/add')} className="btn-add-product">
             + Add Product
           </button>
         </div>
@@ -178,8 +161,8 @@ const SellerProducts = () => {
                   <td className="product-cell">
                     <div className="product-info">
                       {product.image_url && (
-                        <img 
-                          src={product.image_url} 
+                        <img
+                          src={product.image_url}
                           alt={product.title}
                           className="product-thumb"
                         />
@@ -193,14 +176,16 @@ const SellerProducts = () => {
                   <td className="price-cell">
                     Rs. {product.price?.toLocaleString() || '0'}
                   </td>
+                  {/* FIX: DB column is product_condition, not condition */}
                   <td className="condition-cell">
-                    <span className={`condition-badge ${product.condition}`}>
-                      {product.condition || 'N/A'}
+                    <span className={`condition-badge ${product.product_condition}`}>
+                      {product.product_condition || 'N/A'}
                     </span>
                   </td>
+                  {/* FIX: use is_available for seller status, not product_status */}
                   <td className="status-cell">
-                    <span className={`status-badge ${product.status || 'active'}`}>
-                      {product.status || 'active'}
+                    <span className={`status-badge ${product.is_available ? 'active' : 'inactive'}`}>
+                      {product.is_available ? 'Active' : 'Inactive'}
                     </span>
                   </td>
                   <td className="date-cell">
@@ -219,9 +204,9 @@ const SellerProducts = () => {
                         onClick={() => handleToggleStatus(product)}
                         className="btn-action btn-toggle"
                         disabled={actionLoading[`status-${product.id}`]}
-                        title={product.status === 'active' ? 'Deactivate' : 'Activate'}
+                        title={product.is_available ? 'Deactivate' : 'Activate'}
                       >
-                        {product.status === 'active' ? '👁️' : '🚫'}
+                        {product.is_available ? '👁️' : '🚫'}
                       </button>
                       <button
                         onClick={() => handleDelete(product)}
@@ -240,7 +225,6 @@ const SellerProducts = () => {
         </div>
       </div>
 
-      {/* Delete Confirmation Modal */}
       {deleteModal.isOpen && (
         <div className="modal-overlay" onClick={() => setDeleteModal({ isOpen: false, product: null })}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
@@ -256,10 +240,7 @@ const SellerProducts = () => {
               >
                 Cancel
               </button>
-              <button
-                onClick={confirmDelete}
-                className="btn-confirm-delete"
-              >
+              <button onClick={confirmDelete} className="btn-confirm-delete">
                 Yes, Delete
               </button>
             </div>

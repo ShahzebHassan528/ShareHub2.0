@@ -14,11 +14,12 @@ const AddProduct = () => {
     try {
       setLoading(true);
       await productAPI.createProduct(formData);
-      
+
       showToast('Product listed successfully!', 'success');
       navigate('/seller/products');
     } catch (err) {
-      const errorMsg = err.response?.data?.error || 'Failed to create product';
+      // client.js converts all errors to plain Error objects, so use err.message
+      const errorMsg = err.message || 'Failed to create product';
       showToast(errorMsg, 'error');
     } finally {
       setLoading(false);
@@ -30,7 +31,7 @@ const AddProduct = () => {
       <div className="container">
         <div className="page-header">
           <div>
-            <button 
+            <button
               onClick={() => navigate('/seller/products')}
               className="btn-back"
             >

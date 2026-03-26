@@ -6,38 +6,27 @@ const ProductForm = ({ initialData = {}, onSubmit, submitLabel = 'Submit', loadi
     title: initialData.title || '',
     description: initialData.description || '',
     price: initialData.price || '',
-    category: initialData.category || '',
-    condition: initialData.condition || 'good',
+    // FIX: field name must match DB column 'product_condition'
+    product_condition: initialData.product_condition || 'good',
     image_url: initialData.image_url || '',
     location: initialData.location || '',
+    quantity: initialData.quantity || 1,
   });
 
   const [errors, setErrors] = useState({});
 
-  const categories = [
-    'Electronics',
-    'Furniture',
-    'Clothing',
-    'Books',
-    'Sports',
-    'Toys',
-    'Home & Garden',
-    'Automotive',
-    'Other'
-  ];
-
+  // FIX: enum values must match DB ENUM('new','like_new','good','fair','poor')
   const conditions = [
-    { value: 'new', label: 'New' },
-    { value: 'like-new', label: 'Like New' },
-    { value: 'good', label: 'Good' },
-    { value: 'fair', label: 'Fair' },
+    { value: 'new',      label: 'New' },
+    { value: 'like_new', label: 'Like New' },
+    { value: 'good',     label: 'Good' },
+    { value: 'fair',     label: 'Fair' },
+    { value: 'poor',     label: 'Poor' },
   ];
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
-    
-    // Clear error for this field
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }));
     }
@@ -64,10 +53,6 @@ const ProductForm = ({ initialData = {}, onSubmit, submitLabel = 'Submit', loadi
       newErrors.price = 'Price must be a positive number';
     }
 
-    if (!formData.category) {
-      newErrors.category = 'Category is required';
-    }
-
     if (!formData.location.trim()) {
       newErrors.location = 'Location is required';
     }
@@ -78,11 +63,11 @@ const ProductForm = ({ initialData = {}, onSubmit, submitLabel = 'Submit', loadi
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
     if (validate()) {
       onSubmit({
         ...formData,
-        price: parseFloat(formData.price)
+        price: parseFloat(formData.price),
+        quantity: parseInt(formData.quantity) || 1,
       });
     }
   };
@@ -144,13 +129,32 @@ const ProductForm = ({ initialData = {}, onSubmit, submitLabel = 'Submit', loadi
         </div>
 
         <div className="form-group">
-          <label htmlFor="condition">
+          <label htmlFor="quantity">
+            Quantity <span className="required">*</span>
+          </label>
+          <input
+            type="number"
+            id="quantity"
+            name="quantity"
+            value={formData.quantity}
+            onChange={handleChange}
+            placeholder="1"
+            min="1"
+            disabled={loading}
+          />
+        </div>
+      </div>
+
+      <div className="form-row">
+        {/* FIX: name is 'product_condition' to match DB column */}
+        <div className="form-group">
+          <label htmlFor="product_condition">
             Condition <span className="required">*</span>
           </label>
           <select
-            id="condition"
-            name="condition"
-            value={formData.condition}
+            id="product_condition"
+            name="product_condition"
+            value={formData.product_condition}
             onChange={handleChange}
             disabled={loading}
           >
@@ -160,30 +164,6 @@ const ProductForm = ({ initialData = {}, onSubmit, submitLabel = 'Submit', loadi
               </option>
             ))}
           </select>
-        </div>
-      </div>
-
-      <div className="form-row">
-        <div className="form-group">
-          <label htmlFor="category">
-            Category <span className="required">*</span>
-          </label>
-          <select
-            id="category"
-            name="category"
-            value={formData.category}
-            onChange={handleChange}
-            className={errors.category ? 'error' : ''}
-            disabled={loading}
-          >
-            <option value="">Select category</option>
-            {categories.map(cat => (
-              <option key={cat} value={cat}>
-                {cat}
-              </option>
-            ))}
-          </select>
-          {errors.category && <span className="error-message">{errors.category}</span>}
         </div>
 
         <div className="form-group">
@@ -205,9 +185,7 @@ const ProductForm = ({ initialData = {}, onSubmit, submitLabel = 'Submit', loadi
       </div>
 
       <div className="form-group">
-        <label htmlFor="image_url">
-          Image URL
-        </label>
+        <label htmlFor="image_url">Image URL</label>
         <input
           type="url"
           id="image_url"
@@ -221,8 +199,8 @@ const ProductForm = ({ initialData = {}, onSubmit, submitLabel = 'Submit', loadi
       </div>
 
       <div className="form-actions">
-        <button 
-          type="submit" 
+        <button
+          type="submit"
           className="btn-submit"
           disabled={loading}
         >

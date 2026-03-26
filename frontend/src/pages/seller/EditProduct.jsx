@@ -23,9 +23,13 @@ const EditProduct = () => {
       setLoading(true);
       setError(null);
       const data = await productAPI.getProductById(id);
-      setProduct(data);
+      // FIX: backend returns { success, data: product }
+      // client.js unwraps response.data, so data = { success, data: product }
+      // We need data.data to get the actual product object
+      setProduct(data.data);
     } catch (err) {
-      const errorMsg = err.response?.data?.error || 'Failed to load product';
+      // client.js converts errors to plain Error objects — use err.message
+      const errorMsg = err.message || 'Failed to load product';
       setError(errorMsg);
       showToast(errorMsg, 'error');
     } finally {
@@ -37,12 +41,10 @@ const EditProduct = () => {
     try {
       setSubmitting(true);
       await productAPI.updateProduct(id, formData);
-      
       showToast('Product updated successfully!', 'success');
       navigate('/seller/products');
     } catch (err) {
-      const errorMsg = err.response?.data?.error || 'Failed to update product';
-      showToast(errorMsg, 'error');
+      showToast(err.message || 'Failed to update product', 'error');
     } finally {
       setSubmitting(false);
     }
@@ -69,7 +71,7 @@ const EditProduct = () => {
             <div className="error-icon">⚠️</div>
             <h2>Failed to Load Product</h2>
             <p>{error || 'Product not found'}</p>
-            <button 
+            <button
               onClick={() => navigate('/seller/products')}
               className="btn-back-to-list"
             >
@@ -86,7 +88,7 @@ const EditProduct = () => {
       <div className="container">
         <div className="page-header">
           <div>
-            <button 
+            <button
               onClick={() => navigate('/seller/products')}
               className="btn-back"
             >
@@ -97,6 +99,7 @@ const EditProduct = () => {
           </div>
         </div>
 
+        {/* product is now the actual product object with product_condition etc. */}
         <ProductForm
           initialData={product}
           onSubmit={handleSubmit}

@@ -17,9 +17,9 @@ class DonationController {
       ...req.body,
       donor_id: req.user.id
     };
-    
+
     const donationId = await DonationService.createDonation(donationData);
-    
+
     res.status(201).json({
       success: true,
       message: 'Donation created successfully',
@@ -33,7 +33,7 @@ class DonationController {
    */
   static getDonationById = catchAsync(async (req, res, next) => {
     const donation = await DonationService.getDonationById(req.params.id);
-    
+
     res.status(200).json({
       success: true,
       data: donation
@@ -46,7 +46,7 @@ class DonationController {
    */
   static getMyDonations = catchAsync(async (req, res, next) => {
     const donations = await DonationService.getDonationsByDonor(req.user.id);
-    
+
     res.status(200).json({
       success: true,
       count: donations.length,
@@ -57,18 +57,24 @@ class DonationController {
   /**
    * Get donations for NGO
    * GET /api/v1/donations/ngo
+   *
+   * FIX: req.user.ngo_id is never set by auth middleware.
+   * Look up the NGO record by user_id instead (same pattern as seller dashboard).
    */
   static getNGODonations = catchAsync(async (req, res, next) => {
-    if (!req.user.ngo_id) {
-      return next(new AppError('NGO profile required', 400));
+    const { NGO } = require('../database/models');
+    const ngo = await NGO.findOne({ where: { user_id: req.user.id } });
+
+    if (!ngo) {
+      return next(new AppError('NGO profile not found', 400));
     }
-    
-    const donations = await DonationService.getDonationsByNGO(req.user.ngo_id);
-    
+
+    const donations = await DonationService.getDonationsByNGO(ngo.id);
+
     res.status(200).json({
       success: true,
       count: donations.length,
-      data: donations
+      donations: donations   // key is 'donations' to match frontend expectation
     });
   });
 
@@ -78,7 +84,7 @@ class DonationController {
    */
   static acceptDonation = catchAsync(async (req, res, next) => {
     const donation = await DonationService.acceptDonation(req.params.id, req.user.id);
-    
+
     res.status(200).json({
       success: true,
       message: 'Donation accepted successfully',
@@ -92,7 +98,7 @@ class DonationController {
    */
   static rejectDonation = catchAsync(async (req, res, next) => {
     const donation = await DonationService.rejectDonation(req.params.id);
-    
+
     res.status(200).json({
       success: true,
       message: 'Donation rejected',
@@ -106,7 +112,7 @@ class DonationController {
    */
   static completeDonation = catchAsync(async (req, res, next) => {
     const donation = await DonationService.completeDonation(req.params.id);
-    
+
     res.status(200).json({
       success: true,
       message: 'Donation completed successfully',

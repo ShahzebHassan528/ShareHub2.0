@@ -3,7 +3,7 @@
  * Handles dashboard statistics HTTP requests
  */
 
-const { User, Product, Order, Donation, ProductSwap, Seller, NGO } = require('../database/models');
+const { User, Product, Order, OrderItem, Donation, ProductSwap, Seller, NGO } = require('../database/models');
 const { Op } = require('sequelize');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/AppError');
@@ -14,46 +14,25 @@ class DashboardController {
    * GET /api/v1/dashboard/stats
    */
   static getAdminStats = catchAsync(async (req, res, next) => {
-    // Get counts in parallel
     const [
-      totalUsers,
-      totalSellers,
-      totalNGOs,
-      totalProducts,
-      totalOrders,
-      totalDonations,
-      totalSwaps,
-      activeProducts,
-      pendingOrders,
-      completedOrders
+      totalUsers, totalSellers, totalNGOs, totalProducts,
+      totalOrders, totalDonations, totalSwaps,
+      activeProducts, pendingOrders, completedOrders
     ] = await Promise.all([
-      User.count(),
-      Seller.count(),
-      NGO.count(),
-      Product.count(),
-      Order.count(),
-      Donation.count(),
-      ProductSwap.count(),
+      User.count(), Seller.count(), NGO.count(), Product.count(),
+      Order.count(), Donation.count(), ProductSwap.count(),
       Product.count({ where: { is_available: true } }),
       Order.count({ where: { status: 'pending' } }),
       Order.count({ where: { status: 'delivered' } })
     ]);
 
-    // Calculate revenue (sum of completed orders)
-    const revenueResult = await Order.sum('total_amount', {
-      where: { status: 'delivered' }
-    });
+    const revenueResult = await Order.sum('total_amount', { where: { status: 'delivered' } });
     const totalRevenue = revenueResult || 0;
 
-    // Get recent activity (last 7 days)
     const sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
-    const [
-      newUsersThisWeek,
-      newProductsThisWeek,
-      newOrdersThisWeek
-    ] = await Promise.all([
+    const [newUsersThisWeek, newProductsThisWeek, newOrdersThisWeek] = await Promise.all([
       User.count({ where: { created_at: { [Op.gte]: sevenDaysAgo } } }),
       Product.count({ where: { created_at: { [Op.gte]: sevenDaysAgo } } }),
       Order.count({ where: { created_at: { [Op.gte]: sevenDaysAgo } } })
@@ -62,34 +41,12 @@ class DashboardController {
     res.status(200).json({
       success: true,
       stats: {
-        users: {
-          total: totalUsers,
-          sellers: totalSellers,
-          ngos: totalNGOs,
-          new_this_week: newUsersThisWeek
-        },
-        products: {
-          total: totalProducts,
-          active: activeProducts,
-          inactive: totalProducts - activeProducts,
-          new_this_week: newProductsThisWeek
-        },
-        orders: {
-          total: totalOrders,
-          pending: pendingOrders,
-          completed: completedOrders,
-          new_this_week: newOrdersThisWeek
-        },
-        donations: {
-          total: totalDonations
-        },
-        swaps: {
-          total: totalSwaps
-        },
-        revenue: {
-          total: parseFloat(totalRevenue).toFixed(2),
-          currency: 'USD'
-        }
+        users: { total: totalUsers, sellers: totalSellers, ngos: totalNGOs, new_this_week: newUsersThisWeek },
+        products: { total: totalProducts, active: activeProducts, inactive: totalProducts - activeProducts, new_this_week: newProductsThisWeek },
+        orders: { total: totalOrders, pending: pendingOrders, completed: completedOrders, new_this_week: newOrdersThisWeek },
+        donations: { total: totalDonations },
+        swaps: { total: totalSwaps },
+        revenue: { total: parseFloat(totalRevenue).toFixed(2), currency: 'USD' }
       },
       generated_at: new Date().toISOString()
     });
@@ -102,92 +59,36 @@ class DashboardController {
   static getSellerStats = catchAsync(async (req, res, next) => {
     const userId = req.user.id;
 
-    // Look up the seller record by user_id
     const seller = await Seller.findOne({ where: { user_id: userId } });
-    if (!seller) {
-      return next(new AppError('Seller profile not found', 400));
-    }
+    if (!seller) return next(new AppError('Seller profile not found', 400));
     const sellerId = seller.id;
 
-    // Get seller statistics
-    // Orders are linked to products through OrderItem, not directly
-    const { OrderItem } = require('../database/models');
-
-    const [
-      totalProducts,
-      activeProducts,
-      totalOrders,
-      pendingOrders,
-      completedOrders,
-      totalViews
-    ] = await Promise.all([
+    const [totalProducts, activeProducts, totalOrders, pendingOrders, completedOrders, totalViews] = await Promise.all([
       Product.count({ where: { seller_id: sellerId } }),
       Product.count({ where: { seller_id: sellerId, is_available: true } }),
-      Order.count({
-        include: [{
-          model: OrderItem,
-          as: 'items',
-          required: true,
-          where: { seller_id: sellerId }
-        }]
-      }),
-      Order.count({
-        where: { status: 'pending' },
-        include: [{
-          model: OrderItem,
-          as: 'items',
-          required: true,
-          where: { seller_id: sellerId }
-        }]
-      }),
-      Order.count({
-        where: { status: 'delivered' },
-        include: [{
-          model: OrderItem,
-          as: 'items',
-          required: true,
-          where: { seller_id: sellerId }
-        }]
-      }),
+      Order.count({ include: [{ model: OrderItem, as: 'items', required: true, where: { seller_id: sellerId } }] }),
+      Order.count({ where: { status: 'pending' }, include: [{ model: OrderItem, as: 'items', required: true, where: { seller_id: sellerId } }] }),
+      Order.count({ where: { status: 'delivered' }, include: [{ model: OrderItem, as: 'items', required: true, where: { seller_id: sellerId } }] }),
       Product.sum('views', { where: { seller_id: sellerId } })
     ]);
 
-    // Calculate revenue: sum(price * quantity) for this seller's delivered orders
-    const { sequelize } = require('../database/models');
-    const revenueResult = await OrderItem.findOne({
-      attributes: [
-        [sequelize.fn('SUM', sequelize.literal('`OrderItem`.`price` * `OrderItem`.`quantity`')), 'total']
-      ],
+    // Revenue: fetch rows and sum in JS to avoid Sequelize literal alias issues
+    const deliveredItems = await OrderItem.findAll({
+      attributes: ['price', 'quantity'],
       where: { seller_id: sellerId },
-      include: [{
-        model: Order,
-        as: 'order',
-        required: true,
-        where: { status: 'delivered' },
-        attributes: []
-      }],
+      include: [{ model: Order, as: 'order', required: true, where: { status: 'delivered' }, attributes: [] }],
       raw: true
     });
-    const totalRevenue = revenueResult?.total || 0;
+    const totalRevenue = deliveredItems.reduce(
+      (sum, item) => sum + parseFloat(item.price || 0) * parseInt(item.quantity || 0), 0
+    );
 
     res.status(200).json({
       success: true,
       stats: {
-        products: {
-          total: totalProducts,
-          active: activeProducts,
-          inactive: totalProducts - activeProducts,
-          total_views: totalViews || 0
-        },
-        orders: {
-          total: totalOrders,
-          pending: pendingOrders,
-          completed: completedOrders
-        },
-        revenue: {
-          total: parseFloat(totalRevenue).toFixed(2),
-          currency: 'USD'
-        }
+        products: { total: totalProducts, active: activeProducts, inactive: totalProducts - activeProducts, total_views: totalViews || 0 },
+        orders: { total: totalOrders, pending: pendingOrders, completed: completedOrders },
+        revenue: { total: parseFloat(totalRevenue).toFixed(2), currency: 'USD' }
       },
       generated_at: new Date().toISOString()
     });
@@ -196,18 +97,15 @@ class DashboardController {
   /**
    * Get buyer dashboard statistics
    * GET /api/v1/dashboard/buyer-stats
+   *
+   * FIX: Removed Donation.sum('amount') — the donations table has NO 'amount' column.
+   * Donations in this app are product-based (a user donates a product to an NGO),
+   * not monetary. Summing 'amount' caused a Sequelize crash → 500 error.
    */
   static getBuyerStats = catchAsync(async (req, res, next) => {
     const userId = req.user.id;
 
-    // Get buyer statistics
-    const [
-      totalOrders,
-      pendingOrders,
-      completedOrders,
-      totalDonations,
-      totalSwaps
-    ] = await Promise.all([
+    const [totalOrders, pendingOrders, completedOrders, totalDonations, totalSwaps] = await Promise.all([
       Order.count({ where: { buyer_id: userId } }),
       Order.count({ where: { buyer_id: userId, status: 'pending' } }),
       Order.count({ where: { buyer_id: userId, status: 'delivered' } }),
@@ -215,17 +113,10 @@ class DashboardController {
       ProductSwap.count({ where: { requester_id: userId } })
     ]);
 
-    // Calculate total spent
     const spentResult = await Order.sum('total_amount', {
       where: { buyer_id: userId, status: 'delivered' }
     });
     const totalSpent = spentResult || 0;
-
-    // Calculate total donated
-    const donatedResult = await Donation.sum('amount', {
-      where: { donor_id: userId, status: 'completed' }
-    });
-    const totalDonated = donatedResult || 0;
 
     res.status(200).json({
       success: true,
@@ -238,11 +129,9 @@ class DashboardController {
         },
         donations: {
           total: totalDonations,
-          total_amount: parseFloat(totalDonated).toFixed(2)
+          total_amount: '0.00'  // No amount column — product-based donations
         },
-        swaps: {
-          total: totalSwaps
-        }
+        swaps: { total: totalSwaps }
       },
       generated_at: new Date().toISOString()
     });
@@ -251,35 +140,22 @@ class DashboardController {
   /**
    * Get NGO dashboard statistics
    * GET /api/v1/dashboard/ngo-stats
+   *
+   * FIX: Removed Donation.sum('amount') — same reason as buyer stats above.
    */
   static getNGOStats = catchAsync(async (req, res, next) => {
     const userId = req.user.id;
 
-    // Look up the NGO record by user_id
     const ngo = await NGO.findOne({ where: { user_id: userId } });
-    if (!ngo) {
-      return next(new AppError('NGO profile not found', 400));
-    }
+    if (!ngo) return next(new AppError('NGO profile not found', 400));
     const ngoId = ngo.id;
 
-    // Get NGO statistics
-    const [
-      totalDonations,
-      pendingDonations,
-      acceptedDonations,
-      completedDonations
-    ] = await Promise.all([
+    const [totalDonations, pendingDonations, acceptedDonations, completedDonations] = await Promise.all([
       Donation.count({ where: { ngo_id: ngoId } }),
       Donation.count({ where: { ngo_id: ngoId, status: 'pending' } }),
       Donation.count({ where: { ngo_id: ngoId, status: 'accepted' } }),
       Donation.count({ where: { ngo_id: ngoId, status: 'completed' } })
     ]);
-
-    // Calculate total received
-    const receivedResult = await Donation.sum('amount', {
-      where: { ngo_id: ngoId, status: 'completed' }
-    });
-    const totalReceived = receivedResult || 0;
 
     res.status(200).json({
       success: true,
@@ -289,7 +165,7 @@ class DashboardController {
           pending: pendingDonations,
           accepted: acceptedDonations,
           completed: completedDonations,
-          total_received: parseFloat(totalReceived).toFixed(2)
+          total_received: '0.00'  // No amount column — product-based donations
         }
       },
       generated_at: new Date().toISOString()
