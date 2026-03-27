@@ -4,13 +4,14 @@
  */
 
 import { useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 import Navbar from '../components/layout/Navbar';
 import Sidebar from '../components/layout/Sidebar';
 import './AdminLayout.css';
 
 const AdminLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const navigate = useNavigate();
 
   return (
     <div className="admin-layout">
@@ -26,11 +27,11 @@ const AdminLayout = () => {
                 Admin Panel
               </h1>
               <div className="admin-actions">
-                <button className="admin-btn">
+                <button className="admin-btn" onClick={() => navigate('/notifications')}>
                   <i className="bi bi-bell"></i>
                   <span className="admin-badge">12</span>
                 </button>
-                <button className="admin-btn">
+                <button className="admin-btn" onClick={() => navigate('/settings')}>
                   <i className="bi bi-gear"></i>
                 </button>
               </div>

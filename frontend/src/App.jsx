@@ -42,6 +42,9 @@ import SellerProducts from './pages/seller/SellerProducts'
 import AddProduct from './pages/seller/AddProduct'
 import EditProduct from './pages/seller/EditProduct'
 import Notifications from './pages/Notifications'
+import OrderConfirmationPage from './pages/OrderConfirmationPage'
+import Settings from './pages/Settings'
+import HelpPage from './pages/Help'
 import NotFound from './pages/NotFound'
 import Unauthorized from './pages/Unauthorized'
 import ServerError from './pages/ServerError'
@@ -82,8 +85,11 @@ function App() {
           <Route element={<MainLayout />}>
             <Route path="/cart" element={<CartPage />} />
             <Route path="/checkout" element={<ProtectedRoute><CheckoutPage /></ProtectedRoute>} />
+            <Route path="/orders/:id" element={<ProtectedRoute><OrderConfirmationPage /></ProtectedRoute>} />
             <Route path="/profile" element={<ProtectedRoute><Profile /></ProtectedRoute>} />
             <Route path="/notifications" element={<ProtectedRoute><Notifications /></ProtectedRoute>} />
+            <Route path="/settings" element={<ProtectedRoute><Settings /></ProtectedRoute>} />
+            <Route path="/help" element={<ProtectedRoute><HelpPage /></ProtectedRoute>} />
             <Route path="/donations/my" element={<ProtectedRoute><UserDonations /></ProtectedRoute>} />
             <Route path="/swaps/my" element={<ProtectedRoute><MySwaps /></ProtectedRoute>} />
             <Route path="/swaps/offers" element={<ProtectedRoute><SwapOffers /></ProtectedRoute>} />

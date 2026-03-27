@@ -21,7 +21,7 @@
   color: #dc2626;
 }
 
-.form-group input,
+.form-group input:not([type="file"]),
 .form-group textarea,
 .form-group select {
   width: 100%;
@@ -33,7 +33,17 @@
   transition: border-color 0.2s;
 }
 
-.form-group input:focus,
+.form-group input[type="file"] {
+  width: 100%;
+  padding: 0.5rem;
+  border: 2px dashed #d1d5db;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  background: #f9fafb;
+}
+
+.form-group input:not([type="file"]):focus,
 .form-group textarea:focus,
 .form-group select:focus {
   outline: none;
@@ -41,13 +51,13 @@
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
-.form-group input.error,
+.form-group input:not([type="file"]).error,
 .form-group textarea.error,
 .form-group select.error {
   border-color: #dc2626;
 }
 
-.form-group input:disabled,
+.form-group input:not([type="file"]):disabled,
 .form-group textarea:disabled,
 .form-group select:disabled {
   background: #f9fafb;

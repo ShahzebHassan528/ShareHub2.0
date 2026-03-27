@@ -4,8 +4,11 @@ import { Container, Row, Col, Card, Form, Button, Badge, Spinner } from 'react-b
 import { FaFilter, FaShoppingCart, FaHeart, FaExchangeAlt } from 'react-icons/fa';
 import NavigationBar from '../components/Navbar';
 import Footer from '../components/Footer';
+import productAPI from '../api/product.api';
+import { useCart } from '../contexts/CartContext';
 
 function Browse() {
+  const { addToCart } = useCart();
   const [filters, setFilters] = useState({
     category: '',
     condition: '',
@@ -23,15 +26,15 @@ function Browse() {
   const fetchProducts = async () => {
     try {
       setLoading(true);
-      const queryParams = new URLSearchParams();
-      if (filters.category) queryParams.append('category', filters.category);
-      if (filters.condition) queryParams.append('condition', filters.condition);
-      if (filters.minPrice) queryParams.append('minPrice', filters.minPrice);
-      if (filters.maxPrice) queryParams.append('maxPrice', filters.maxPrice);
+      const params = {};
+      if (filters.category) params.category = filters.category;
+      if (filters.condition) params.condition = filters.condition;
+      if (filters.minPrice) params.minPrice = filters.minPrice;
+      if (filters.maxPrice) params.maxPrice = filters.maxPrice;
+      if (filters.sortBy) params.sortBy = filters.sortBy;
 
-      const response = await fetch(`http://localhost:5000/api/products?${queryParams}`);
-      const data = await response.json();
-      setProducts(data);
+      const response = await productAPI.getAllProducts(params);
+      setProducts(response.data || response.products || []);
     } catch (error) {
       console.error('Error fetching products:', error);
     } finally {
@@ -216,7 +219,11 @@ function Browse() {
                         </p>
                         <div className="d-flex justify-content-between align-items-center">
                           <h4 className="text-primary mb-0">${parseFloat(product.price).toFixed(2)}</h4>
-                          <Button variant="primary" size="sm">
+                          <Button
+                            variant="primary"
+                            size="sm"
+                            onClick={(e) => { e.preventDefault(); addToCart(product); }}
+                          >
                             <FaShoppingCart className="me-1" />
                             Add to Cart
                           </Button>

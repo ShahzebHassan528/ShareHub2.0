@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import apiClient from '../../api/client';
 import './ProductForm.css';
 
 const ProductForm = ({ initialData = {}, onSubmit, submitLabel = 'Submit', loading = false }) => {
@@ -14,6 +15,9 @@ const ProductForm = ({ initialData = {}, onSubmit, submitLabel = 'Submit', loadi
   });
 
   const [errors, setErrors] = useState({});
+  const [imageFile, setImageFile] = useState(null);
+  const [imagePreview, setImagePreview] = useState(initialData.image_url || '');
+  const [uploading, setUploading] = useState(false);
 
   // FIX: enum values must match DB ENUM('new','like_new','good','fair','poor')
   const conditions = [
@@ -29,6 +33,30 @@ const ProductForm = ({ initialData = {}, onSubmit, submitLabel = 'Submit', loadi
     setFormData(prev => ({ ...prev, [name]: value }));
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }));
+    }
+  };
+
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setImageFile(file);
+    setImagePreview(URL.createObjectURL(file));
+    // Clear URL field when file is chosen
+    setFormData(prev => ({ ...prev, image_url: '' }));
+  };
+
+  const uploadImage = async () => {
+    if (!imageFile) return null;
+    const data = new FormData();
+    data.append('images', imageFile);
+    setUploading(true);
+    try {
+      const response = await apiClient.post('/v1/upload/product-images', data, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      return response.data?.images?.[0] || null;
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -61,15 +89,22 @@ const ProductForm = ({ initialData = {}, onSubmit, submitLabel = 'Submit', loadi
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validate()) {
-      onSubmit({
-        ...formData,
-        price: parseFloat(formData.price),
-        quantity: parseInt(formData.quantity) || 1,
-      });
+    if (!validate()) return;
+
+    let finalImageUrl = formData.image_url;
+    if (imageFile) {
+      const uploaded = await uploadImage();
+      if (uploaded) finalImageUrl = uploaded;
     }
+
+    onSubmit({
+      ...formData,
+      price: parseFloat(formData.price),
+      quantity: parseInt(formData.quantity) || 1,
+      image_url: finalImageUrl,
+    });
   };
 
   return (
@@ -185,26 +220,44 @@ const ProductForm = ({ initialData = {}, onSubmit, submitLabel = 'Submit', loadi
       </div>
 
       <div className="form-group">
-        <label htmlFor="image_url">Image URL</label>
+        <label>Product Image</label>
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleFileChange}
+          disabled={loading || uploading}
+          className="form-control mb-2"
+        />
+        {imagePreview && (
+          <img
+            src={imagePreview}
+            alt="Preview"
+            style={{ maxHeight: '120px', objectFit: 'contain', marginBottom: '8px', display: 'block' }}
+          />
+        )}
+        <span className="field-hint">Or enter an image URL instead:</span>
         <input
           type="url"
           id="image_url"
           name="image_url"
           value={formData.image_url}
-          onChange={handleChange}
+          onChange={(e) => {
+            handleChange(e);
+            if (e.target.value) { setImageFile(null); setImagePreview(e.target.value); }
+          }}
           placeholder="https://example.com/image.jpg"
-          disabled={loading}
+          disabled={loading || uploading || !!imageFile}
+          className="mt-1"
         />
-        <span className="field-hint">Optional: Provide a URL to your product image</span>
       </div>
 
       <div className="form-actions">
         <button
           type="submit"
           className="btn-submit"
-          disabled={loading}
+          disabled={loading || uploading}
         >
-          {loading ? 'Saving...' : submitLabel}
+          {uploading ? 'Uploading image...' : loading ? 'Saving...' : submitLabel}
         </button>
       </div>
     </form>

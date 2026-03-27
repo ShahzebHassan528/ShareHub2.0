@@ -9,7 +9,7 @@ class Product {
   static async findAll(filters = {}) {
     console.log('🔷 Product.findAll() called with Sequelize, filters:', filters);
     try {
-      const whereClause = { is_available: true, is_approved: true };
+      const whereClause = { is_available: true };
       const includeClause = [
         {
           model: Category,
@@ -29,11 +29,23 @@ class Product {
       if (filters.maxPrice) whereClause.price = { ...whereClause.price, [Op.lte]: filters.maxPrice };
       if (filters.condition) whereClause.product_condition = filters.condition;
       if (filters.seller_id) whereClause.seller_id = filters.seller_id;
+      if (filters.search) {
+        whereClause[Op.or] = [
+          { title: { [Op.like]: `%${filters.search}%` } },
+          { description: { [Op.like]: `%${filters.search}%` } }
+        ];
+      }
+
+      let order = [['created_at', 'DESC']];
+      if (filters.sortBy === 'price_low')  order = [['price', 'ASC']];
+      if (filters.sortBy === 'price_high') order = [['price', 'DESC']];
+      if (filters.sortBy === 'newest')     order = [['created_at', 'DESC']];
+      if (filters.sortBy === 'oldest')     order = [['created_at', 'ASC']];
 
       const products = await ProductModel.findAll({
         where: whereClause,
         include: includeClause,
-        order: [['created_at', 'DESC']],
+        order,
         raw: false
       });
 
@@ -139,7 +151,7 @@ class Product {
         product_condition: productData.product_condition,
         quantity: productData.quantity || 1,
         is_available: productData.is_available !== undefined ? productData.is_available : true,
-        is_approved: productData.is_approved || false,
+        is_approved: productData.is_approved !== undefined ? productData.is_approved : true,
         latitude: productData.latitude || null,
         longitude: productData.longitude || null,
         address: productData.address || productData.location || null

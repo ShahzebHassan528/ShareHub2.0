@@ -70,7 +70,8 @@ const ProductListing = () => {
       });
 
       const data = await productAPI.getAllProducts(params);
-      setProducts(data.products || data || []);
+      // Backend returns { success, count, data: [...] }
+      setProducts(data.data || data.products || []);
     } catch (err) {
       console.error('Failed to fetch products:', err);
       setError('Failed to load products');

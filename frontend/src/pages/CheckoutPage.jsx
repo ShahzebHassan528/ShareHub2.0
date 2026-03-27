@@ -93,7 +93,7 @@ const CheckoutPage = () => {
 
       toast.success('Order placed successfully!');
       clearCart();
-      navigate(`/orders/${response.data.id || response.order.id}`);
+      navigate(`/orders/${response.data?.id}`);
     } catch (error) {
       console.error('Checkout error:', error);
       toast.error(error.message || 'Failed to place order');

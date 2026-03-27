@@ -4,6 +4,7 @@ import { Container, Row, Col, Card, Form, Button, Badge, Spinner } from 'react-b
 import { FaFilter, FaExchangeAlt, FaShoppingBag } from 'react-icons/fa';
 import NavigationBar from '../components/Navbar';
 import Footer from '../components/Footer';
+import { getAvailableSwaps } from '../api/swap.api';
 
 function SwapMarketplace() {
   const [filters, setFilters] = useState({
@@ -21,13 +22,13 @@ function SwapMarketplace() {
   const fetchSwapItems = async () => {
     try {
       setLoading(true);
-      const queryParams = new URLSearchParams();
-      if (filters.category) queryParams.append('category', filters.category);
-      if (filters.condition) queryParams.append('condition', filters.condition);
+      const params = {};
+      if (filters.category) params.category = filters.category;
+      if (filters.condition) params.condition = filters.condition;
+      if (filters.sortBy) params.sortBy = filters.sortBy;
 
-      const response = await fetch(`http://localhost:5000/api/swaps?${queryParams}`);
-      const data = await response.json();
-      setSwapItems(data);
+      const response = await getAvailableSwaps(params);
+      setSwapItems(response.data || response.swaps || []);
     } catch (error) {
       console.error('Error fetching swap items:', error);
     } finally {

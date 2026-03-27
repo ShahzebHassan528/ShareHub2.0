@@ -12,6 +12,7 @@ import { useToast } from '../contexts/ToastContext';
 import SwapRequestButton from '../components/swap/SwapRequestButton';
 import DonateButton from '../components/donation/DonateButton';
 import productAPI from '../api/product.api';
+import reviewAPI from '../api/review.api';
 import './ProductDetail.css';
 
 const ProductDetail = () => {
@@ -25,11 +26,17 @@ const ProductDetail = () => {
   const [similarProducts, setSimilarProducts] = useState([]);
   const [loadingSimilar, setLoadingSimilar] = useState(false);
 
-  // Fetch similar products when product loads
+  // Reviews state
+  const { user } = useAuth();
+  const [reviews, setReviews] = useState([]);
+  const [reviewForm, setReviewForm] = useState({ rating: 5, comment: '' });
+  const [reviewLoading, setReviewLoading] = useState(false);
+  const [reviewError, setReviewError] = useState('');
+
+  // Fetch similar products and reviews when product loads
   useEffect(() => {
-    if (product?.category) {
-      fetchSimilarProducts();
-    }
+    if (product?.category) fetchSimilarProducts();
+    if (product?.id) fetchReviews();
   }, [product]);
 
   const fetchSimilarProducts = async () => {
@@ -72,6 +79,45 @@ const ProductDetail = () => {
       month: 'short',
       day: 'numeric'
     });
+  };
+
+  const fetchReviews = async () => {
+    try {
+      const response = await reviewAPI.getProductReviews(product.id);
+      setReviews(response.data || []);
+    } catch (err) {
+      console.error('Failed to fetch reviews:', err);
+    }
+  };
+
+  const handleReviewSubmit = async (e) => {
+    e.preventDefault();
+    if (!isAuthenticated) {
+      navigate('/login', { state: { from: `/products/${id}` } });
+      return;
+    }
+    setReviewError('');
+    setReviewLoading(true);
+    try {
+      await reviewAPI.createReview(product.id, reviewForm);
+      toast.success('Review submitted!');
+      setReviewForm({ rating: 5, comment: '' });
+      fetchReviews();
+    } catch (err) {
+      setReviewError(err.message || 'Failed to submit review');
+    } finally {
+      setReviewLoading(false);
+    }
+  };
+
+  const handleDeleteReview = async (reviewId) => {
+    try {
+      await reviewAPI.deleteReview(reviewId);
+      setReviews(prev => prev.filter(r => r.id !== reviewId));
+      toast.success('Review deleted');
+    } catch (err) {
+      toast.error(err.message || 'Failed to delete review');
+    }
   };
 
   const handleContact = () => {
@@ -326,6 +372,80 @@ const ProductDetail = () => {
               )}
             </div>
           </div>
+        </div>
+
+        {/* Reviews Section */}
+        <div className="mt-5">
+          <h3 className="mb-4">Customer Reviews ({reviews.length})</h3>
+
+          {/* Review Form */}
+          {isAuthenticated && (
+            <div className="card border-0 shadow-sm mb-4">
+              <div className="card-body">
+                <h5 className="mb-3">Write a Review</h5>
+                {reviewError && <div className="alert alert-danger py-2">{reviewError}</div>}
+                <form onSubmit={handleReviewSubmit}>
+                  <div className="mb-3">
+                    <label className="form-label">Rating</label>
+                    <select
+                      className="form-select"
+                      value={reviewForm.rating}
+                      onChange={e => setReviewForm(prev => ({ ...prev, rating: parseInt(e.target.value) }))}
+                    >
+                      {[5, 4, 3, 2, 1].map(r => (
+                        <option key={r} value={r}>{'★'.repeat(r)}{'☆'.repeat(5 - r)} ({r}/5)</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="mb-3">
+                    <label className="form-label">Comment (optional)</label>
+                    <textarea
+                      className="form-control"
+                      rows="3"
+                      value={reviewForm.comment}
+                      onChange={e => setReviewForm(prev => ({ ...prev, comment: e.target.value }))}
+                      placeholder="Share your experience with this product..."
+                    />
+                  </div>
+                  <button type="submit" className="btn btn-primary" disabled={reviewLoading}>
+                    {reviewLoading ? 'Submitting...' : 'Submit Review'}
+                  </button>
+                </form>
+              </div>
+            </div>
+          )}
+
+          {/* Review List */}
+          {reviews.length === 0 ? (
+            <p className="text-muted">No reviews yet. Be the first to review this product!</p>
+          ) : (
+            reviews.map(review => (
+              <div key={review.id} className="card border-0 shadow-sm mb-3">
+                <div className="card-body">
+                  <div className="d-flex justify-content-between align-items-start">
+                    <div>
+                      <strong>{review.buyer?.full_name || 'Anonymous'}</strong>
+                      <span className="ms-2 text-warning">{'★'.repeat(review.rating)}{'☆'.repeat(5 - review.rating)}</span>
+                    </div>
+                    <div className="d-flex align-items-center gap-2">
+                      <small className="text-muted">
+                        {new Date(review.created_at).toLocaleDateString()}
+                      </small>
+                      {user?.id === review.buyer_id && (
+                        <button
+                          className="btn btn-sm btn-outline-danger py-0"
+                          onClick={() => handleDeleteReview(review.id)}
+                        >
+                          Delete
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                  {review.comment && <p className="mt-2 mb-0 text-muted">{review.comment}</p>}
+                </div>
+              </div>
+            ))
+          )}
         </div>
 
         {/* Similar Products Section */}

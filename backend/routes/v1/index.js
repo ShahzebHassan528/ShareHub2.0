@@ -20,6 +20,7 @@ const userRoutes = require('./users');
 const categoriesRoutes = require('./categories');
 const dashboardRoutes = require('./dashboard');
 const uploadRoutes = require('./upload');
+const reviewRoutes = require('./reviews');
 
 // Security configuration
 const { authLimiter } = require('../../config/security');
@@ -39,6 +40,7 @@ router.use('/users', userRoutes);
 router.use('/categories', categoriesRoutes);
 router.use('/dashboard', dashboardRoutes);
 router.use('/upload', uploadRoutes);
+router.use('/reviews', reviewRoutes);
 
 // v1 API info endpoint
 router.get('/', (req, res) => {

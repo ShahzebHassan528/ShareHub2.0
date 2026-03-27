@@ -6,6 +6,7 @@
 const OrderService = require('../services/order.service');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/AppError');
+const { Seller } = require('../database/models');
 
 class OrderController {
   /**
@@ -13,12 +14,10 @@ class OrderController {
    * POST /api/v1/orders
    */
   static createOrder = catchAsync(async (req, res, next) => {
-    const orderData = {
-      ...req.body,
-      buyer_id: req.user.id
-    };
-    
-    const order = await OrderService.createOrder(orderData);
+    const { items, ...orderData } = req.body;
+
+    // OrderService.createOrder(buyerId, items, extraData)
+    const order = await OrderService.createOrder(req.user.id, items, orderData);
     
     res.status(201).json({
       success: true,
@@ -102,12 +101,13 @@ class OrderController {
    * GET /api/v1/orders/seller
    */
   static getSellerOrders = catchAsync(async (req, res, next) => {
-    if (!req.user.seller_id) {
+    const seller = await Seller.findOne({ where: { user_id: req.user.id } });
+    if (!seller) {
       return next(new AppError('Seller profile required', 400));
     }
-    
-    const orders = await OrderService.getOrdersBySeller(req.user.seller_id);
-    
+
+    const orders = await OrderService.getOrdersBySeller(seller.id);
+
     res.status(200).json({
       success: true,
       count: orders.length,
