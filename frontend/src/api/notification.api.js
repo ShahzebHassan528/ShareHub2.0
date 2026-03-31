@@ -1,36 +1,24 @@
 import apiClient from './client';
 
-/**
- * Get all notifications for current user
- * @param {boolean} unreadOnly - Get only unread notifications
- */
+// NOTE: apiClient interceptor already returns response.data — no .data needed.
+
 export const getNotifications = async (unreadOnly = false) => {
   const params = unreadOnly ? { unread: 'true' } : {};
-  const response = await apiClient.get('/notifications', { params });
-  return response.data;
+  const response = await apiClient.get('/v1/notifications', { params });
+  return response;
 };
 
-/**
- * Get unread notification count
- */
 export const getUnreadCount = async () => {
-  const response = await apiClient.get('/notifications/unread-count');
-  return response.data;
+  const response = await apiClient.get('/v1/notifications/unread-count');
+  return response;
 };
 
-/**
- * Mark a notification as read
- * @param {number} id - Notification ID
- */
 export const markAsRead = async (id) => {
-  const response = await apiClient.put(`/notifications/read/${id}`);
-  return response.data;
+  const response = await apiClient.put(`/v1/notifications/read/${id}`);
+  return response;
 };
 
-/**
- * Mark all notifications as read
- */
 export const markAllAsRead = async () => {
-  const response = await apiClient.put('/notifications/read-all');
-  return response.data;
+  const response = await apiClient.put('/v1/notifications/read-all');
+  return response;
 };

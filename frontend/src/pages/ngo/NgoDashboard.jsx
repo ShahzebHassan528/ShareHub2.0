@@ -4,16 +4,18 @@
  */
 
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useToast } from '../../contexts/ToastContext';
 import { getNGODonations, acceptDonation, rejectDonation } from '../../api/donation.api';
+import { getMyProfile } from '../../api/user.api';
 import StatusBadge from '../../components/common/StatusBadge';
 import './NgoDashboard.css';
 
 const NgoDashboard = () => {
   const { user } = useAuth();
   const { showToast } = useToast();
+  const navigate = useNavigate();
 
   const [donations, setDonations] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -23,6 +25,13 @@ const NgoDashboard = () => {
   const [stats, setStats] = useState({ total: 0, pending: 0, accepted: 0, rejected: 0 });
 
   useEffect(() => {
+    getMyProfile()
+      .then(data => {
+        if (data?.data?.verification_status === 'pending') {
+          navigate('/ngo/pending', { replace: true });
+        }
+      })
+      .catch(() => {});
     fetchDonations();
   }, []);
 

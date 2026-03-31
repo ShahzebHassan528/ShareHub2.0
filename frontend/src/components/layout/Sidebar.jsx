@@ -15,6 +15,7 @@ const Sidebar = ({ isOpen, onToggle }) => {
     const commonItems = [
       { path: '/dashboard', icon: 'bi-speedometer2', label: 'Dashboard', roles: ['buyer', 'seller', 'ngo'] },
       { path: '/profile', icon: 'bi-person', label: 'Profile', roles: ['buyer', 'seller', 'ngo'] },
+      { path: '/messages', icon: 'bi-chat-dots', label: 'Messages', roles: ['buyer', 'seller', 'ngo'] },
     ];
 
     const buyerItems = [

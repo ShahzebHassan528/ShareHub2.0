@@ -45,6 +45,10 @@ import Notifications from './pages/Notifications'
 import OrderConfirmationPage from './pages/OrderConfirmationPage'
 import Settings from './pages/Settings'
 import HelpPage from './pages/Help'
+import MessagesPage from './pages/MessagesPage'
+import ConversationPage from './pages/ConversationPage'
+import SellerPendingPage from './pages/seller/SellerPendingPage'
+import NgoPendingPage from './pages/ngo/NgoPendingPage'
 import NotFound from './pages/NotFound'
 import Unauthorized from './pages/Unauthorized'
 import ServerError from './pages/ServerError'
@@ -93,6 +97,8 @@ function App() {
             <Route path="/donations/my" element={<ProtectedRoute><UserDonations /></ProtectedRoute>} />
             <Route path="/swaps/my" element={<ProtectedRoute><MySwaps /></ProtectedRoute>} />
             <Route path="/swaps/offers" element={<ProtectedRoute><SwapOffers /></ProtectedRoute>} />
+            <Route path="/messages" element={<ProtectedRoute><MessagesPage /></ProtectedRoute>} />
+            <Route path="/messages/:userId" element={<ProtectedRoute><ConversationPage /></ProtectedRoute>} />
           </Route>
 
           {/* Role-Based Dashboard Routes */}
@@ -125,13 +131,21 @@ function App() {
 
           {/* Seller Dashboard */}
           <Route element={<DashboardLayout />}>
-            <Route 
-              path="/seller/dashboard" 
+            <Route
+              path="/seller/pending"
+              element={
+                <ProtectedRoute requiredRole={ROLES.SELLER}>
+                  <SellerPendingPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/seller/dashboard"
               element={
                 <ProtectedRoute requiredRole={ROLES.SELLER}>
                   <SellerDashboard />
                 </ProtectedRoute>
-              } 
+              }
             />
             <Route 
               path="/seller/products" 
@@ -161,13 +175,21 @@ function App() {
 
           {/* NGO Dashboard */}
           <Route element={<DashboardLayout />}>
-            <Route 
-              path="/ngo/dashboard" 
+            <Route
+              path="/ngo/pending"
+              element={
+                <ProtectedRoute requiredRole={ROLES.NGO}>
+                  <NgoPendingPage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/ngo/dashboard"
               element={
                 <ProtectedRoute requiredRole={ROLES.NGO}>
                   <NgoDashboard />
                 </ProtectedRoute>
-              } 
+              }
             />
             <Route 
               path="/ngo/donations" 

@@ -6,6 +6,7 @@
 const UserService = require('../services/user.service');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/AppError');
+const { Seller, NGO } = require('../database/models');
 
 class UserController {
   /**
@@ -14,14 +15,24 @@ class UserController {
    */
   static getProfile = catchAsync(async (req, res, next) => {
     const user = await UserService.getUserById(req.user.id);
-    
+
     if (!user) {
       return next(new AppError('User not found', 404));
     }
-    
+
+    let profileExtra = {};
+    if (user.role === 'seller') {
+      const seller = await Seller.findOne({ where: { user_id: req.user.id } });
+      if (seller) profileExtra.approval_status = seller.approval_status;
+    }
+    if (user.role === 'ngo') {
+      const ngo = await NGO.findOne({ where: { user_id: req.user.id } });
+      if (ngo) profileExtra.verification_status = ngo.verification_status;
+    }
+
     res.status(200).json({
       success: true,
-      data: user
+      data: { ...user, ...profileExtra }
     });
   });
 

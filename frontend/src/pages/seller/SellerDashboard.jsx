@@ -3,13 +3,27 @@
  * Main dashboard for seller role users
  */
 
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useDashboard } from '../../hooks/useDashboard';
+import { getMyProfile } from '../../api/user.api';
 import './SellerDashboard.css';
 
 const SellerDashboard = () => {
   const { user } = useAuth();
   const { stats, loading, error, refresh } = useDashboard();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    getMyProfile()
+      .then(data => {
+        if (data?.data?.approval_status === 'pending') {
+          navigate('/seller/pending', { replace: true });
+        }
+      })
+      .catch(() => {}); // non-blocking; ignore errors
+  }, []);
 
   // Loading state
   if (loading) {
