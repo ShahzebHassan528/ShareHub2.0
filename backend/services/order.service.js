@@ -40,7 +40,7 @@ class OrderService {
           throw new AppError(`Product ${item.product_id} not found`, 404);
         }
 
-        if (product.availability_status !== 'available') {
+        if (!product.is_available) {
           throw new AppError(`Product "${product.title}" is not available`, 400);
         }
 
