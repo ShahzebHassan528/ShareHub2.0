@@ -18,6 +18,7 @@ const CheckoutPage = () => {
   const toast = useToast();
   
   const [loading, setLoading] = useState(false);
+  const [orderPlaced, setOrderPlaced] = useState(false);
   const [formData, setFormData] = useState({
     fullName: user?.name || '',
     email: user?.email || '',
@@ -92,6 +93,7 @@ const CheckoutPage = () => {
       const response = await orderAPI.createOrder(orderData);
 
       toast.success('Order placed successfully!');
+      setOrderPlaced(true);
       clearCart();
       navigate(`/orders/${response.data?.id}`);
     } catch (error) {
@@ -102,7 +104,7 @@ const CheckoutPage = () => {
     }
   };
 
-  if (cart.length === 0) {
+  if (cart.length === 0 && !orderPlaced) {
     navigate('/cart');
     return null;
   }
@@ -312,7 +314,7 @@ const CheckoutPage = () => {
               </div>
 
               <button
-                type="submit"
+                type="button"
                 className="btn btn-primary btn-lg w-100"
                 onClick={handleSubmit}
                 disabled={loading}
