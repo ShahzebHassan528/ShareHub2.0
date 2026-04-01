@@ -249,6 +249,52 @@
   margin: 0;
 }
 
+/* Skeleton Loader */
+@keyframes skeleton-pulse {
+  0%   { background-position: -200px 0; }
+  100% { background-position: calc(200px + 100%) 0; }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200px 100%;
+  animation: skeleton-pulse 1.4s ease infinite;
+  border-radius: 6px;
+}
+
+.skeleton-card {
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+.skeleton-image {
+  width: 100%;
+  height: 200px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200px 100%;
+  animation: skeleton-pulse 1.4s ease infinite;
+}
+
+.skeleton-body {
+  padding: 1rem;
+}
+
+.skeleton-line {
+  height: 14px;
+  margin-bottom: 10px;
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200px 100%;
+  animation: skeleton-pulse 1.4s ease infinite;
+  border-radius: 4px;
+}
+
+.skeleton-line.short  { width: 50%; }
+.skeleton-line.medium { width: 75%; }
+.skeleton-line.full   { width: 100%; }
+.skeleton-line.price  { width: 40%; height: 20px; margin-top: 14px; }
+
 /* Error State */
 .error-state {
   background: white;

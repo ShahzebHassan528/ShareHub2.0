@@ -263,7 +263,7 @@ const ProductListing = () => {
               <div className="toolbar-left">
                 <h2 className="results-count">
                   {loading ? (
-                    'Loading...'
+                    <span className="skeleton-line medium" style={{ display: 'inline-block', height: 20, width: 120, verticalAlign: 'middle' }} />
                   ) : (
                     <>
                       {products.length} {products.length === 1 ? 'Product' : 'Products'}
@@ -314,9 +314,18 @@ const ProductListing = () => {
 
             {/* Products Grid */}
             {loading ? (
-              <div className="loading-state">
-                <div className="spinner"></div>
-                <p>Loading products...</p>
+              <div className="products-grid">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <div key={i} className="skeleton-card">
+                    <div className="skeleton-image" />
+                    <div className="skeleton-body">
+                      <div className="skeleton-line short" />
+                      <div className="skeleton-line full" />
+                      <div className="skeleton-line medium" />
+                      <div className="skeleton-line price" />
+                    </div>
+                  </div>
+                ))}
               </div>
             ) : error ? (
               <div className="error-state">

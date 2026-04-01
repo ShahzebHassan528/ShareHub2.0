@@ -1,42 +1,47 @@
 import { Link } from 'react-router-dom';
-import { Container, Button } from 'react-bootstrap';
-import { FaHome, FaRedo } from 'react-icons/fa';
-import NavigationBar from '../components/Navbar';
-import Footer from '../components/Footer';
 
 function ServerError() {
-  const handleRefresh = () => {
-    window.location.reload();
-  };
-
   return (
-    <div className="d-flex flex-column min-vh-100">
-      <NavigationBar />
+    <div
+      className="d-flex flex-column align-items-center justify-content-center min-vh-100 bg-light px-3"
+      style={{ textAlign: 'center' }}
+    >
+      {/* Faded number */}
+      <div style={{ lineHeight: 1 }}>
+        <span
+          className="fw-black text-danger"
+          style={{ fontSize: 'clamp(6rem, 20vw, 10rem)', letterSpacing: '-0.05em', opacity: 0.15 }}
+        >
+          500
+        </span>
+      </div>
 
-      <Container className="flex-grow-1 d-flex align-items-center justify-content-center py-5">
-        <div className="text-center">
-          <div className="mb-4">
-            <span style={{ fontSize: '120px' }}>⚠️</span>
-          </div>
-          <h1 className="display-1 fw-bold text-danger mb-3">500</h1>
-          <h2 className="mb-4">Internal Server Error</h2>
-          <p className="lead text-muted mb-4">
-            Something went wrong on our end. We're working to fix it!
-          </p>
-          <div className="d-flex gap-3 justify-content-center">
-            <Button onClick={handleRefresh} variant="primary" size="lg">
-              <FaRedo className="me-2" />
-              Try Again
-            </Button>
-            <Button as={Link} to="/" variant="outline-primary" size="lg">
-              <FaHome className="me-2" />
-              Go Home
-            </Button>
-          </div>
-        </div>
-      </Container>
+      {/* Icon */}
+      <div
+        className="rounded-circle bg-danger bg-opacity-10 d-flex align-items-center justify-content-center mb-4"
+        style={{ width: 80, height: 80, marginTop: '-2rem' }}
+      >
+        <i className="bi bi-exclamation-triangle text-danger" style={{ fontSize: 36 }}></i>
+      </div>
 
-      <Footer />
+      <h1 className="fw-bold mb-2" style={{ fontSize: '1.75rem' }}>Server Error</h1>
+      <p className="text-muted mb-4" style={{ maxWidth: 400 }}>
+        Something went wrong on our end. Our team has been notified. Please try again in a moment.
+      </p>
+
+      <div className="d-flex flex-wrap gap-3 justify-content-center">
+        <button onClick={() => window.location.reload()} className="btn btn-danger">
+          <i className="bi bi-arrow-clockwise me-2"></i>Try Again
+        </button>
+        <Link to="/" className="btn btn-outline-secondary">
+          <i className="bi bi-house me-2"></i>Home
+        </Link>
+      </div>
+
+      <p className="text-muted mt-5 small">
+        <Link to="/" className="text-decoration-none text-muted fw-semibold">ShareHub</Link>
+        {' '}— Marketplace for everyone
+      </p>
     </div>
   );
 }
