@@ -7,10 +7,11 @@ const express = require('express');
 const router = express.Router();
 const UploadController = require('../../controllers/upload.controller');
 const { authenticate } = require('../../middleware/auth');
-const { 
-  uploadProductImages, 
-  uploadNGOCertificate, 
-  uploadSellerLicense 
+const {
+  uploadProductImages,
+  uploadNGOCertificate,
+  uploadSellerLicense,
+  uploadProfileAvatar
 } = require('../../config/multer');
 
 console.log('🔧 Upload routes initialized with Multer (Local File System)');
@@ -49,6 +50,18 @@ router.post(
   authenticate,
   uploadSellerLicense,
   UploadController.uploadSellerLicense
+);
+
+/**
+ * POST /api/v1/upload/profile-avatar
+ * Upload user profile avatar (single image)
+ * Requires authentication
+ */
+router.post(
+  '/profile-avatar',
+  authenticate,
+  uploadProfileAvatar,
+  UploadController.uploadProfileAvatar
 );
 
 /**

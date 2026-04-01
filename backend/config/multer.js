@@ -17,7 +17,8 @@ const createUploadDirs = () => {
     UPLOAD_DIR,
     path.join(UPLOAD_DIR, 'products'),
     path.join(UPLOAD_DIR, 'ngos'),
-    path.join(UPLOAD_DIR, 'sellers')
+    path.join(UPLOAD_DIR, 'sellers'),
+    path.join(UPLOAD_DIR, 'profiles')
   ];
 
   dirs.forEach(dir => {
@@ -43,6 +44,8 @@ const storage = multer.diskStorage({
       uploadPath = path.join(UPLOAD_DIR, 'ngos');
     } else if (file.fieldname === 'business_license') {
       uploadPath = path.join(UPLOAD_DIR, 'sellers');
+    } else if (file.fieldname === 'profile_avatar') {
+      uploadPath = path.join(UPLOAD_DIR, 'profiles');
     }
 
     cb(null, uploadPath);
@@ -94,7 +97,10 @@ module.exports = {
   
   // Seller license (single file)
   uploadSellerLicense: upload.single('business_license'),
-  
+
+  // Profile avatar (single file)
+  uploadProfileAvatar: upload.single('profile_avatar'),
+
   // Generic single file upload
   uploadSingle: (fieldName) => upload.single(fieldName),
   

@@ -6,7 +6,7 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { getMyProfile, updateMyProfile } from '../api/user.api';
+import { getMyProfile, updateMyProfile, uploadProfileImage } from '../api/user.api';
 import productAPI from '../api/product.api';
 import swapAPI from '../api/swap.api';
 import donationAPI from '../api/donation.api';
@@ -32,6 +32,7 @@ const Profile = () => {
   
   const [errors, setErrors] = useState({});
   const [imagePreview, setImagePreview] = useState(null);
+  const [avatarUploading, setAvatarUploading] = useState(false);
 
   // Tab data states
   const [products, setProducts] = useState([]);
@@ -105,10 +106,6 @@ const Profile = () => {
       newErrors.phone = 'Invalid phone number format';
     }
     
-    if (formData.profile_image && !/^https?:\/\/.+/.test(formData.profile_image)) {
-      newErrors.profile_image = 'Invalid image URL';
-    }
-    
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -127,6 +124,30 @@ const Profile = () => {
     
     if (name === 'profile_image') {
       setImagePreview(value || null);
+    }
+  };
+
+  const handleAvatarChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Show local preview immediately
+    setImagePreview(URL.createObjectURL(file));
+
+    try {
+      setAvatarUploading(true);
+      const form = new FormData();
+      form.append('profile_avatar', file);
+      const data = await uploadProfileImage(form);
+      const url = data.data?.url;
+      if (url) {
+        setFormData(prev => ({ ...prev, profile_image: url }));
+      }
+    } catch (err) {
+      toast.error(err.message || 'Failed to upload image');
+      setImagePreview(profile?.profile_image || null);
+    } finally {
+      setAvatarUploading(false);
     }
   };
 
@@ -370,22 +391,46 @@ const Profile = () => {
 
                   {isEditing && (
                     <div className="form-group full-width">
-                      <label htmlFor="profile_image">Profile Image URL</label>
-                      <input
-                        type="url"
-                        id="profile_image"
-                        name="profile_image"
-                        value={formData.profile_image}
-                        onChange={handleInputChange}
-                        className={`form-control ${errors.profile_image ? 'is-invalid' : ''}`}
-                        placeholder="https://example.com/image.jpg"
-                      />
-                      {errors.profile_image && (
-                        <div className="invalid-feedback">{errors.profile_image}</div>
-                      )}
-                      <small className="form-text text-muted">
-                        Enter a valid image URL
-                      </small>
+                      <label>Profile Photo</label>
+                      <div className="d-flex align-items-center gap-3">
+                        <div style={{ flexShrink: 0 }}>
+                          {imagePreview ? (
+                            <img
+                              src={imagePreview}
+                              alt="Preview"
+                              style={{ width: 64, height: 64, borderRadius: '50%', objectFit: 'cover', border: '2px solid #dee2e6' }}
+                            />
+                          ) : (
+                            <div style={{ width: 64, height: 64, borderRadius: '50%', background: '#e9ecef', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 24, fontWeight: 600 }}>
+                              {profile.full_name?.charAt(0)?.toUpperCase() || '?'}
+                            </div>
+                          )}
+                        </div>
+                        <div>
+                          <input
+                            type="file"
+                            id="avatar_upload"
+                            accept="image/jpeg,image/jpg,image/png,image/webp"
+                            style={{ display: 'none' }}
+                            onChange={handleAvatarChange}
+                            disabled={avatarUploading}
+                          />
+                          <label
+                            htmlFor="avatar_upload"
+                            className="btn btn-outline-secondary btn-sm"
+                            style={{ cursor: avatarUploading ? 'not-allowed' : 'pointer' }}
+                          >
+                            {avatarUploading ? (
+                              <><span className="spinner-border spinner-border-sm me-1" />Uploading...</>
+                            ) : (
+                              <><i className="bi bi-upload me-1" />Upload Photo</>
+                            )}
+                          </label>
+                          <small className="d-block text-muted mt-1">
+                            JPG, PNG, WEBP · max 5 MB
+                          </small>
+                        </div>
+                      </div>
                     </div>
                   )}
 

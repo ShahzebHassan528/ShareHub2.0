@@ -6,13 +6,16 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
+import { useCart } from '../../contexts/CartContext';
 import { useNotifications } from '../../hooks/useNotifications';
 import './Navbar.css';
 
 const Navbar = () => {
   const { user, isAuthenticated, logout } = useAuth();
   const { unreadCount } = useNotifications();
+  const { getItemCount } = useCart();
   const navigate = useNavigate();
+  const cartCount = getItemCount();
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
 
@@ -40,25 +43,35 @@ const Navbar = () => {
 
         {/* Navigation Links */}
         <div className={`navbar-links ${showMobileMenu ? 'mobile-open' : ''}`}>
-          <Link to="/" className="nav-link">
-            <i className="bi bi-house"></i>
-            <span>Home</span>
-          </Link>
-          
-          <Link to="/products" className="nav-link">
-            <i className="bi bi-grid"></i>
-            <span>Products</span>
-          </Link>
-          
-          <Link to="/swaps/explore" className="nav-link">
-            <i className="bi bi-arrow-left-right"></i>
-            <span>Swap</span>
-          </Link>
+          {/* Admin-specific nav */}
+          {user?.role === 'admin' ? (
+            <Link to="/admin/dashboard" className="nav-link">
+              <i className="bi bi-shield-check"></i>
+              <span>Admin Panel</span>
+            </Link>
+          ) : (
+            <>
+              <Link to="/" className="nav-link">
+                <i className="bi bi-house"></i>
+                <span>Home</span>
+              </Link>
 
-          <Link to="/ngos" className="nav-link">
-            <i className="bi bi-heart"></i>
-            <span>NGOs</span>
-          </Link>
+              <Link to="/products" className="nav-link">
+                <i className="bi bi-grid"></i>
+                <span>Products</span>
+              </Link>
+
+              <Link to="/swaps/explore" className="nav-link">
+                <i className="bi bi-arrow-left-right"></i>
+                <span>Swap</span>
+              </Link>
+
+              <Link to="/ngos" className="nav-link">
+                <i className="bi bi-heart"></i>
+                <span>NGOs</span>
+              </Link>
+            </>
+          )}
         </div>
 
         {/* Right Section - Login or User Menu */}
@@ -69,7 +82,16 @@ const Navbar = () => {
               <span>Dashboard</span>
             </Link>
 
-            <Link to="/notifications" className="nav-link">
+            {user?.role !== 'admin' && (
+              <Link to="/cart" className="nav-link" style={{ position: 'relative' }}>
+                <i className="bi bi-bag"></i>
+                {cartCount > 0 && (
+                  <span className="notification-badge">{cartCount}</span>
+                )}
+              </Link>
+            )}
+
+            <Link to="/notifications" className="nav-link" style={{ position: 'relative' }}>
               <i className="bi bi-bell"></i>
               {unreadCount > 0 && (
                 <span className="notification-badge">{unreadCount}</span>

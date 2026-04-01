@@ -50,6 +50,21 @@ class UploadService {
   }
 
   /**
+   * Process profile avatar upload
+   * @param {Object} file - Uploaded file from multer
+   * @returns {String} File path
+   */
+  static processProfileAvatar(file) {
+    if (!file) {
+      throw new AppError('Profile image is required', 400);
+    }
+
+    this.validateImageFile(file);
+
+    return `/uploads/profiles/${file.filename}`;
+  }
+
+  /**
    * Process seller license upload
    * @param {Object} file - Uploaded file from multer
    * @returns {String} File path

@@ -70,6 +70,26 @@ class UploadController {
   });
 
   /**
+   * Upload profile avatar
+   * POST /api/v1/upload/profile-avatar
+   */
+  static uploadProfileAvatar = catchAsync(async (req, res, next) => {
+    if (!req.file) {
+      return next(new AppError('Profile image is required', 400));
+    }
+
+    const avatarPath = UploadService.processProfileAvatar(req.file);
+
+    res.status(200).json({
+      success: true,
+      message: 'Profile image uploaded successfully',
+      data: {
+        url: avatarPath
+      }
+    });
+  });
+
+  /**
    * Delete file
    * DELETE /api/v1/upload/file
    */
