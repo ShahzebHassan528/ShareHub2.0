@@ -4,9 +4,18 @@
  */
 
 import { Link } from 'react-router-dom';
+import { useFavorites } from '../../contexts/FavoritesContext';
 import './ProductCard.css';
 
 const ProductCard = ({ product }) => {
+  const { isFavorite, toggleFavorite } = useFavorites();
+  const favorited = isFavorite(product.id);
+
+  const handleFavoriteClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    toggleFavorite(product);
+  };
   const formatPrice = (price) => {
     return new Intl.NumberFormat('en-PK', {
       style: 'currency',
@@ -50,6 +59,15 @@ const ProductCard = ({ product }) => {
             <i className="bi bi-star-fill"></i> Featured
           </span>
         )}
+
+        {/* Favorite toggle button */}
+        <button
+          className={`product-card-favorite-btn ${favorited ? 'active' : ''}`}
+          onClick={handleFavoriteClick}
+          title={favorited ? 'Remove from favorites' : 'Add to favorites'}
+        >
+          <i className={`bi ${favorited ? 'bi-heart-fill' : 'bi-heart'}`}></i>
+        </button>
       </div>
 
       <div className="product-card-body">

@@ -119,7 +119,7 @@ const BuyerDashboard = () => {
           <div className="order-item">
             <div className="order-info">
               <h4>Total Spent</h4>
-              <p>${stats?.orders?.total_spent || '0.00'}</p>
+              <p>PKR {parseFloat(stats?.orders?.total_spent || 0).toLocaleString('en-PK', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</p>
             </div>
             <span className="order-status shipping">Paid</span>
           </div>

@@ -10,17 +10,15 @@ const User = require('../models/User.sequelize.wrapper');
 const NotificationService = require('./notificationService');
 const JobService = require('./job.service');
 const AppError = require('../utils/AppError');
-const { sequelize } = require('../config/sequelize');
 
 class DonationService {
   /**
    * Create a new donation
-   * Uses transaction to ensure atomic operation
-   * @param {Object} donationData - Donation data
+   * @param {Object} donationData - Donation data from controller
    * @returns {Promise<number>} Created donation ID
    */
   static async createDonation(donationData) {
-    const { donor_id, ngo_id, product_id, amount } = donationData;
+    const { donor_id, ngo_id, product_id, message } = donationData;
 
     // Validate NGO exists and is approved
     const ngo = await NGO.findById(ngo_id);
@@ -32,67 +30,54 @@ class DonationService {
       throw new AppError('Can only donate to approved NGOs', 400);
     }
 
-    // Use transaction for atomic donation creation
-    const transaction = await sequelize.transaction();
-    
-    try {
-      // If product donation, validate and update product
-      if (product_id) {
-        const product = await Product.findById(product_id);
-        if (!product) {
-          throw new AppError('Product not found', 404);
-        }
-
-        if (product.availability_status !== 'available') {
-          throw new AppError('Product is not available for donation', 400);
-        }
-
-        // Mark product as unavailable (donated)
-        await Product.update(product_id, {
-          availability_status: 'unavailable'
-        }, { transaction });
+    // Validate product exists and is available
+    if (product_id) {
+      const product = await Product.findById(product_id);
+      if (!product) {
+        throw new AppError('Product not found', 404);
       }
 
-      // Create donation
-      const donationId = await Donation.create({
-        donor_id,
-        ngo_id,
-        product_id: product_id || null,
-        amount: amount || 0,
-        donation_status: 'pending'
-      }, { transaction });
+      if (!product.is_available) {
+        throw new AppError('Product is not available for donation', 400);
+      }
 
-      // Commit transaction
-      await transaction.commit();
+      // Mark product as unavailable (donated)
+      await Product.updateAvailability(product_id, false);
+    }
 
-      // Get donor and NGO info for email
-      const donor = await User.findById(donor_id);
+    // Create donation — wrapper accepts { donor_id, ngo_id, product_id, message, pickup_address }
+    const donationId = await Donation.create({
+      donor_id,
+      ngo_id,
+      product_id: product_id || null,
+      message: message || null
+    });
+
+    // Get donor and NGO info for notification email (async, non-blocking)
+    try {
+      const donor   = await User.findById(donor_id);
       const ngoUser = await User.findById(ngo.user_id);
 
-      // Enqueue donation email to NGO (async, don't wait)
       if (donor && ngoUser) {
         JobService.enqueueDonationEmail({
-          ngoEmail: ngoUser.email,
-          ngoName: ngo.ngo_name,
+          ngoEmail:  ngoUser.email,
+          ngoName:   ngo.ngo_name,
           donorName: donor.full_name,
-          amount: amount || 0
+          amount:    0
         }).catch(err => {
           console.error('Failed to enqueue donation email:', err.message);
         });
       }
-
-      return donationId;
-    } catch (error) {
-      // Rollback transaction on error
-      await transaction.rollback();
-      throw error;
+    } catch (err) {
+      // Non-critical — don't fail the donation if email lookup fails
+      console.error('Failed to fetch donor/ngo for email:', err.message);
     }
+
+    return donationId;
   }
 
   /**
    * Get donation by ID
-   * @param {number} donationId - Donation ID
-   * @returns {Promise<Object>} Donation data
    */
   static async getDonationById(donationId) {
     const donation = await Donation.findById(donationId);
@@ -104,8 +89,6 @@ class DonationService {
 
   /**
    * Get donations by donor
-   * @param {number} donorId - Donor user ID
-   * @returns {Promise<Array>} List of donations
    */
   static async getDonationsByDonor(donorId) {
     return await Donation.findByDonor(donorId);
@@ -113,8 +96,6 @@ class DonationService {
 
   /**
    * Get donations by NGO
-   * @param {number} ngoId - NGO ID
-   * @returns {Promise<Array>} List of donations
    */
   static async getDonationsByNGO(ngoId) {
     return await Donation.findByNGO(ngoId);
@@ -122,9 +103,6 @@ class DonationService {
 
   /**
    * Accept donation (NGO action)
-   * @param {number} donationId - Donation ID
-   * @param {number} ngoUserId - NGO user ID
-   * @returns {Promise<Object>} Updated donation
    */
   static async acceptDonation(donationId, ngoUserId) {
     const donation = await Donation.findById(donationId);
@@ -132,32 +110,30 @@ class DonationService {
       throw new AppError('Donation not found', 404);
     }
 
-    if (donation.donation_status !== 'pending') {
+    // wrapper returns status as 'status' field
+    const currentStatus = donation.status || donation.donation_status;
+    if (currentStatus !== 'pending') {
       throw new AppError('Can only accept pending donations', 400);
     }
 
-    const updatedDonation = await Donation.update(donationId, {
-      donation_status: 'accepted'
-    });
+    await Donation.updateStatus(donationId, 'accepted');
 
     // Notify donor
     try {
       await NotificationService.notifyDonationAccepted(
         donation.donor_id,
         'NGO',
-        donation.amount
+        0
       );
     } catch (error) {
       console.error('Failed to send notification:', error.message);
     }
 
-    return updatedDonation;
+    return await Donation.findById(donationId);
   }
 
   /**
    * Reject donation (NGO action)
-   * @param {number} donationId - Donation ID
-   * @returns {Promise<Object>} Updated donation
    */
   static async rejectDonation(donationId) {
     const donation = await Donation.findById(donationId);
@@ -165,19 +141,17 @@ class DonationService {
       throw new AppError('Donation not found', 404);
     }
 
-    if (donation.donation_status !== 'pending') {
+    const currentStatus = donation.status || donation.donation_status;
+    if (currentStatus !== 'pending') {
       throw new AppError('Can only reject pending donations', 400);
     }
 
-    return await Donation.update(donationId, {
-      donation_status: 'rejected'
-    });
+    await Donation.updateStatus(donationId, 'rejected');
+    return await Donation.findById(donationId);
   }
 
   /**
    * Complete donation
-   * @param {number} donationId - Donation ID
-   * @returns {Promise<Object>} Updated donation
    */
   static async completeDonation(donationId) {
     const donation = await Donation.findById(donationId);
@@ -185,13 +159,13 @@ class DonationService {
       throw new AppError('Donation not found', 404);
     }
 
-    if (donation.donation_status !== 'accepted') {
+    const currentStatus = donation.status || donation.donation_status;
+    if (currentStatus !== 'accepted') {
       throw new AppError('Can only complete accepted donations', 400);
     }
 
-    return await Donation.update(donationId, {
-      donation_status: 'completed'
-    });
+    await Donation.updateStatus(donationId, 'completed');
+    return await Donation.findById(donationId);
   }
 }
 

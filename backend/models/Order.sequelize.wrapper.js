@@ -6,7 +6,7 @@
  * New: models/Order.sequelize.wrapper.js (Sequelize)
  */
 
-const { Order: OrderModel, OrderItem: OrderItemModel, Product: ProductModel, Seller: SellerModel } = require('../database/models');
+const { Order: OrderModel, OrderItem: OrderItemModel, Product: ProductModel, Seller: SellerModel, User: UserModel } = require('../database/models');
 
 class Order {
   /**
@@ -67,15 +67,16 @@ class Order {
    */
   static async findByBuyer(buyerId) {
     console.log('🔷 [Sequelize] Order.findByBuyer() called for buyer_id:', buyerId);
-    
+
     const orders = await OrderModel.findAll({
       where: { buyer_id: buyerId },
       order: [['created_at', 'DESC']],
       raw: true
     });
-    
+
     console.log(`✅ [Sequelize] Found ${orders.length} orders`);
-    return orders;
+    // Alias DB column 'status' as 'order_status' for service layer compatibility
+    return orders.map(o => ({ ...o, order_status: o.status }));
   }
 
   /**
@@ -113,8 +114,10 @@ class Order {
     })) || [];
     
     console.log('✅ [Sequelize] Order found with', items.length, 'items');
+    // Alias DB column 'status' as 'order_status' for service layer compatibility
     return {
       ...orderData,
+      order_status: orderData.status,
       items
     };
   }
@@ -127,13 +130,68 @@ class Order {
    */
   static async updateStatus(orderId, status) {
     console.log('🔷 [Sequelize] Order.updateStatus() called for order_id:', orderId, 'status:', status);
-    
+
     await OrderModel.update(
       { status },
       { where: { id: orderId } }
     );
-    
+
     console.log('✅ [Sequelize] Order status updated successfully');
+  }
+
+  /**
+   * Update order fields (order_status, payment_status, etc.)
+   * @param {number} orderId - Order ID
+   * @param {Object} fields - Fields to update
+   * @returns {Promise<Object>} Updated order
+   */
+  static async update(orderId, fields) {
+    console.log('🔷 [Sequelize] Order.update() called for order_id:', orderId);
+
+    const allowed = {};
+    // Service uses 'order_status' but DB column is 'status'
+    if (fields.order_status !== undefined) allowed.status = fields.order_status;
+    if (fields.payment_status !== undefined) allowed.payment_status = fields.payment_status;
+    if (fields.shipping_address !== undefined) allowed.shipping_address = fields.shipping_address;
+    if (fields.notes !== undefined) allowed.notes = fields.notes;
+
+    await OrderModel.update(allowed, { where: { id: orderId } });
+
+    console.log('✅ [Sequelize] Order updated successfully');
+    return await Order.findById(orderId);
+  }
+
+  /**
+   * Find orders that contain items sold by a given seller
+   * @param {number} sellerId - Seller ID
+   * @returns {Promise<Array>} - Array of orders
+   */
+  static async findBySeller(sellerId) {
+    console.log('🔷 [Sequelize] Order.findBySeller() called for seller_id:', sellerId);
+
+    const items = await OrderItemModel.findAll({
+      where: { seller_id: sellerId },
+      attributes: ['order_id'],
+      raw: true
+    });
+
+    const orderIds = [...new Set(items.map(i => i.order_id))];
+
+    if (orderIds.length === 0) {
+      console.log('ℹ️  [Sequelize] No orders found for seller');
+      return [];
+    }
+
+    const { Op } = require('sequelize');
+    const orders = await OrderModel.findAll({
+      where: { id: { [Op.in]: orderIds } },
+      order: [['created_at', 'DESC']],
+      raw: true
+    });
+
+    console.log(`✅ [Sequelize] Found ${orders.length} orders for seller`);
+    // Alias DB column 'status' as 'order_status' for service layer compatibility
+    return orders.map(o => ({ ...o, order_status: o.status }));
   }
 }
 

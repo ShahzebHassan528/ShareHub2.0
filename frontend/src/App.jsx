@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { AuthProvider } from './contexts/AuthContext'
 import { CartProvider } from './contexts/CartContext'
 import { ToastProvider } from './contexts/ToastContext'
+import { FavoritesProvider } from './contexts/FavoritesContext'
 import MainLayout from './layouts/MainLayout'
 import DashboardLayout from './layouts/DashboardLayout'
 import AdminLayout from './layouts/AdminLayout'
@@ -48,11 +49,15 @@ import HelpPage from './pages/Help'
 import MessagesPage from './pages/MessagesPage'
 import ConversationPage from './pages/ConversationPage'
 import SellerPendingPage from './pages/seller/SellerPendingPage'
+import SellerOrders from './pages/seller/SellerOrders'
+import AdminActivity from './pages/admin/AdminActivity'
 import NgoPendingPage from './pages/ngo/NgoPendingPage'
 import NotFound from './pages/NotFound'
 import Unauthorized from './pages/Unauthorized'
 import ServerError from './pages/ServerError'
 import ComingSoon from './pages/ComingSoon'
+import FavoritesPage from './pages/FavoritesPage'
+import MyOrdersPage from './pages/MyOrdersPage'
 import './App.css'
 
 function App() {
@@ -61,6 +66,7 @@ function App() {
   return (
     <AuthProvider>
       <CartProvider>
+        <FavoritesProvider>
         <ToastProvider>
           <Router>
             <Routes>
@@ -99,6 +105,8 @@ function App() {
             <Route path="/swaps/offers" element={<ProtectedRoute><SwapOffers /></ProtectedRoute>} />
             <Route path="/messages" element={<ProtectedRoute><MessagesPage /></ProtectedRoute>} />
             <Route path="/messages/:userId" element={<ProtectedRoute><ConversationPage /></ProtectedRoute>} />
+            <Route path="/favorites" element={<FavoritesPage />} />
+            <Route path="/my-orders" element={<ProtectedRoute><MyOrdersPage /></ProtectedRoute>} />
           </Route>
 
           {/* Role-Based Dashboard Routes */}
@@ -163,13 +171,21 @@ function App() {
                 </ProtectedRoute>
               } 
             />
-            <Route 
-              path="/seller/products/edit/:id" 
+            <Route
+              path="/seller/products/edit/:id"
               element={
                 <ProtectedRoute requiredRole={ROLES.SELLER}>
                   <EditProduct />
                 </ProtectedRoute>
-              } 
+              }
+            />
+            <Route
+              path="/seller/orders"
+              element={
+                <ProtectedRoute requiredRole={ROLES.SELLER}>
+                  <SellerOrders />
+                </ProtectedRoute>
+              }
             />
           </Route>
 
@@ -215,6 +231,7 @@ function App() {
             <Route path="/admin/sellers" element={<ProtectedRoute requiredRole={ROLES.ADMIN}><AdminSellers /></ProtectedRoute>} />
             <Route path="/admin/ngos" element={<ProtectedRoute requiredRole={ROLES.ADMIN}><AdminNGOs /></ProtectedRoute>} />
             <Route path="/admin/products" element={<ProtectedRoute requiredRole={ROLES.ADMIN}><AdminProducts /></ProtectedRoute>} />
+            <Route path="/admin/activity" element={<ProtectedRoute requiredRole={ROLES.ADMIN}><AdminActivity /></ProtectedRoute>} />
           </Route>
           
           {/* Error Pages */}
@@ -225,6 +242,7 @@ function App() {
             </Routes>
           </Router>
         </ToastProvider>
+        </FavoritesProvider>
       </CartProvider>
     </AuthProvider>
   )

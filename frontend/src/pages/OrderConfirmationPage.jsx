@@ -143,7 +143,7 @@ const OrderConfirmationPage = () => {
           <FaShoppingBag className="me-2" />
           Continue Shopping
         </Link>
-        <Link to="/buyer/dashboard" className="btn btn-outline-secondary">
+        <Link to="/my-orders" className="btn btn-outline-secondary">
           View My Orders
         </Link>
       </div>

@@ -282,13 +282,17 @@
   background: #fef2f2;
 }
 
-.btn-accept {
-  background: #059669;
-  color: white;
+.btn-accept,
+.btn-action.btn-accept {
+  background: #059669 !important;
+  color: #ffffff !important;
+  border: none;
 }
 
-.btn-accept:hover:not(:disabled) {
-  background: #047857;
+.btn-accept:hover:not(:disabled),
+.btn-action.btn-accept:hover:not(:disabled) {
+  background: #047857 !important;
+  color: #ffffff !important;
 }
 
 /* Confirmation Modal */

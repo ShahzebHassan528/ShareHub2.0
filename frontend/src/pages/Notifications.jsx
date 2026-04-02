@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
 import { getNotifications, markAsRead, markAllAsRead } from '../api/notification.api';
 import { useToast } from '../contexts/ToastContext';
+import { useNotifications } from '../hooks/useNotifications';
 import NotificationItem from '../components/notifications/NotificationItem';
 import './Notifications.css';
 
 const Notifications = () => {
   const { showToast } = useToast();
+  const { refresh: refreshBadge } = useNotifications();
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -21,9 +23,9 @@ const Notifications = () => {
       setLoading(true);
       setError(null);
       const data = await getNotifications(filter === 'unread');
-      setNotifications(data.notifications || []);
+      setNotifications(data.data || data.notifications || []);
     } catch (err) {
-      const errorMsg = err.response?.data?.error || 'Failed to load notifications';
+      const errorMsg = err.message || 'Failed to load notifications';
       setError(errorMsg);
       showToast(errorMsg, 'error');
     } finally {
@@ -37,9 +39,10 @@ const Notifications = () => {
         await markAsRead(notification.id);
         
         // Update local state
-        setNotifications(prev => prev.map(n => 
+        setNotifications(prev => prev.map(n =>
           n.id === notification.id ? { ...n, is_read: true } : n
         ));
+        refreshBadge();
       } catch (err) {
         console.error('Failed to mark as read:', err);
       }
@@ -53,7 +56,7 @@ const Notifications = () => {
       
       // Update all notifications to read
       setNotifications(prev => prev.map(n => ({ ...n, is_read: true })));
-      
+      refreshBadge();
       showToast('All notifications marked as read', 'success');
     } catch (err) {
       const errorMsg = err.response?.data?.error || 'Failed to mark all as read';

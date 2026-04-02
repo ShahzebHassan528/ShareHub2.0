@@ -9,7 +9,6 @@ const User = require('../models/User.sequelize.wrapper');
 const NotificationService = require('./notificationService');
 const JobService = require('./job.service');
 const AppError = require('../utils/AppError');
-const { sequelize } = require('../config/sequelize');
 
 class OrderService {
   /**
@@ -26,89 +25,82 @@ class OrderService {
       throw new AppError('Order must contain at least one item', 400);
     }
 
-    // Use transaction for atomic order creation
-    const transaction = await sequelize.transaction();
-    
-    try {
-      // Validate each item and calculate total
-      let totalAmount = 0;
-      const validatedItems = [];
+    // Validate each item and calculate total
+    let totalAmount = 0;
+    const validatedItems = [];
 
-      for (const item of items) {
-        const product = await Product.findById(item.product_id);
-        if (!product) {
-          throw new AppError(`Product ${item.product_id} not found`, 404);
-        }
-
-        if (!product.is_available) {
-          throw new AppError(`Product "${product.title}" is not available`, 400);
-        }
-
-        if (product.product_status === 'blocked') {
-          throw new AppError(`Product "${product.title}" is blocked`, 400);
-        }
-
-        const itemTotal = product.price * item.quantity;
-        totalAmount += itemTotal;
-
-        validatedItems.push({
-          product_id: product.id,
-          seller_id: product.seller_id,
-          quantity: item.quantity,
-          price: product.price,
-          product_title: product.title
-        });
+    for (const item of items) {
+      const product = await Product.findById(item.product_id);
+      if (!product) {
+        throw new AppError(`Product ${item.product_id} not found`, 404);
       }
 
-      // Create order
-      const orderId = await Order.create({
-        buyer_id: buyerId,
-        total_amount: totalAmount,
-        order_status: 'pending',
-        payment_status: 'pending',
-        ...orderData
-      }, { transaction });
-
-      // Add order items
-      for (const item of validatedItems) {
-        await Order.addItem(orderId, item, { transaction });
+      if (!product.is_available) {
+        throw new AppError(`Product "${product.title}" is not available`, 400);
       }
 
-      // Commit transaction
-      await transaction.commit();
-
-      // Get buyer info for email
-      const buyer = await User.findById(buyerId);
-
-      // Enqueue order confirmation email (async, don't wait)
-      if (buyer) {
-        JobService.enqueueOrderEmail({
-          buyerEmail: buyer.email,
-          buyerName: buyer.full_name,
-          orderId,
-          totalAmount
-        }).catch(err => {
-          console.error('Failed to enqueue order email:', err.message);
-        });
+      if (product.product_status === 'blocked') {
+        throw new AppError(`Product "${product.title}" is blocked`, 400);
       }
 
-      // Enqueue notifications for sellers (async, don't wait)
-      for (const item of validatedItems) {
-        JobService.enqueueOrderNotification({
-          sellerId: item.seller_id,
-          productTitle: item.product_title,
-          orderId
-        }).catch(err => {
-          console.error('Failed to enqueue order notification:', err.message);
-        });
-      }
+      const itemTotal = product.price * item.quantity;
+      totalAmount += itemTotal;
 
-      return await this.getOrderById(orderId);
-    } catch (error) {
-      // Rollback transaction on error
-      await transaction.rollback();
-      throw error;
+      validatedItems.push({
+        product_id: product.id,
+        seller_id: product.seller_id,
+        quantity: item.quantity,
+        price: product.price,
+        product_title: product.title
+      });
     }
+
+    // Create order — wrapper returns { orderId, orderNumber }
+    const { orderId } = await Order.create({
+      buyer_id: buyerId,
+      total_amount: totalAmount,
+      shipping_address: orderData.shipping_address || '',
+      notes: orderData.notes || ''
+    });
+
+    // Add order items — wrapper takes a single object with order_id
+    for (const item of validatedItems) {
+      await Order.addItem({
+        order_id: orderId,
+        product_id: item.product_id,
+        seller_id: item.seller_id,
+        quantity: item.quantity,
+        price: item.price
+      });
+    }
+
+    // Get buyer info for email
+    const buyer = await User.findById(buyerId);
+
+    // Enqueue order confirmation email (async, don't wait)
+    if (buyer) {
+      JobService.enqueueOrderEmail({
+        buyerEmail: buyer.email,
+        buyerName: buyer.full_name,
+        orderId,
+        totalAmount
+      }).catch(err => {
+        console.error('Failed to enqueue order email:', err.message);
+      });
+    }
+
+    // Enqueue notifications for sellers (async, don't wait)
+    for (const item of validatedItems) {
+      JobService.enqueueOrderNotification({
+        sellerId: item.seller_id,
+        productTitle: item.product_title,
+        orderId
+      }).catch(err => {
+        console.error('Failed to enqueue order notification:', err.message);
+      });
+    }
+
+    return await this.getOrderById(orderId);
   }
 
   /**
@@ -155,8 +147,8 @@ class OrderService {
       throw new AppError('Order not found', 404);
     }
 
-    // Validate status
-    const validStatuses = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
+    // Validate status — must match DB ENUM ('pending','confirmed','shipped','delivered','cancelled')
+    const validStatuses = ['pending', 'confirmed', 'shipped', 'delivered', 'cancelled'];
     if (!validStatuses.includes(status)) {
       throw new AppError('Invalid order status', 400);
     }

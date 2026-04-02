@@ -6,8 +6,28 @@
 const DonationService = require('../services/donation.service');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/AppError');
+const { NGO: NGOModel, User } = require('../database/models');
 
 class DonationController {
+  /**
+   * Get all verified (approved) NGOs for the donation modal
+   * GET /api/v1/donations/ngos  — public, no auth required
+   */
+  static getVerifiedNGOs = catchAsync(async (req, res, next) => {
+    const ngos = await NGOModel.findAll({
+      where: { verification_status: 'approved' },
+      include: [{ model: User, as: 'user', attributes: ['full_name', 'email'] }],
+      attributes: ['id', 'ngo_name', 'description', 'address', 'website'],
+      order: [['ngo_name', 'ASC']]
+    });
+
+    res.status(200).json({
+      success: true,
+      count: ngos.length,
+      ngos
+    });
+  });
+
   /**
    * Create new donation
    * POST /api/v1/donations

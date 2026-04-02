@@ -25,7 +25,7 @@ const DonationModal = ({ isOpen, onClose, product }) => {
       const data = await getVerifiedNGOs();
       setNgos(data.ngos || []);
     } catch (err) {
-      setError(err.response?.data?.error || 'Failed to load NGOs');
+      setError(err.message || 'Failed to load NGOs');
       showToast('Failed to load NGOs', 'error');
     } finally {
       setLoading(false);
@@ -55,7 +55,7 @@ const DonationModal = ({ isOpen, onClose, product }) => {
       setSelectedNgoId('');
       setMessage('');
     } catch (err) {
-      const errorMsg = err.response?.data?.error || 'Failed to send donation request';
+      const errorMsg = err.message || 'Failed to send donation request';
       showToast(errorMsg, 'error');
     } finally {
       setSubmitting(false);

@@ -11,6 +11,9 @@ const { requireRole } = require('../../middleware/checkAbility');
 
 console.log('🔧 Donation routes initialized with MVC pattern (DonationController)');
 
+// GET /api/v1/donations/ngos - Get all verified NGOs (public, for donation modal)
+router.get('/ngos', DonationController.getVerifiedNGOs);
+
 // POST /api/v1/donations - Create donation
 router.post('/', authenticate, DonationController.createDonation);
 
