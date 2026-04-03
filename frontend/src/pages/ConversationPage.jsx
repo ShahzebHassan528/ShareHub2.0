@@ -7,6 +7,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useParams, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { getConversation, sendMessage } from '../api/message.api';
+import { io } from 'socket.io-client';
 
 const ConversationPage = () => {
   const { userId } = useParams();
@@ -21,10 +22,43 @@ const ConversationPage = () => {
   const [sending, setSending] = useState(false);
   const [error, setError] = useState(null);
   const bottomRef = useRef(null);
+  const socketRef = useRef(null);
 
   useEffect(() => {
     fetchMessages();
   }, [userId]);
+
+  // Socket.io real-time connection
+  useEffect(() => {
+    if (!currentUser?.id) return;
+
+    const socket = io(import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000', {
+      transports: ['websocket'],
+    });
+    socketRef.current = socket;
+
+    socket.on('connect', () => {
+      socket.emit('join', currentUser.id);
+    });
+
+    socket.on('new_message', (msg) => {
+      // Only add if it's from the current conversation partner
+      if (
+        (msg.sender_id === parseInt(userId) && msg.receiver_id === currentUser.id) ||
+        (msg.sender_id === currentUser.id && msg.receiver_id === parseInt(userId))
+      ) {
+        setMessages(prev => {
+          // Avoid duplicates
+          if (prev.some(m => m.id === msg.id)) return prev;
+          return [...prev, msg];
+        });
+      }
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, [currentUser?.id, userId]);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -59,7 +93,12 @@ const ConversationPage = () => {
     try {
       setSending(true);
       const data = await sendMessage(parseInt(userId), text.trim());
-      setMessages(prev => [...prev, data.data || data]);
+      const newMsg = data.data || data;
+      setMessages(prev => [...prev, newMsg]);
+      // Emit to receiver via socket
+      if (socketRef.current) {
+        socketRef.current.emit('send_message', newMsg);
+      }
       setText('');
     } catch (err) {
       setError(err.message || 'Failed to send message');

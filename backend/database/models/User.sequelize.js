@@ -64,7 +64,15 @@ module.exports = (sequelize, DataTypes) => {
     suspension_reason: {
       type: DataTypes.TEXT,
       allowNull: true
-    }
+    },
+    reset_password_token: {
+      type: DataTypes.STRING(255),
+      allowNull: true,
+    },
+    reset_password_expires: {
+      type: DataTypes.DATE,
+      allowNull: true,
+    },
   }, {
     tableName: 'users',
     timestamps: true,

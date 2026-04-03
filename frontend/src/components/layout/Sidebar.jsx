@@ -26,6 +26,7 @@ const Sidebar = ({ isOpen, onToggle }) => {
     const sellerItems = [
       { path: '/seller/products', icon: 'bi-box-seam', label: 'My Products', roles: ['seller'] },
       { path: '/seller/products/add', icon: 'bi-plus-circle', label: 'Add Product', roles: ['seller'] },
+      { path: '/seller/swaps', icon: 'bi-arrow-left-right', label: 'Swap Requests', roles: ['seller'] },
     ];
 
     const ngoItems = [
@@ -38,6 +39,7 @@ const Sidebar = ({ isOpen, onToggle }) => {
       { path: '/admin/sellers', icon: 'bi-shop', label: 'Sellers', roles: ['admin'] },
       { path: '/admin/ngos', icon: 'bi-building', label: 'NGOs', roles: ['admin'] },
       { path: '/admin/products', icon: 'bi-box-seam', label: 'Products', roles: ['admin'] },
+      { path: '/admin/categories', icon: 'bi-tags', label: 'Categories', roles: ['admin'] },
       { path: '/messages', icon: 'bi-chat-dots', label: 'Messages', roles: ['admin'] },
     ];
 

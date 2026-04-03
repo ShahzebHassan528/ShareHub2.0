@@ -58,6 +58,10 @@ import ServerError from './pages/ServerError'
 import ComingSoon from './pages/ComingSoon'
 import FavoritesPage from './pages/FavoritesPage'
 import MyOrdersPage from './pages/MyOrdersPage'
+import ForgotPasswordPage from './pages/ForgotPasswordPage'
+import ResetPasswordPage from './pages/ResetPasswordPage'
+import SellerSwaps from './pages/seller/SellerSwaps'
+import AdminCategories from './pages/admin/AdminCategories'
 import './App.css'
 
 function App() {
@@ -90,6 +94,8 @@ function App() {
           <Route path="/signup" element={<SignUp />} />
           <Route path="/signin" element={<SignIn />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+          <Route path="/reset-password" element={<ResetPasswordPage />} />
 
           {/* Protected Routes with Layout */}
           <Route element={<MainLayout />}>
@@ -187,6 +193,14 @@ function App() {
                 </ProtectedRoute>
               }
             />
+            <Route
+              path="/seller/swaps"
+              element={
+                <ProtectedRoute requiredRole={ROLES.SELLER}>
+                  <SellerSwaps />
+                </ProtectedRoute>
+              }
+            />
           </Route>
 
           {/* NGO Dashboard */}
@@ -232,6 +246,7 @@ function App() {
             <Route path="/admin/ngos" element={<ProtectedRoute requiredRole={ROLES.ADMIN}><AdminNGOs /></ProtectedRoute>} />
             <Route path="/admin/products" element={<ProtectedRoute requiredRole={ROLES.ADMIN}><AdminProducts /></ProtectedRoute>} />
             <Route path="/admin/activity" element={<ProtectedRoute requiredRole={ROLES.ADMIN}><AdminActivity /></ProtectedRoute>} />
+            <Route path="/admin/categories" element={<ProtectedRoute requiredRole={ROLES.ADMIN}><AdminCategories /></ProtectedRoute>} />
           </Route>
           
           {/* Error Pages */}

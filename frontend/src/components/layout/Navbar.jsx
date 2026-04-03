@@ -20,10 +20,19 @@ const Navbar = () => {
   const cartCount = getItemCount();
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showMobileMenu, setShowMobileMenu] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
   const handleLogout = async () => {
     await logout();
     navigate('/login');
+  };
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/products?search=${encodeURIComponent(searchQuery.trim())}`);
+      setSearchQuery('');
+    }
   };
 
   return (
@@ -75,6 +84,22 @@ const Navbar = () => {
             </>
           )}
         </div>
+
+        {/* Search Bar */}
+        {isAuthenticated && user?.role !== 'admin' && (
+          <form onSubmit={handleSearch} className="navbar-search">
+            <input
+              type="text"
+              placeholder="Search products..."
+              value={searchQuery}
+              onChange={e => setSearchQuery(e.target.value)}
+              className="navbar-search-input"
+            />
+            <button type="submit" className="navbar-search-btn">
+              <i className="bi bi-search"></i>
+            </button>
+          </form>
+        )}
 
         {/* Right Section - Login or User Menu */}
         {isAuthenticated ? (

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import adminAPI from '../../api/admin.api';
+import apiClient from '../../api/client';
 import { useToast } from '../../contexts/ToastContext';
 import './AdminPages.css';
 
@@ -10,7 +11,7 @@ const AdminProducts = () => {
   const [search, setSearch] = useState('');
   const [modalData, setModalData] = useState(null);
   const [reason, setReason] = useState('');
-  const [actionLoading, setActionLoading] = useState(false);
+  const [actionLoading, setActionLoading] = useState({});
 
   useEffect(() => { fetchProducts(); }, []);
 
@@ -29,7 +30,7 @@ const AdminProducts = () => {
   const handleBlock = async () => {
     if (!reason.trim()) return toast.showToast('Please enter a reason', 'error');
     try {
-      setActionLoading(true);
+      setActionLoading(prev => ({ ...prev, [modalData.product.id]: true }));
       await adminAPI.blockProduct(modalData.product.id, reason);
       toast.showToast('Product blocked', 'success');
       setModalData(null);
@@ -38,17 +39,33 @@ const AdminProducts = () => {
     } catch (e) {
       toast.showToast(e.message, 'error');
     } finally {
-      setActionLoading(false);
+      setActionLoading(prev => ({ ...prev, [modalData?.product?.id]: false }));
+    }
+  };
+
+  const handleApprove = async (productId) => {
+    try {
+      setActionLoading(prev => ({ ...prev, [productId]: true }));
+      await apiClient.put(`/v1/products/${productId}/approve`);
+      setProducts(prev => prev.map(p => p.id === productId ? { ...p, is_approved: true } : p));
+      toast.showToast('Product approved', 'success');
+    } catch (err) {
+      toast.showToast(err.message || 'Failed to approve', 'error');
+    } finally {
+      setActionLoading(prev => ({ ...prev, [productId]: false }));
     }
   };
 
   const handleUnblock = async (product) => {
     try {
+      setActionLoading(prev => ({ ...prev, [product.id]: true }));
       await adminAPI.unblockProduct(product.id);
       toast.showToast('Product unblocked', 'success');
       fetchProducts();
     } catch (e) {
       toast.showToast(e.message, 'error');
+    } finally {
+      setActionLoading(prev => ({ ...prev, [product.id]: false }));
     }
   };
 
@@ -120,6 +137,11 @@ const AdminProducts = () => {
                   <td><span className={`status-badge ${statusColor(product.product_status)}`}>{product.product_status || 'active'}</span></td>
                   <td>{product.created_at ? new Date(product.created_at).toLocaleDateString() : '—'}</td>
                   <td>
+                    {!product.is_approved && (
+                      <button className="btn btn-sm btn-success me-1" onClick={() => handleApprove(product.id)} disabled={actionLoading[product.id]}>
+                        Approve
+                      </button>
+                    )}
                     {product.product_status === 'blocked'
                       ? <button className="action-btn-sm success" onClick={() => handleUnblock(product)}>Unblock</button>
                       : <button className="action-btn-sm danger" onClick={() => { setModalData({ product }); setReason(''); }}>Block</button>
@@ -146,8 +168,8 @@ const AdminProducts = () => {
             />
             <div className="modal-actions">
               <button className="modal-btn cancel" onClick={() => setModalData(null)}>Cancel</button>
-              <button className="modal-btn danger" onClick={handleBlock} disabled={actionLoading}>
-                {actionLoading ? 'Blocking...' : 'Confirm Block'}
+              <button className="modal-btn danger" onClick={handleBlock} disabled={actionLoading[modalData?.product?.id]}>
+                {actionLoading[modalData?.product?.id] ? 'Blocking...' : 'Confirm Block'}
               </button>
             </div>
           </div>

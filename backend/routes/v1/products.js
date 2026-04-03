@@ -54,6 +54,9 @@ router.put('/:id/status',
   ProductController.toggleProductStatus
 );
 
+// PUT /api/v1/products/:id/approve - Approve product (ADMIN only)
+router.put('/:id/approve', authenticate, ProductController.approveProduct);
+
 // GET /api/v1/products/seller/:sellerId - Get products by seller
 router.get('/seller/:sellerId', ProductController.getProductsBySeller);
 

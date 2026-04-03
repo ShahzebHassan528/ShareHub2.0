@@ -31,6 +31,12 @@ const CheckoutPage = () => {
   });
 
   const [errors, setErrors] = useState({});
+  const [cardData, setCardData] = useState({
+    cardNumber: '',
+    cardName: '',
+    expiry: '',
+    cvv: '',
+  });
 
   const formatPrice = (price) => {
     return new Intl.NumberFormat('en-PK', {
@@ -251,6 +257,71 @@ const CheckoutPage = () => {
                   </label>
                 </div>
               </div>
+
+              {/* Card Details */}
+              {formData.paymentMethod === 'card' && (
+                <div className="form-section">
+                  <h3>Card Details</h3>
+                  <div className="row g-3">
+                    <div className="col-12">
+                      <label className="form-label">Card Number</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder="1234 5678 9012 3456"
+                        value={cardData.cardNumber}
+                        maxLength={19}
+                        onChange={e => {
+                          const v = e.target.value.replace(/\D/g, '').slice(0, 16);
+                          setCardData(prev => ({ ...prev, cardNumber: v.replace(/(.{4})/g, '$1 ').trim() }));
+                        }}
+                      />
+                    </div>
+                    <div className="col-12">
+                      <label className="form-label">Name on Card</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder="John Doe"
+                        value={cardData.cardName}
+                        onChange={e => setCardData(prev => ({ ...prev, cardName: e.target.value }))}
+                      />
+                    </div>
+                    <div className="col-md-6">
+                      <label className="form-label">Expiry Date</label>
+                      <input
+                        type="text"
+                        className="form-control"
+                        placeholder="MM/YY"
+                        maxLength={5}
+                        value={cardData.expiry}
+                        onChange={e => {
+                          let v = e.target.value.replace(/\D/g, '').slice(0, 4);
+                          if (v.length > 2) v = v.slice(0, 2) + '/' + v.slice(2);
+                          setCardData(prev => ({ ...prev, expiry: v }));
+                        }}
+                      />
+                    </div>
+                    <div className="col-md-6">
+                      <label className="form-label">CVV</label>
+                      <input
+                        type="password"
+                        className="form-control"
+                        placeholder="•••"
+                        maxLength={4}
+                        value={cardData.cvv}
+                        onChange={e => setCardData(prev => ({ ...prev, cvv: e.target.value.replace(/\D/g, '').slice(0, 4) }))}
+                      />
+                    </div>
+                    <div className="col-12">
+                      <div className="alert alert-info py-2 mb-0" style={{ fontSize: '0.85rem' }}>
+                        <i className="bi bi-lock-fill me-2"></i>
+                        This is a demo UI. No real card processing occurs.
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               {/* Order Notes */}
               <div className="form-section">

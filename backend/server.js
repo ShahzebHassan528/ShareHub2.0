@@ -160,7 +160,33 @@ initializeDatabase(initOptions).then(connected => {
   console.warn('⚠️  Server will continue, but database operations may fail');
 });
 
-app.listen(PORT, () => {
+const http = require('http');
+const { Server } = require('socket.io');
+const httpServer = http.createServer(app);
+const io = new Server(httpServer, {
+  cors: { origin: process.env.FRONTEND_URL || 'http://localhost:3000', credentials: true }
+});
+
+// Socket.io for real-time messaging
+io.on('connection', (socket) => {
+  console.log('🔌 Socket connected:', socket.id);
+
+  socket.on('join', (userId) => {
+    socket.join(`user_${userId}`);
+    console.log(`👤 User ${userId} joined room`);
+  });
+
+  socket.on('send_message', (data) => {
+    // Emit to receiver's room
+    io.to(`user_${data.receiver_id}`).emit('new_message', data);
+  });
+
+  socket.on('disconnect', () => {
+    console.log('🔌 Socket disconnected:', socket.id);
+  });
+});
+
+const server = httpServer.listen(PORT, () => {
   console.log('');
   console.log('='.repeat(60));
   console.log('✅ SERVER STARTED SUCCESSFULLY');

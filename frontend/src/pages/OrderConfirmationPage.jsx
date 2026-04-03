@@ -89,28 +89,28 @@ const OrderConfirmationPage = () => {
                   : ''}
               </small>
             </div>
-            <Badge bg={statusColors[order?.status] || 'secondary'} className="text-capitalize fs-6">
-              {order?.status || 'pending'}
+            <Badge bg={statusColors[order?.order_status || order?.status] || 'secondary'} className="text-capitalize fs-6">
+              {order?.order_status || order?.status || 'pending'}
             </Badge>
           </div>
 
           {/* Order Items */}
-          {order?.OrderItems?.length > 0 && (
+          {order?.items?.length > 0 && (
             <div className="mb-3">
               <h6 className="text-muted mb-2">
                 <FaBoxOpen className="me-2" />
                 Items
               </h6>
-              {order.OrderItems.map((item) => (
+              {order.items.map((item) => (
                 <div
                   key={item.id}
                   className="d-flex justify-content-between align-items-center py-2 border-bottom"
                 >
                   <div>
-                    <span>{item.Product?.title || `Product #${item.product_id}`}</span>
+                    <span>{item.title || item.product_title || `Product #${item.product_id}`}</span>
                     <small className="text-muted ms-2">x{item.quantity}</small>
                   </div>
-                  <span className="fw-semibold">{formatPrice(item.unit_price * item.quantity)}</span>
+                  <span className="fw-semibold">{formatPrice(item.price * item.quantity)}</span>
                 </div>
               ))}
             </div>

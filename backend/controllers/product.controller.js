@@ -199,6 +199,20 @@ class ProductController {
       data: products
     });
   });
+
+  /**
+   * Approve a product (ADMIN only)
+   * PUT /api/v1/products/:id/approve
+   */
+  static approveProduct = catchAsync(async (req, res, next) => {
+    const Product = require('../models/Product.sequelize.wrapper');
+    const product = await Product.findById(req.params.id);
+    if (!product) return next(new AppError('Product not found', 404));
+
+    await Product.approve(req.params.id, req.user.id);
+
+    res.status(200).json({ success: true, message: 'Product approved successfully' });
+  });
 }
 
 module.exports = ProductController;

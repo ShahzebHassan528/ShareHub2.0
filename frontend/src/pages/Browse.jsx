@@ -5,6 +5,7 @@ import { FaFilter, FaShoppingCart, FaHeart, FaExchangeAlt } from 'react-icons/fa
 import NavigationBar from '../components/Navbar';
 import Footer from '../components/Footer';
 import productAPI from '../api/product.api';
+import apiClient from '../api/client';
 import { useCart } from '../contexts/CartContext';
 
 function Browse() {
@@ -17,11 +18,22 @@ function Browse() {
     sortBy: 'latest'
   });
   const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchProducts();
+    fetchCategories();
   }, []);
+
+  const fetchCategories = async () => {
+    try {
+      const res = await apiClient.get('/v1/categories');
+      setCategories(res.data || res.categories || []);
+    } catch (err) {
+      console.error('Failed to load categories:', err);
+    }
+  };
 
   const fetchProducts = async () => {
     try {
@@ -99,11 +111,9 @@ function Browse() {
                   <Form.Label>Category</Form.Label>
                   <Form.Select name="category" value={filters.category} onChange={handleFilterChange}>
                     <option value="">All Categories</option>
-                    <option value="Electronics">Electronics</option>
-                    <option value="Clothing">Clothing</option>
-                    <option value="Books">Books</option>
-                    <option value="Furniture">Furniture</option>
-                    <option value="Toys">Toys</option>
+                    {categories.map(cat => (
+                      <option key={cat.id || cat.name} value={cat.name}>{cat.name}</option>
+                    ))}
                   </Form.Select>
                 </Form.Group>
 
@@ -185,12 +195,12 @@ function Browse() {
                       <Link to={`/product/${product.id}`} className="text-decoration-none">
                         <div 
                           className="d-flex align-items-center justify-content-center position-relative"
-                          style={{ height: '200px', fontSize: product.primary_image?.startsWith('http') ? '0' : '80px', background: '#f8f9fa' }}
+                          style={{ height: '200px', fontSize: (product.image_url || product.primary_image)?.startsWith('http') ? '0' : '80px', background: '#f8f9fa' }}
                         >
-                          {product.primary_image?.startsWith('http') ? (
-                            <img src={product.primary_image} alt={product.title} style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'contain' }} />
+                          {(product.image_url || product.primary_image)?.startsWith('http') ? (
+                            <img src={product.image_url || product.primary_image} alt={product.title} style={{ maxHeight: '100%', maxWidth: '100%', objectFit: 'contain' }} />
                           ) : (
-                            product.primary_image || '📦'
+                            product.image_url || product.primary_image || '📦'
                           )}
                           <Button 
                             variant="light" 
@@ -207,7 +217,7 @@ function Browse() {
                           <div className="d-flex justify-content-between align-items-start mb-2">
                             <h5 className="mb-0">{product.title}</h5>
                             <Badge bg={getConditionBadge(product.product_condition)}>
-                              {product.product_condition.replace('_', ' ')}
+                              {(product.product_condition || product.condition || 'N/A').replace('_', ' ')}
                             </Badge>
                           </div>
                         </Link>
@@ -218,7 +228,7 @@ function Browse() {
                           <strong>Category:</strong> {product.category_name || 'Uncategorized'}
                         </p>
                         <div className="d-flex justify-content-between align-items-center">
-                          <h4 className="text-primary mb-0">${parseFloat(product.price).toFixed(2)}</h4>
+                          <h4 className="text-primary mb-0">PKR {parseFloat(product.price).toLocaleString()}</h4>
                           <Button
                             variant="primary"
                             size="sm"
