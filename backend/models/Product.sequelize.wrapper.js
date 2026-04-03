@@ -61,7 +61,7 @@ class Product {
           category_name: plain.category?.name || null,
           business_name: plain.seller?.business_name || null,
           seller_name: plain.seller?.user?.full_name || null,
-          primary_image: primaryImage?.image_url || null,
+          image_url: primaryImage?.image_url || null,
           category: undefined,
           seller: undefined
         };
@@ -84,8 +84,8 @@ class Product {
           {
             model: Seller,
             as: 'seller',
-            attributes: ['business_name', 'business_address'],
-            include: [{ model: User, as: 'user', attributes: ['full_name', 'email', 'phone'] }]
+            attributes: ['business_name', 'business_address', 'user_id'],
+            include: [{ model: User, as: 'user', attributes: ['id', 'full_name', 'email', 'phone'] }]
           }
         ],
         raw: false
@@ -109,6 +109,7 @@ class Product {
         seller_name: plain.seller?.user?.full_name || null,
         seller_email: plain.seller?.user?.email || null,
         seller_phone: plain.seller?.user?.phone || null,
+        seller_user_id: plain.seller?.user?.id || plain.seller?.user_id || null,
         images,
         category: undefined,
         seller: undefined
@@ -129,10 +130,20 @@ class Product {
         raw: false
       });
 
-      return products.map(p => {
+      return await Promise.all(products.map(async (p) => {
         const plain = p.get({ plain: true });
-        return { ...plain, category_name: plain.category?.name || null, category: undefined };
-      });
+        const primaryImage = await ProductImage.findOne({
+          where: { product_id: plain.id, is_primary: true },
+          attributes: ['image_url'],
+          raw: true
+        });
+        return {
+          ...plain,
+          category_name: plain.category?.name || null,
+          image_url: primaryImage?.image_url || null,
+          category: undefined
+        };
+      }));
     } catch (error) {
       console.error('❌ Product.findBySeller() failed:', error.message);
       throw error;
@@ -157,6 +168,16 @@ class Product {
         address: productData.address || productData.location || null
       });
 
+      // Save image to product_images table if provided
+      if (productData.image_url) {
+        await ProductImage.create({
+          product_id: product.id,
+          image_url: productData.image_url,
+          is_primary: true,
+          display_order: 0
+        });
+      }
+
       console.log('✅ Product.create() successful, ID:', product.id);
       return product.id;
     } catch (error) {
@@ -168,7 +189,39 @@ class Product {
   static async update(productId, updateData) {
     console.log('🔷 Product.update() called for ID:', productId);
     try {
-      await ProductModel.update(updateData, { where: { id: productId } });
+      const { image_url, location, ...rest } = updateData;
+
+      // Only pass known model columns to Sequelize
+      const productFields = {};
+      if (rest.title !== undefined)             productFields.title = rest.title;
+      if (rest.description !== undefined)       productFields.description = rest.description;
+      if (rest.price !== undefined)             productFields.price = rest.price;
+      if (rest.product_condition !== undefined) productFields.product_condition = rest.product_condition;
+      if (rest.quantity !== undefined)          productFields.quantity = rest.quantity;
+      if (rest.is_available !== undefined)      productFields.is_available = rest.is_available;
+      if (rest.is_approved !== undefined)       productFields.is_approved = rest.is_approved;
+      if (rest.category_id !== undefined)       productFields.category_id = rest.category_id;
+      if (rest.latitude !== undefined)          productFields.latitude = rest.latitude;
+      if (rest.longitude !== undefined)         productFields.longitude = rest.longitude;
+      if (rest.product_status !== undefined)    productFields.product_status = rest.product_status;
+      // Map location → address (same as create)
+      const address = rest.address || location;
+      if (address !== undefined)                productFields.address = address;
+
+      if (Object.keys(productFields).length > 0) {
+        await ProductModel.update(productFields, { where: { id: productId } });
+      }
+
+      // Update primary image in product_images if provided
+      if (image_url) {
+        const existing = await ProductImage.findOne({ where: { product_id: productId, is_primary: true } });
+        if (existing) {
+          await ProductImage.update({ image_url }, { where: { product_id: productId, is_primary: true } });
+        } else {
+          await ProductImage.create({ product_id: productId, image_url, is_primary: true, display_order: 0 });
+        }
+      }
+
       console.log('✅ Product.update() successful');
     } catch (error) {
       console.error('❌ Product.update() failed:', error.message);

@@ -8,12 +8,14 @@ import { Outlet, useNavigate } from 'react-router-dom';
 import Navbar from '../components/layout/Navbar';
 import Sidebar from '../components/layout/Sidebar';
 import { useNotifications } from '../hooks/useNotifications';
+import { useMessageCount } from '../hooks/useMessageCount';
 import './AdminLayout.css';
 
 const AdminLayout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const navigate = useNavigate();
   const { unreadCount } = useNotifications();
+  const { unreadCount: unreadMessages } = useMessageCount();
 
   return (
     <div className="admin-layout">
@@ -29,6 +31,12 @@ const AdminLayout = () => {
                 Admin Panel
               </h1>
               <div className="admin-actions">
+                <button className="admin-btn" onClick={() => navigate('/messages')} style={{ position: 'relative' }}>
+                  <i className="bi bi-chat-dots"></i>
+                  {unreadMessages > 0 && (
+                    <span className="admin-badge">{unreadMessages}</span>
+                  )}
+                </button>
                 <button className="admin-btn" onClick={() => navigate('/notifications')} style={{ position: 'relative' }}>
                   <i className="bi bi-bell"></i>
                   {unreadCount > 0 && (

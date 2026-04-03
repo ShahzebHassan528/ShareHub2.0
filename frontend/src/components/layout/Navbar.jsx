@@ -8,11 +8,13 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { useCart } from '../../contexts/CartContext';
 import { useNotifications } from '../../hooks/useNotifications';
+import { useMessageCount } from '../../hooks/useMessageCount';
 import './Navbar.css';
 
 const Navbar = () => {
   const { user, isAuthenticated, logout } = useAuth();
   const { unreadCount } = useNotifications();
+  const { unreadCount: unreadMessages } = useMessageCount();
   const { getItemCount } = useCart();
   const navigate = useNavigate();
   const cartCount = getItemCount();
@@ -91,6 +93,13 @@ const Navbar = () => {
               </Link>
             )}
 
+            <Link to="/messages" className="nav-link" style={{ position: 'relative' }}>
+              <i className="bi bi-chat-dots"></i>
+              {unreadMessages > 0 && (
+                <span className="notification-badge">{unreadMessages}</span>
+              )}
+            </Link>
+
             <Link to="/notifications" className="nav-link" style={{ position: 'relative' }}>
               <i className="bi bi-bell"></i>
               {unreadCount > 0 && (
@@ -132,11 +141,19 @@ const Navbar = () => {
                     Profile
                   </Link>
                   
+                  <Link to="/messages" className="dropdown-item">
+                    <i className="bi bi-chat-dots"></i>
+                    Messages
+                    {unreadMessages > 0 && (
+                      <span className="notification-badge" style={{ position: 'static', marginLeft: 'auto' }}>{unreadMessages}</span>
+                    )}
+                  </Link>
+
                   <Link to="/notifications" className="dropdown-item">
                     <i className="bi bi-bell"></i>
                     Notifications
                   </Link>
-                  
+
                   <div className="dropdown-divider"></div>
                   
                   <button onClick={handleLogout} className="dropdown-item logout">

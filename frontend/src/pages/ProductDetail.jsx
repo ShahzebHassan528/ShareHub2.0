@@ -125,8 +125,11 @@ const ProductDetail = () => {
       navigate('/login', { state: { from: `/products/${id}` } });
       return;
     }
-    // TODO: Implement messaging
-    alert('Messaging feature coming soon!');
+    if (product?.seller_user_id) {
+      navigate(`/messages/${product.seller_user_id}`, {
+        state: { userName: product.seller_name || product.business_name }
+      });
+    }
   };
 
   const handleAddToCart = () => {
@@ -190,7 +193,10 @@ const ProductDetail = () => {
     );
   }
 
-  const images = product.images || (product.image_url ? [product.image_url] : []);
+  // product.images is an array of { image_url, is_primary } objects from product_images table
+  const images = product.images?.length
+    ? product.images.map(img => (typeof img === 'string' ? img : img.image_url)).filter(Boolean)
+    : product.image_url ? [product.image_url] : [];
 
   return (
     <div className="product-detail-page">

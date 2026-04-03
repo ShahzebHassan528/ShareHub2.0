@@ -16,8 +16,8 @@ class DonationController {
   static getVerifiedNGOs = catchAsync(async (req, res, next) => {
     const ngos = await NGOModel.findAll({
       where: { verification_status: 'approved' },
-      include: [{ model: User, as: 'user', attributes: ['full_name', 'email'] }],
-      attributes: ['id', 'ngo_name', 'description', 'address', 'website'],
+      include: [{ model: User, as: 'user', attributes: ['id', 'full_name', 'email'] }],
+      attributes: ['id', 'user_id', 'ngo_name', 'description', 'address', 'website'],
       order: [['ngo_name', 'ASC']]
     });
 

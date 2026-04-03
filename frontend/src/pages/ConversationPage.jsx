@@ -4,13 +4,15 @@
  */
 
 import { useState, useEffect, useRef } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { getConversation, sendMessage } from '../api/message.api';
 
 const ConversationPage = () => {
   const { userId } = useParams();
   const { user: currentUser } = useAuth();
+  const location = useLocation();
+  const passedName = location.state?.userName;
 
   const [messages, setMessages] = useState([]);
   const [otherUser, setOtherUser] = useState(null);
@@ -42,7 +44,7 @@ const ConversationPage = () => {
           : other.receiver?.full_name;
         setOtherUser({ id: parseInt(userId), full_name: name || `User #${userId}` });
       } else {
-        setOtherUser({ id: parseInt(userId), full_name: `User #${userId}` });
+        setOtherUser({ id: parseInt(userId), full_name: passedName || `User #${userId}` });
       }
     } catch (err) {
       setError(err.message || 'Failed to load conversation');

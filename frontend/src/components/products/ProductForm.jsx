@@ -48,7 +48,7 @@ const ProductForm = ({ initialData = {}, onSubmit, submitLabel = 'Submit', loadi
   const uploadImage = async () => {
     if (!imageFile) return null;
     const data = new FormData();
-    data.append('images', imageFile);
+    data.append('product_images', imageFile);
     setUploading(true);
     try {
       const response = await apiClient.post('/v1/upload/product-images', data, {
@@ -95,8 +95,14 @@ const ProductForm = ({ initialData = {}, onSubmit, submitLabel = 'Submit', loadi
 
     let finalImageUrl = formData.image_url;
     if (imageFile) {
-      const uploaded = await uploadImage();
-      if (uploaded) finalImageUrl = uploaded;
+      try {
+        const uploaded = await uploadImage();
+        if (uploaded) finalImageUrl = uploaded;
+      } catch (err) {
+        console.error('Image upload failed:', err);
+        // Proceed without image rather than blocking product creation
+        finalImageUrl = null;
+      }
     }
 
     onSubmit({

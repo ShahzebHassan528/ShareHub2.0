@@ -38,6 +38,7 @@ const Sidebar = ({ isOpen, onToggle }) => {
       { path: '/admin/sellers', icon: 'bi-shop', label: 'Sellers', roles: ['admin'] },
       { path: '/admin/ngos', icon: 'bi-building', label: 'NGOs', roles: ['admin'] },
       { path: '/admin/products', icon: 'bi-box-seam', label: 'Products', roles: ['admin'] },
+      { path: '/messages', icon: 'bi-chat-dots', label: 'Messages', roles: ['admin'] },
     ];
 
     const allItems = [...commonItems, ...buyerItems, ...sellerItems, ...ngoItems, ...adminItems];

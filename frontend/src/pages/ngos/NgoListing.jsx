@@ -61,8 +61,16 @@ const NgoListing = () => {
       navigate('/login', { state: { from: '/ngos' } });
       return;
     }
-    // Navigate to products page to select item for donation
     navigate('/products', { state: { donateToNgo: ngo } });
+  };
+
+  const handleContact = (ngo) => {
+    if (!isAuthenticated) {
+      navigate('/login', { state: { from: '/ngos' } });
+      return;
+    }
+    const userId = ngo.user_id || ngo.user?.id;
+    if (userId) navigate(`/messages/${userId}`, { state: { userName: ngo.ngo_name } });
   };
 
   return (
@@ -204,20 +212,21 @@ const NgoListing = () => {
                   </div>
 
                   <div className="ngo-actions">
-                    <button 
+                    <button
                       className="btn-donate"
                       onClick={() => handleDonate(ngo)}
                     >
                       <i className="bi bi-heart-fill me-2"></i>
                       Donate Items
                     </button>
-                    <Link 
-                      to={`/ngos/${ngo.id}`}
+                    <button
                       className="btn-view-profile"
+                      onClick={() => handleContact(ngo)}
+                      style={{ cursor: 'pointer' }}
                     >
-                      <i className="bi bi-eye me-2"></i>
-                      View Profile
-                    </Link>
+                      <i className="bi bi-chat-dots me-2"></i>
+                      Contact
+                    </button>
                   </div>
                 </div>
               ))}
