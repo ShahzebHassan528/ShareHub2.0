@@ -70,9 +70,11 @@ function App() {
         <ToastProvider>
           <Router>
             <Routes>
+          {/* Landing Page — own navbar/footer, no MainLayout */}
+          <Route path="/" element={<Home />} />
+
           {/* Public Routes with Layout */}
           <Route element={<MainLayout />}>
-            <Route path="/" element={<Home />} />
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/browse" element={<Browse />} />
