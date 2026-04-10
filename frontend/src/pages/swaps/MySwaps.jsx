@@ -42,10 +42,9 @@ const MySwaps = () => {
     try {
       setActionLoading(prev => ({ ...prev, [swap.id]: true }));
       await cancelSwap(swap.id);
-      setSwaps(prev => prev.map(s =>
-        s.id === swap.id ? { ...s, status: 'cancelled' } : s
-      ));
-      showToast('Swap request cancelled', 'info');
+      // Remove the cancelled swap from the list instead of updating status
+      setSwaps(prev => prev.filter(s => s.id !== swap.id));
+      showToast('Swap request cancelled and removed', 'success');
       setConfirmModal({ isOpen: false, swap: null });
     } catch (err) {
       showToast(err.message || 'Failed to cancel swap', 'error');

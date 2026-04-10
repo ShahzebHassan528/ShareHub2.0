@@ -79,14 +79,18 @@
   position: relative;
   display: flex;
   align-items: center;
+  width: 100%;
 }
 
 .input-icon {
   position: absolute;
   left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
   color: #7f9799;
-  font-size: 18px;
-  z-index: 2;
+  font-size: 16px;
+  pointer-events: none;
+  z-index: 1;
 }
 
 .form-control {
@@ -96,6 +100,15 @@
   border-radius: 12px;
   font-size: 15px;
   transition: all 0.3s ease;
+  position: relative;
+  z-index: 2;
+  background: transparent;
+}
+
+.form-control::placeholder {
+  color: #a0a0a0;
+  z-index: 3;
+  position: relative;
 }
 
 .form-control:focus {
@@ -111,13 +124,18 @@
 .password-toggle {
   position: absolute;
   right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
   background: none;
   border: none;
   color: #7f9799;
   cursor: pointer;
-  font-size: 18px;
-  padding: 0;
-  z-index: 2;
+  font-size: 16px;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3;
 }
 
 .password-toggle:hover {

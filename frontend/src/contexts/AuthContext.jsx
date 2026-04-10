@@ -27,20 +27,29 @@ export const AuthProvider = ({ children }) => {
       const savedUser = getUser();
 
       if (token && savedUser) {
-        // Verify token is still valid
+        console.log('🔐 Token found in localStorage');
+        console.log('👤 User found:', savedUser);
+        
+        // Trust the saved data without backend verification
+        // This prevents token from being cleared if backend is slow/unavailable
+        setUser(savedUser);
+        setIsAuthenticated(true);
+        console.log('✅ Auth initialized from localStorage');
+        
+        // Optional: Verify token in background (don't clear on failure)
         try {
           const userData = await authAPI.getCurrentUser();
+          console.log('✅ Token verified with backend');
           setUser(userData.user || userData);
-          setIsAuthenticated(true);
         } catch (error) {
-          // Token invalid, clear auth data
-          clearAuthData();
-          setUser(null);
-          setIsAuthenticated(false);
+          console.warn('⚠️ Token verification failed, but keeping user logged in:', error.message);
+          // Don't clear auth data - keep user logged in
         }
+      } else {
+        console.log('ℹ️ No token or user in localStorage');
       }
     } catch (error) {
-      console.error('Auth initialization error:', error);
+      console.error('❌ Auth initialization error:', error);
     } finally {
       setLoading(false);
     }

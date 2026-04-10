@@ -42,21 +42,27 @@ const SwapModal = ({ isOpen, onClose, requestedProduct }) => {
     
     try {
       setSubmitting(true);
-      await createSwapRequest({
-        requested_item_id: requestedProduct.id,
-        offered_item_id: parseInt(selectedProductId),
-        message: message.trim() || undefined
-      });
       
-      showToast('Swap request sent successfully!', 'success');
+      // Backend expects these field names
+      const swapRequestData = {
+        requester_product_id: parseInt(selectedProductId), // Your product
+        owner_product_id: requestedProduct.id, // Their product
+        owner_id: requestedProduct.seller_id, // Owner of the product you want
+        message: message.trim() || undefined
+      };
+      
+      await createSwapRequest(swapRequestData);
+      
+      showToast('✓ Swap request sent successfully!', 'success');
       onClose();
       
       // Reset form
       setSelectedProductId('');
       setMessage('');
     } catch (err) {
-      const errorMsg = err.response?.data?.error || 'Failed to send swap request';
+      const errorMsg = err.response?.data?.message || err.response?.data?.error || 'Failed to send swap request';
       showToast(errorMsg, 'error');
+      console.error('Swap request error:', err);
     } finally {
       setSubmitting(false);
     }

@@ -128,19 +128,38 @@ router.get('/:id', cacheMiddleware(), async (req, res) => {
 
 module.exports = router;
 
-// Create product - SELLER ONLY
+// Create product - ALL AUTHENTICATED USERS
 router.post('/',
   authenticate,
   checkAbility('create', 'Product'),
   async (req, res, next) => {
     try {
+      // Check if user has seller profile, if not create one
+      let sellerId = req.user.seller_id;
+      
+      if (!sellerId) {
+        console.log(`📝 User ${req.user.id} doesn't have seller profile, creating one...`);
+        
+        // Create seller profile for this user
+        const { Seller } = require('../database/models');
+        const seller = await Seller.create({
+          user_id: req.user.id,
+          business_name: req.user.full_name || 'Individual Seller',
+          business_address: req.body.location || 'Not specified',
+          approval_status: 'approved' // Auto-approve for buyers
+        });
+        
+        sellerId = seller.id;
+        console.log(`✅ Seller profile created with ID: ${sellerId}`);
+      }
+      
       const productData = {
         ...req.body,
-        seller_id: req.user.seller_id
+        seller_id: sellerId
       };
 
       if (!productData.seller_id) {
-        throw new AppError('Seller profile required to create products', 400);
+        throw new AppError('User authentication required to create products', 400);
       }
 
       const productId = await Product.create(productData);

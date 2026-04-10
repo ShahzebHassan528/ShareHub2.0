@@ -221,7 +221,7 @@ const Login = () => {
           <div className="login-footer">
             <p>
               Don't have an account?{' '}
-              <Link to="/register" className="signup-link">
+              <Link to="/signup" className="signup-link">
                 Sign Up
               </Link>
             </p>

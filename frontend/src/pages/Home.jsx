@@ -25,8 +25,7 @@ const Home = () => {
     try {
       setLoading(true);
       const response = await productAPI.getAllProducts({ limit: 8 });
-      // Backend returns: { success: true, count: X, data: [...] }
-      setProducts(response.data || []);
+      setProducts(response.products || []);
     } catch (error) {
       console.error('Error fetching products:', error);
     } finally {
@@ -169,7 +168,7 @@ const Home = () => {
                 const icons = ['💻', '👕', '📚', '🪑', '📱', '⌚', '🎮', '📷', '🎧', '⚽'];
                 
                 return (
-                  <Link key={product.id} to={`/products/${product.id}`} className="buy-card" style={{ textDecoration: 'none', color: 'inherit' }}>
+                  <div key={product.id} className="buy-card">
                     <div className="buy-image" style={{ background: gradients[index % gradients.length] }}>
                       {product.primary_image ? (
                         <img src={product.primary_image} alt={product.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -182,10 +181,10 @@ const Home = () => {
                       <p className="buy-price">{formatPrice(product.price)}</p>
                       <div className="buy-footer">
                         <span className="buy-location">📍 {product.seller_name || 'Seller'}</span>
-                        <span className="buy-btn">Buy Now</span>
+                        <Link to={`/products/${product.id}`} className="buy-btn">Buy Now</Link>
                       </div>
                     </div>
-                  </Link>
+                  </div>
                 );
               })}
             </div>
@@ -197,7 +196,7 @@ const Home = () => {
                 { icon: '📚', title: 'Book Collection', price: 'PKR 2,500', location: 'Islamabad', gradient: 'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)' },
                 { icon: '🪑', title: 'Office Chair', price: 'PKR 15,000', location: 'Multan', gradient: 'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)' }
               ].map((item, index) => (
-                <Link key={index} to="/products" className="buy-card" style={{ textDecoration: 'none', color: 'inherit' }}>
+                <div key={index} className="buy-card">
                   <div className="buy-image" style={{ background: item.gradient }}>
                     <div className="buy-icon">{item.icon}</div>
                   </div>
@@ -206,10 +205,10 @@ const Home = () => {
                     <p className="buy-price">{item.price}</p>
                     <div className="buy-footer">
                       <span className="buy-location">📍 {item.location}</span>
-                      <span className="buy-btn">Buy Now</span>
+                      <Link to="/products" className="buy-btn">Buy Now</Link>
                     </div>
                   </div>
-                </Link>
+                </div>
               ))}
             </div>
           )}

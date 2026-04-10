@@ -1,0 +1,18 @@
+Step 1: Login as admin
+Login SUCCESS
+
+Step 2: Block product 17
+
+ERROR OCCURRED:
+Status: 400
+Data: {
+  "success": false,
+  "status": "fail",
+  "message": "Product is already blocked",
+  "error": {
+    "statusCode": 400,
+    "status": "fail",
+    "isOperational": true
+  },
+  "stack": "Error: Product is already blocked\n    at C:\\FYP\\ShareHub2.0\\backend\\controllers\\admin.controller.js:274:19\n    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)"
+}

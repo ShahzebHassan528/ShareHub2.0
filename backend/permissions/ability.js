@@ -46,12 +46,23 @@ function defineAbilitiesFor(user) {
       can('read', 'Review'); // Can read reviews
       can('reply', 'Review', { product: { seller_id: user.seller_id } }); // Can reply to reviews on own products
       
+      can('create', 'Swap');
+      can('read', 'Swap', { requester_id: user.id }); // Can read own swap requests
+      can('read', 'Swap', { owner_id: user.id }); // Can read swaps for own products
+      can('update', 'Swap', { owner_id: user.id }); // Can accept/reject swaps
+      can('cancel', 'Swap', { requester_id: user.id }); // Can cancel own swap requests
+      
       can('read', 'Notification', { user_id: user.id });
       can('update', 'Notification', { user_id: user.id });
       break;
 
     case 'buyer':
       // Buyer abilities
+      // Buyers can also sell their own items
+      can('create', 'Product');
+      can('update', 'Product', { seller_id: user.id }); // Match with user.id
+      can('delete', 'Product', { seller_id: user.id }); // Match with user.id
+      
       can('create', 'Order');
       can('read', 'Order', { buyer_id: user.id }); // Can read own orders
       can('update', 'Order', { buyer_id: user.id }); // Can cancel own orders

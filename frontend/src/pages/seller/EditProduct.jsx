@@ -42,7 +42,7 @@ const EditProduct = () => {
       setSubmitting(true);
       await productAPI.updateProduct(id, formData);
       showToast('Product updated successfully!', 'success');
-      navigate('/seller/products');
+      navigate('/products/my');
     } catch (err) {
       showToast(err.message || 'Failed to update product', 'error');
     } finally {
@@ -72,7 +72,7 @@ const EditProduct = () => {
             <h2>Failed to Load Product</h2>
             <p>{error || 'Product not found'}</p>
             <button
-              onClick={() => navigate('/seller/products')}
+              onClick={() => navigate('/products/my')}
               className="btn-back-to-list"
             >
               Back to Products
@@ -89,7 +89,7 @@ const EditProduct = () => {
         <div className="page-header">
           <div>
             <button
-              onClick={() => navigate('/seller/products')}
+              onClick={() => navigate('/products/my')}
               className="btn-back"
             >
               ← Back

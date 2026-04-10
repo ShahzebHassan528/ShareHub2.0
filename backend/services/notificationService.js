@@ -163,6 +163,21 @@ class NotificationService {
   }
 
   /**
+   * Notify user when they receive a swap request
+   * @param {number} ownerId - Product owner user ID
+   * @param {string} ownerProductTitle - Owner's product title
+   * @param {string} requesterProductTitle - Requester's product title
+   */
+  static async notifySwapRequest(ownerId, ownerProductTitle, requesterProductTitle) {
+    return await this.createNotification(
+      ownerId,
+      'New Swap Request',
+      `Someone wants to swap "${requesterProductTitle}" for your "${ownerProductTitle}"`,
+      'swap'
+    );
+  }
+
+  /**
    * Notify user when their swap request is accepted
    * @param {number} userId - User ID who initiated swap
    * @param {string} itemTitle - Swap item title

@@ -88,6 +88,7 @@ function App() {
 
           {/* Auth Routes (No Layout) */}
           <Route path="/signup" element={<SignUp />} />
+          <Route path="/register" element={<SignUp />} />
           <Route path="/signin" element={<SignIn />} />
           <Route path="/login" element={<Login />} />
 
@@ -107,6 +108,11 @@ function App() {
             <Route path="/messages/:userId" element={<ProtectedRoute><ConversationPage /></ProtectedRoute>} />
             <Route path="/favorites" element={<FavoritesPage />} />
             <Route path="/my-orders" element={<ProtectedRoute><MyOrdersPage /></ProtectedRoute>} />
+            
+            {/* Generic product routes for all users */}
+            <Route path="/products/add" element={<ProtectedRoute><AddProduct /></ProtectedRoute>} />
+            <Route path="/products/my" element={<ProtectedRoute><SellerProducts /></ProtectedRoute>} />
+            <Route path="/products/edit/:id" element={<ProtectedRoute><EditProduct /></ProtectedRoute>} />
           </Route>
 
           {/* Role-Based Dashboard Routes */}
@@ -158,7 +164,7 @@ function App() {
             <Route 
               path="/seller/products" 
               element={
-                <ProtectedRoute requiredRole={ROLES.SELLER}>
+                <ProtectedRoute>
                   <SellerProducts />
                 </ProtectedRoute>
               } 
@@ -166,7 +172,7 @@ function App() {
             <Route 
               path="/seller/products/add" 
               element={
-                <ProtectedRoute requiredRole={ROLES.SELLER}>
+                <ProtectedRoute>
                   <AddProduct />
                 </ProtectedRoute>
               } 
@@ -174,7 +180,7 @@ function App() {
             <Route
               path="/seller/products/edit/:id"
               element={
-                <ProtectedRoute requiredRole={ROLES.SELLER}>
+                <ProtectedRoute>
                   <EditProduct />
                 </ProtectedRoute>
               }

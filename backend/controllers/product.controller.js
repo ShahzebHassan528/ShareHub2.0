@@ -85,10 +85,22 @@ class ProductController {
    */
   static createProduct = catchAsync(async (req, res, next) => {
     const { Seller } = require('../database/models');
-    const seller = await Seller.findOne({ where: { user_id: req.user.id } });
+    
+    // Check if user has seller profile
+    let seller = await Seller.findOne({ where: { user_id: req.user.id } });
 
+    // If no seller profile, create one automatically
     if (!seller) {
-      return next(new AppError('Seller profile required to create products', 400));
+      console.log(`📝 User ${req.user.id} doesn't have seller profile, creating one...`);
+      
+      seller = await Seller.create({
+        user_id: req.user.id,
+        business_name: req.user.full_name || 'Individual Seller',
+        business_address: req.body.location || 'Not specified',
+        approval_status: 'approved' // Auto-approve for all users
+      });
+      
+      console.log(`✅ Seller profile created with ID: ${seller.id}`);
     }
 
     const productData = {
@@ -146,16 +158,27 @@ class ProductController {
    */
   static getMyProducts = catchAsync(async (req, res, next) => {
     const userId = req.user.id;
+    console.log('🔍 getMyProducts called for user_id:', userId);
+    
     const { Seller } = require('../database/models');
 
     // Look up seller record by user_id
     const seller = await Seller.findOne({ where: { user_id: userId } });
+    console.log('🔍 Found seller:', seller ? `ID ${seller.id}` : 'NOT FOUND');
+    
     if (!seller) {
-      return next(new AppError('Seller profile not found', 400));
+      // User has no seller profile yet - return empty array
+      console.log('ℹ️  User has no seller profile, returning empty products array');
+      return res.status(200).json({
+        success: true,
+        count: 0,
+        products: []
+      });
     }
 
     const Product = require('../models/Product.sequelize.wrapper');
     const products = await Product.findBySeller(seller.id);
+    console.log(`✅ Found ${products.length} products for seller ${seller.id}`);
 
     res.status(200).json({
       success: true,

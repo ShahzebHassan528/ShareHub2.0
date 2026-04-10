@@ -5,6 +5,7 @@ import { useToast } from '../../contexts/ToastContext';
 import './SellerProducts.css';
 
 const SellerProducts = () => {
+  console.log('🎯 SellerProducts component mounted!');
   const navigate = useNavigate();
   const { showToast } = useToast();
   const [products, setProducts] = useState([]);
@@ -14,22 +15,34 @@ const SellerProducts = () => {
   const [deleteModal, setDeleteModal] = useState({ isOpen: false, product: null });
 
   useEffect(() => {
+    console.log('🎯 SellerProducts useEffect triggered');
     fetchProducts();
   }, []);
 
   const fetchProducts = async () => {
     try {
+      console.log('🔍 SellerProducts: fetchProducts called');
       setLoading(true);
       setError(null);
+      
+      console.log('📤 Calling productAPI.getMyProducts()...');
       const data = await productAPI.getMyProducts();
+      console.log('✅ Response received:', data);
+      console.log('   Count:', data.count);
+      console.log('   Products:', data.products);
+      
       setProducts(data.products || []);
+      console.log('✅ State updated with', data.products?.length || 0, 'products');
     } catch (err) {
       // client.js converts errors to plain Error objects — use err.message
       const errorMsg = err.message || 'Failed to load products';
+      console.error('❌ Error in fetchProducts:', errorMsg);
+      console.error('❌ Full error:', err);
       setError(errorMsg);
       showToast(errorMsg, 'error');
     } finally {
       setLoading(false);
+      console.log('✅ fetchProducts completed');
     }
   };
 
@@ -113,7 +126,7 @@ const SellerProducts = () => {
         <div className="container">
           <div className="page-header">
             <h1>My Products</h1>
-            <button onClick={() => navigate('/seller/products/add')} className="btn-add-product">
+            <button onClick={() => navigate('/products/add')} className="btn-add-product">
               + Add Product
             </button>
           </div>
@@ -121,7 +134,7 @@ const SellerProducts = () => {
             <div className="empty-icon">📦</div>
             <h2>No Products Listed</h2>
             <p>You haven't listed any products yet.</p>
-            <button onClick={() => navigate('/seller/products/add')} className="btn-empty-action">
+            <button onClick={() => navigate('/products/add')} className="btn-empty-action">
               List Your First Product
             </button>
           </div>
@@ -138,7 +151,7 @@ const SellerProducts = () => {
             <h1>My Products</h1>
             <p className="page-subtitle">{products.length} products listed</p>
           </div>
-          <button onClick={() => navigate('/seller/products/add')} className="btn-add-product">
+          <button onClick={() => navigate('/products/add')} className="btn-add-product">
             + Add Product
           </button>
         </div>
@@ -194,7 +207,7 @@ const SellerProducts = () => {
                   <td className="actions-cell">
                     <div className="action-buttons">
                       <button
-                        onClick={() => navigate(`/seller/products/edit/${product.id}`)}
+                        onClick={() => navigate(`/products/edit/${product.id}`)}
                         className="btn-action btn-edit"
                         title="Edit"
                       >

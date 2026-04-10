@@ -20,12 +20,16 @@ const Sidebar = ({ isOpen, onToggle }) => {
 
     const buyerItems = [
       { path: '/my-orders', icon: 'bi-bag-check', label: 'My Orders', roles: ['buyer'] },
+      { path: '/swaps/my', icon: 'bi-arrow-left-right', label: 'My Swaps', roles: ['buyer'] },
+      { path: '/swaps/offers', icon: 'bi-inbox', label: 'Swap Offers', roles: ['buyer'] },
       { path: '/favorites', icon: 'bi-heart', label: 'Favorites', roles: ['buyer'] },
     ];
 
     const sellerItems = [
       { path: '/seller/products', icon: 'bi-box-seam', label: 'My Products', roles: ['seller'] },
       { path: '/seller/products/add', icon: 'bi-plus-circle', label: 'Add Product', roles: ['seller'] },
+      { path: '/swaps/my', icon: 'bi-arrow-left-right', label: 'My Swaps', roles: ['seller'] },
+      { path: '/swaps/offers', icon: 'bi-inbox', label: 'Swap Offers', roles: ['seller'] },
     ];
 
     const ngoItems = [

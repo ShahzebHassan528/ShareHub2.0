@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test My Products API</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 10px 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .output {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            white-space: pre-wrap;
+            font-family: monospace;
+        }
+        .success { color: green; }
+        .error { color: red; }
+    </style>
+</head>
+<body>
+    <h1>Test My Products API</h1>
+    
+    <div>
+        <h3>Step 1: Login</h3>
+        <button onclick="loginAsBuyer()">Login as Buyer (John Doe)</button>
+        <button onclick="loginAsSeller()">Login as Seller (Tech Store)</button>
+    </div>
+
+    <div>
+        <h3>Step 2: Get My Products</h3>
+        <button onclick="getMyProducts()">Get My Products</button>
+    </div>
+
+    <div>
+        <h3>Step 3: Get All Products</h3>
+        <button onclick="getAllProducts()">Get All Products</button>
+    </div>
+
+    <div class="output" id="output">Output will appear here...</div>
+
+    <script>
+        let token = null;
+
+        function log(message, type = 'info') {
+            const output = document.getElementById('output');
+            const timestamp = new Date().toLocaleTimeString();
+            const color = type === 'error' ? 'red' : type === 'success' ? 'green' : 'black';
+            output.innerHTML += `<span style="color: ${color}">[${timestamp}] ${message}</span>\n`;
+            console.log(message);
+        }
+
+        async function loginAsBuyer() {
+            try {
+                log('🔐 Logging in as John Doe (buyer)...');
+                const response = await fetch('http://localhost:5000/api/v1/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: 'buyer1@example.com',
+                        password: 'password123'
+                    })
+                });
+
+                const data = await response.json();
+                if (data.token) {
+                    token = data.token;
+                    log(`✅ Login successful! User: ${data.user.full_name} (ID: ${data.user.id})`, 'success');
+                    log(`Token: ${token.substring(0, 50)}...`);
+                } else {
+                    log(`❌ Login failed: ${data.message}`, 'error');
+                }
+            } catch (error) {
+                log(`❌ Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function loginAsSeller() {
+            try {
+                log('🔐 Logging in as Tech Store Owner (seller)...');
+                const response = await fetch('http://localhost:5000/api/v1/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: 'seller1@example.com',
+                        password: 'seller123'
+                    })
+                });
+
+                const data = await response.json();
+                if (data.token) {
+                    token = data.token;
+                    log(`✅ Login successful! User: ${data.user.full_name} (ID: ${data.user.id})`, 'success');
+                    log(`Token: ${token.substring(0, 50)}...`);
+                } else {
+                    log(`❌ Login failed: ${data.message}`, 'error');
+                }
+            } catch (error) {
+                log(`❌ Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function getMyProducts() {
+            if (!token) {
+                log('❌ Please login first!', 'error');
+                return;
+            }
+
+            try {
+                log('📤 Calling GET /api/v1/products/my...');
+                const response = await fetch('http://localhost:5000/api/v1/products/my', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                const data = await response.json();
+                log(`✅ Response received:`, 'success');
+                log(`   Status: ${response.status}`);
+                log(`   Success: ${data.success}`);
+                log(`   Count: ${data.count}`);
+                log(`   Products: ${JSON.stringify(data.products, null, 2)}`);
+            } catch (error) {
+                log(`❌ Error: ${error.message}`, 'error');
+            }
+        }
+
+        async function getAllProducts() {
+            try {
+                log('📤 Calling GET /api/v1/products...');
+                const response = await fetch('http://localhost:5000/api/v1/products');
+                const data = await response.json();
+                log(`✅ Response received:`, 'success');
+                log(`   Count: ${data.count}`);
+                log(`   Products: ${data.data.length} products found`);
+            } catch (error) {
+                log(`❌ Error: ${error.message}`, 'error');
+            }
+        }
+    </script>
+</body>
+</html>

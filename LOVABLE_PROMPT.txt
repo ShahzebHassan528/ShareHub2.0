@@ -1,0 +1,320 @@
+🎨 PROMPT FOR LOVABLE.DEV - ShareHub 2.0 Visual Enhancement
+
+═══════════════════════════════════════════════════════════════════
+
+⚠️ CRITICAL INSTRUCTION: DO NOT USE TAILWIND CSS!
+
+This is a React + Bootstrap 5 project. Your task is to ENHANCE the existing 
+Bootstrap-based design, NOT convert it to Tailwind.
+
+═══════════════════════════════════════════════════════════════════
+
+📋 PROJECT OVERVIEW:
+
+ShareHub 2.0 is a multi-role marketplace platform with:
+- Admin, Buyer, Seller, and NGO user roles
+- Product marketplace with shopping cart
+- Swap system (product-to-product exchange)
+- Donation system for NGOs
+- Messaging system
+- Map integration (Leaflet + OpenStreetMap)
+
+═══════════════════════════════════════════════════════════════════
+
+🛠 CURRENT TECH STACK (DO NOT CHANGE):
+
+- React 18.2.0
+- Bootstrap 5.3.8
+- React Bootstrap 2.10.10
+- Bootstrap Icons 1.13.1
+- Vite 5.0.8
+- Leaflet (for maps)
+
+═══════════════════════════════════════════════════════════════════
+
+🎯 YOUR MISSION:
+
+Enhance the visual design and user experience while keeping Bootstrap.
+
+WHAT TO DO:
+✅ Improve visual aesthetics (gradients, shadows, colors)
+✅ Add smooth animations and transitions
+✅ Enhance empty states with better visuals
+✅ Improve loading states and skeletons
+✅ Better mobile responsiveness
+✅ Improve form validation feedback
+✅ Add micro-interactions
+✅ Better color usage and contrast
+✅ Improve spacing and typography
+✅ Add hover effects and visual feedback
+
+WHAT NOT TO DO:
+❌ DO NOT install or use Tailwind CSS
+❌ DO NOT remove Bootstrap or React Bootstrap
+❌ DO NOT rewrite components from scratch
+❌ DO NOT change the file structure
+❌ DO NOT break existing functionality
+❌ DO NOT change the tech stack
+❌ DO NOT remove existing features
+
+═══════════════════════════════════════════════════════════════════
+
+🎨 DESIGN SYSTEM:
+
+Primary Color: #10b981 (Emerald Green)
+Primary Dark: #059669
+Success: #28a745
+Error: #dc3545
+Warning: #ffc107
+Info: #17a2b8
+
+Style: Modern, clean, card-based design
+Icons: Bootstrap Icons (bi bi-*)
+Layout: Bootstrap grid system (col-*, row, container)
+
+═══════════════════════════════════════════════════════════════════
+
+📚 DOCUMENTATION TO READ:
+
+BEFORE YOU START, READ THESE FILES IN ORDER:
+
+1. START_HERE_LOVABLE.md - Quick start guide
+2. LOVABLE_INSTRUCTIONS.md - Detailed rules and examples
+3. FOR_LOVABLE_AI.md - Complete project guide
+4. DESIGN_SYSTEM_DOCUMENTATION.md - Full design system
+5. COMPONENT_EXAMPLES.md - Code patterns
+6. DESIGN_QUICK_REFERENCE.md - Quick reference
+
+═══════════════════════════════════════════════════════════════════
+
+🎯 PRIORITY PAGES TO ENHANCE:
+
+HIGH PRIORITY:
+1. src/pages/Home.jsx - Landing page (hero section, features)
+2. src/pages/Products.jsx - Product listing (cards, filters)
+3. src/pages/ProductDetail.jsx - Product details (gallery, info)
+4. src/pages/SignIn.jsx - Login page (form, validation)
+5. src/pages/SignUp.jsx - Registration (multi-step form)
+
+MEDIUM PRIORITY:
+6. src/pages/seller/SellerDashboard.jsx - Seller overview
+7. src/pages/buyer/BuyerDashboard.jsx - Buyer overview
+8. src/pages/CartPage.jsx - Shopping cart
+9. src/pages/CheckoutPage.jsx - Checkout flow
+10. src/pages/admin/AdminDashboard.jsx - Admin panel
+
+═══════════════════════════════════════════════════════════════════
+
+💡 ENHANCEMENT EXAMPLES:
+
+EXAMPLE 1 - Enhance Card Component:
+```jsx
+// KEEP Bootstrap structure, ADD better styling
+<Card className="border-0 shadow-lg hover-lift rounded-3 overflow-hidden">
+  <Card.Body className="p-4">
+    <div className="d-flex align-items-center mb-3">
+      <div className="icon-wrapper bg-primary bg-opacity-10 rounded-circle p-3 me-3">
+        <i className="bi bi-box-seam text-primary fs-4"></i>
+      </div>
+      <div>
+        <h5 className="mb-0 fw-bold">Total Products</h5>
+        <small className="text-muted">Last 30 days</small>
+      </div>
+    </div>
+    <h2 className="mb-0 fw-bold">1,234</h2>
+    <div className="mt-2">
+      <Badge bg="success" className="me-2">
+        <i className="bi bi-arrow-up me-1"></i>12%
+      </Badge>
+      <small className="text-muted">vs last month</small>
+    </div>
+  </Card.Body>
+</Card>
+```
+
+EXAMPLE 2 - Enhance Button:
+```jsx
+// KEEP Bootstrap Button, ADD better styling
+<Button 
+  variant="primary" 
+  size="lg" 
+  className="px-4 py-3 shadow-sm hover-scale"
+>
+  <i className="bi bi-cart-plus me-2"></i>
+  Add to Cart
+</Button>
+```
+
+EXAMPLE 3 - Add to custom.css:
+```css
+/* Enhanced hover effects */
+.hover-lift {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.15) !important;
+}
+
+.hover-scale {
+  transition: transform 0.2s ease;
+}
+
+.hover-scale:hover {
+  transform: scale(1.05);
+}
+
+/* Better gradients */
+.gradient-primary {
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+}
+
+.gradient-hero {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* Smooth animations */
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+  from { 
+    opacity: 0; 
+    transform: translateY(20px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+```
+
+═══════════════════════════════════════════════════════════════════
+
+📁 FILE STRUCTURE:
+
+frontend/src/
+├── pages/          # All page components (ENHANCE THESE)
+├── components/     # Reusable components (ENHANCE THESE)
+├── styles/         # Global styles (ADD TO custom.css)
+├── api/            # API clients (DO NOT TOUCH)
+├── contexts/       # React contexts (DO NOT TOUCH)
+└── hooks/          # Custom hooks (DO NOT TOUCH)
+
+Main style file: src/styles/custom.css
+
+═══════════════════════════════════════════════════════════════════
+
+🎨 SPECIFIC ENHANCEMENTS NEEDED:
+
+1. HOME PAGE (Home.jsx):
+   - Better hero section with gradient background
+   - Animated feature cards
+   - Improved CTA buttons
+   - Better spacing and layout
+
+2. PRODUCT LISTING (Products.jsx):
+   - Enhanced product cards with hover effects
+   - Better filter sidebar design
+   - Improved search bar
+   - Loading skeletons
+
+3. PRODUCT DETAIL (ProductDetail.jsx):
+   - Better image gallery with zoom
+   - Enhanced product info layout
+   - Improved action buttons
+   - Better seller info card
+
+4. DASHBOARDS:
+   - Better stat cards with icons
+   - Improved charts and graphs
+   - Enhanced tables
+   - Better navigation
+
+5. FORMS (SignIn.jsx, SignUp.jsx):
+   - Better input styling
+   - Improved validation feedback
+   - Better error messages
+   - Enhanced submit buttons
+
+═══════════════════════════════════════════════════════════════════
+
+🚀 HOW TO TEST:
+
+cd ShareHub2.0/frontend
+npm run dev
+
+Visit: http://localhost:3000/
+
+Test Credentials:
+- Admin: admin@marketplace.com / admin123
+- Buyer: buyer1@example.com / buyer123
+- Seller: seller1@example.com / seller123
+- NGO: ngo1@example.com / ngo123
+
+═══════════════════════════════════════════════════════════════════
+
+✅ SUCCESS CRITERIA:
+
+Your enhancement is successful if:
+- All existing functionality still works
+- Visual design is significantly improved
+- Animations are smooth and purposeful
+- Mobile experience is enhanced
+- Loading states are better
+- Empty states look professional
+- Forms have better UX
+- NO Tailwind CSS is used
+- Bootstrap components are kept
+- File structure is maintained
+
+═══════════════════════════════════════════════════════════════════
+
+⚠️ FINAL REMINDERS:
+
+1. READ START_HERE_LOVABLE.md FIRST
+2. READ LOVABLE_INSTRUCTIONS.md FOR DETAILED RULES
+3. USE BOOTSTRAP COMPONENTS (Card, Button, Badge, etc.)
+4. ADD STYLES TO src/styles/custom.css
+5. USE BOOTSTRAP ICONS (bi bi-*)
+6. KEEP BOOTSTRAP CLASSES (col-*, d-flex, mb-3, etc.)
+7. DO NOT USE TAILWIND (no className="px-4 py-2 bg-blue-500")
+8. ENHANCE, DON'T REPLACE
+
+═══════════════════════════════════════════════════════════════════
+
+🎯 START YOUR WORK:
+
+1. Read all documentation files
+2. Understand the current Bootstrap setup
+3. Start with Home.jsx for visual enhancement
+4. Add styles to custom.css
+5. Test thoroughly
+6. Move to next priority page
+
+═══════════════════════════════════════════════════════════════════
+
+💬 COMMUNICATION:
+
+When making changes:
+- Explain WHY the change improves UX
+- Show BEFORE and AFTER code
+- Keep Bootstrap syntax
+- Use Bootstrap utilities
+- Add CSS to custom.css, not inline
+
+═══════════════════════════════════════════════════════════════════
+
+🎨 REMEMBER:
+
+BOOTSTRAP ONLY, NO TAILWIND!
+ENHANCE, DON'T REPLACE!
+KEEP IT WORKING!
+
+═══════════════════════════════════════════════════════════════════
+
+Good luck! Make ShareHub 2.0 beautiful while keeping Bootstrap! ✨
+
+═══════════════════════════════════════════════════════════════════

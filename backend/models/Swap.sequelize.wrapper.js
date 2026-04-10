@@ -178,16 +178,19 @@ class Swap {
   static async create(swapData) {
     console.log('🔷 Swap.create() called with Sequelize');
     try {
+      // Generate swap_number if not provided
+      const swapNumber = swapData.swap_number || `SWP-${Date.now()}-${Math.random().toString(36).substr(2, 9).toUpperCase()}`;
+      
       const swap = await ProductSwap.create({
         requester_id: swapData.requester_id,
         requester_product_id: swapData.requester_product_id,
         owner_id: swapData.owner_id,
         owner_product_id: swapData.owner_product_id,
-        swap_number: swapData.swap_number,
+        swap_number: swapNumber,
         message: swapData.message
       });
 
-      console.log('✅ Swap.create() successful, ID:', swap.id);
+      console.log('✅ Swap.create() successful, ID:', swap.id, 'swap_number:', swapNumber);
       return swap.id; // Return number, not object
     } catch (error) {
       console.error('❌ Swap.create() failed:', error.message);
@@ -227,12 +230,38 @@ class Swap {
     console.log('🔷 Swap.findByRequester() called with Sequelize for requester:', requesterId);
     try {
       const swaps = await ProductSwap.findAll({
-        where: { requester_id: requesterId },
+        where: { 
+          requester_id: requesterId,
+          status: { [Op.ne]: 'rejected' } // Exclude rejected/cancelled swaps
+        },
         include: [
           {
             model: Product,
             as: 'ownerProduct',
-            attributes: ['title', 'product_condition']
+            attributes: ['id', 'title', 'price', 'product_condition'],
+            include: [
+              {
+                model: ProductImage,
+                as: 'images',
+                attributes: ['image_url'],
+                where: { is_primary: true },
+                required: false
+              }
+            ]
+          },
+          {
+            model: Product,
+            as: 'requesterProduct',
+            attributes: ['id', 'title', 'price', 'product_condition'],
+            include: [
+              {
+                model: ProductImage,
+                as: 'images',
+                attributes: ['image_url'],
+                where: { is_primary: true },
+                required: false
+              }
+            ]
           },
           {
             model: User,
@@ -248,10 +277,25 @@ class Swap {
         const plain = s.get({ plain: true });
         return {
           ...plain,
-          item_title: plain.ownerProduct?.title || null,
-          product_condition: plain.ownerProduct?.product_condition || null,
+          // Owner product (what they want)
+          requested_item_title: plain.ownerProduct?.title || null,
+          requested_item_price: plain.ownerProduct?.price || null,
+          requested_item_condition: plain.ownerProduct?.product_condition || null,
+          requested_item_image: plain.ownerProduct?.images?.[0]?.image_url ? 
+            `http://localhost:5000${plain.ownerProduct.images[0].image_url}` : null,
+          
+          // Requester product (what they offer)
+          offered_item_title: plain.requesterProduct?.title || null,
+          offered_item_price: plain.requesterProduct?.price || null,
+          offered_item_condition: plain.requesterProduct?.product_condition || null,
+          offered_item_image: plain.requesterProduct?.images?.[0]?.image_url ? 
+            `http://localhost:5000${plain.requesterProduct.images[0].image_url}` : null,
+          
           owner_name: plain.owner?.full_name || null,
+          
+          // Clean up nested objects
           ownerProduct: undefined,
+          requesterProduct: undefined,
           owner: undefined
         };
       });
@@ -273,7 +317,10 @@ class Swap {
     console.log('🔷 Swap.findByOwner() called with Sequelize for owner:', ownerId);
     try {
       const swaps = await ProductSwap.findAll({
-        where: { owner_id: ownerId },
+        where: { 
+          owner_id: ownerId,
+          status: { [Op.ne]: 'rejected' } // Exclude rejected/cancelled swaps
+        },
         include: [
           {
             model: Product,

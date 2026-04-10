@@ -36,7 +36,8 @@ const AdminProducts = () => {
       setReason('');
       fetchProducts();
     } catch (e) {
-      toast.showToast(e.message, 'error');
+      const errorMsg = e.response?.data?.message || e.message || 'Failed to block product';
+      toast.showToast(errorMsg, 'error');
     } finally {
       setActionLoading(false);
     }

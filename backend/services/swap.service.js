@@ -17,25 +17,48 @@ class SwapService {
   static async createSwapRequest(swapData) {
     const { requester_id, owner_id, requester_product_id, owner_product_id } = swapData;
 
+    console.log('🔄 Creating swap request with data:', {
+      requester_id,
+      owner_id,
+      requester_product_id,
+      owner_product_id
+    });
+
     // Validate requester product
     const requesterProduct = await Product.findById(requester_product_id);
+    console.log('📦 Requester product:', requesterProduct ? {
+      id: requesterProduct.id,
+      title: requesterProduct.title,
+      is_available: requesterProduct.is_available
+    } : 'NOT FOUND');
+    
     if (!requesterProduct) {
       throw new AppError('Requester product not found', 404);
     }
 
-    if (requesterProduct.availability_status !== 'available') {
+    if (!requesterProduct.is_available) {
+      console.log('❌ Requester product is not available');
       throw new AppError('Your product is not available for swap', 400);
     }
 
     // Validate owner product
     const ownerProduct = await Product.findById(owner_product_id);
+    console.log('📦 Owner product:', ownerProduct ? {
+      id: ownerProduct.id,
+      title: ownerProduct.title,
+      is_available: ownerProduct.is_available
+    } : 'NOT FOUND');
+    
     if (!ownerProduct) {
       throw new AppError('Owner product not found', 404);
     }
 
-    if (ownerProduct.availability_status !== 'available') {
+    if (!ownerProduct.is_available) {
+      console.log('❌ Owner product is not available');
       throw new AppError('Requested product is not available for swap', 400);
     }
+
+    console.log('✓ Both products are available, creating swap...');
 
     // Create swap request
     const swapId = await Swap.create({
@@ -45,6 +68,20 @@ class SwapService {
       owner_product_id,
       swap_status: 'pending'
     });
+
+    console.log('✓ Swap created with ID:', swapId);
+
+    // Notify the product owner about the swap request
+    try {
+      await NotificationService.notifySwapRequest(
+        owner_id,
+        ownerProduct.title,
+        requesterProduct.title
+      );
+      console.log('✓ Notification sent to owner');
+    } catch (error) {
+      console.error('Failed to send swap notification:', error.message);
+    }
 
     return swapId;
   }
@@ -96,12 +133,12 @@ class SwapService {
       throw new AppError('Only the owner can accept this swap', 403);
     }
 
-    if (swap.swap_status !== 'pending') {
+    if (swap.status !== 'pending') {
       throw new AppError('Can only accept pending swaps', 400);
     }
 
     // Use wrapper method which handles transaction
-    const updatedSwap = await Swap.accept(swapId);
+    const updatedSwap = await Swap.accept(swapId, ownerId);
 
     // Notify requester
     try {
@@ -132,11 +169,11 @@ class SwapService {
       throw new AppError('Only the owner can reject this swap', 403);
     }
 
-    if (swap.swap_status !== 'pending') {
+    if (swap.status !== 'pending') {
       throw new AppError('Can only reject pending swaps', 400);
     }
 
-    return await Swap.reject(swapId);
+    return await Swap.reject(swapId, ownerId);
   }
 
   /**
@@ -155,11 +192,11 @@ class SwapService {
       throw new AppError('Only swap participants can complete the swap', 403);
     }
 
-    if (swap.swap_status !== 'accepted') {
+    if (swap.status !== 'accepted') {
       throw new AppError('Can only complete accepted swaps', 400);
     }
 
-    return await Swap.complete(swapId);
+    return await Swap.complete(swapId, userId);
   }
 
   /**
@@ -178,12 +215,12 @@ class SwapService {
       throw new AppError('Only the requester can cancel this swap', 403);
     }
 
-    if (swap.swap_status === 'completed') {
+    if (swap.status === 'completed') {
       throw new AppError('Cannot cancel completed swap', 400);
     }
 
-    // Use wrapper method which handles transaction
-    return await Swap.cancel(swapId);
+    // Use wrapper method which handles transaction - pass both swapId and requesterId
+    return await Swap.cancel(swapId, requesterId);
   }
 }
 

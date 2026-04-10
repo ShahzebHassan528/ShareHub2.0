@@ -11,6 +11,7 @@ import { useCart } from '../contexts/CartContext';
 import { useToast } from '../contexts/ToastContext';
 import SwapRequestButton from '../components/swap/SwapRequestButton';
 import DonateButton from '../components/donation/DonateButton';
+import MapView from '../components/common/MapView';
 import productAPI from '../api/product.api';
 import reviewAPI from '../api/review.api';
 import './ProductDetail.css';
@@ -313,6 +314,25 @@ const ProductDetail = () => {
                   )}
                 </ul>
               </div>
+
+              {/* Location Map */}
+              {product.latitude && product.longitude && (
+                <div className="product-location-map mb-4">
+                  <h5>Location</h5>
+                  <MapView
+                    latitude={product.latitude}
+                    longitude={product.longitude}
+                    title={product.title}
+                    height="250px"
+                  />
+                  {product.address && (
+                    <p className="text-muted small mt-2">
+                      <i className="bi bi-geo-alt me-1"></i>
+                      {product.address}
+                    </p>
+                  )}
+                </div>
+              )}
 
               <div className="product-actions">
                 <button 

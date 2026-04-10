@@ -72,6 +72,13 @@ const Navbar = () => {
                 <i className="bi bi-heart"></i>
                 <span>NGOs</span>
               </Link>
+
+              {isAuthenticated && (
+                <Link to="/products/add" className="nav-link nav-link-highlight">
+                  <i className="bi bi-plus-circle"></i>
+                  <span>Sell Item</span>
+                </Link>
+              )}
             </>
           )}
         </div>

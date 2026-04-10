@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import apiClient from '../../api/client';
+import LocationPicker from '../common/LocationPicker';
 import './ProductForm.css';
 
 const ProductForm = ({ initialData = {}, onSubmit, submitLabel = 'Submit', loading = false }) => {
@@ -11,6 +12,9 @@ const ProductForm = ({ initialData = {}, onSubmit, submitLabel = 'Submit', loadi
     product_condition: initialData.product_condition || 'good',
     image_url: initialData.image_url || '',
     location: initialData.location || '',
+    latitude: initialData.latitude || null,
+    longitude: initialData.longitude || null,
+    address: initialData.address || '',
     quantity: initialData.quantity || 1,
   });
 
@@ -63,54 +67,89 @@ const ProductForm = ({ initialData = {}, onSubmit, submitLabel = 'Submit', loadi
   const validate = () => {
     const newErrors = {};
 
+    console.log('🔍 Validating form...');
+    console.log('Title:', formData.title);
+    console.log('Description:', formData.description);
+    console.log('Price:', formData.price);
+    console.log('Location:', formData.location);
+
     if (!formData.title.trim()) {
       newErrors.title = 'Title is required';
+      console.log('❌ Title validation failed');
     } else if (formData.title.length < 3) {
       newErrors.title = 'Title must be at least 3 characters';
+      console.log('❌ Title too short');
     }
 
     if (!formData.description.trim()) {
       newErrors.description = 'Description is required';
+      console.log('❌ Description validation failed');
     } else if (formData.description.length < 10) {
       newErrors.description = 'Description must be at least 10 characters';
+      console.log('❌ Description too short');
     }
 
     if (!formData.price) {
       newErrors.price = 'Price is required';
+      console.log('❌ Price validation failed');
     } else if (isNaN(formData.price) || parseFloat(formData.price) <= 0) {
       newErrors.price = 'Price must be a positive number';
+      console.log('❌ Price invalid');
     }
 
     if (!formData.location.trim()) {
       newErrors.location = 'Location is required';
+      console.log('❌ Location validation failed');
     }
 
+    // Temporarily make lat/lng optional for testing
+    console.log('Latitude:', formData.latitude);
+    console.log('Longitude:', formData.longitude);
+
     setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
+    const isValid = Object.keys(newErrors).length === 0;
+    console.log('Validation result:', isValid ? '✅ PASS' : '❌ FAIL');
+    console.log('Errors:', newErrors);
+    return isValid;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!validate()) return;
+    console.log('🔍 Form submitted!');
+    console.log('📝 Form data:', formData);
+    
+    if (!validate()) {
+      console.log('❌ Validation failed:', errors);
+      return;
+    }
+
+    console.log('✅ Validation passed');
 
     let finalImageUrl = formData.image_url;
     if (imageFile) {
+      console.log('📤 Uploading image file...');
       try {
         const uploaded = await uploadImage();
-        if (uploaded) finalImageUrl = uploaded;
+        if (uploaded) {
+          finalImageUrl = uploaded;
+          console.log('✅ Image uploaded:', finalImageUrl);
+        }
       } catch (err) {
-        console.error('Image upload failed:', err);
+        console.error('❌ Image upload failed:', err);
         // Proceed without image rather than blocking product creation
         finalImageUrl = null;
       }
     }
 
-    onSubmit({
+    const productPayload = {
       ...formData,
       price: parseFloat(formData.price),
       quantity: parseInt(formData.quantity) || 1,
       image_url: finalImageUrl,
-    });
+    };
+
+    console.log('📦 Sending product data:', productPayload);
+    onSubmit(productPayload);
   };
 
   return (
@@ -226,6 +265,33 @@ const ProductForm = ({ initialData = {}, onSubmit, submitLabel = 'Submit', loadi
       </div>
 
       <div className="form-group">
+        <label>
+          Pick Location on Map <span className="text-muted">(Optional)</span>
+        </label>
+        <LocationPicker
+          onLocationSelect={(location) => {
+            setFormData(prev => ({
+              ...prev,
+              latitude: location.lat,
+              longitude: location.lng,
+              address: location.address,
+              location: location.address.split(',')[0] || prev.location
+            }));
+          }}
+          initialPosition={
+            formData.latitude && formData.longitude
+              ? { lat: formData.latitude, lng: formData.longitude }
+              : null
+          }
+        />
+        {formData.address && (
+          <small className="text-muted mt-2 d-block">
+            Selected: {formData.address}
+          </small>
+        )}
+      </div>
+
+      <div className="form-group">
         <label>Product Image</label>
         <input
           type="file"
@@ -262,6 +328,10 @@ const ProductForm = ({ initialData = {}, onSubmit, submitLabel = 'Submit', loadi
           type="submit"
           className="btn-submit"
           disabled={loading || uploading}
+          onClick={(e) => {
+            console.log('🖱️ Button clicked!');
+            console.log('Form element:', e.target.form);
+          }}
         >
           {uploading ? 'Uploading image...' : loading ? 'Saving...' : submitLabel}
         </button>

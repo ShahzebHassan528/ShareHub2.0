@@ -1,0 +1,64 @@
+🎨 ShareHub 2.0 - Visual Enhancement Task
+
+⚠️ CRITICAL: DO NOT USE TAILWIND CSS! This is a Bootstrap 5 + React Bootstrap project.
+
+📋 TASK:
+Enhance the visual design of ShareHub 2.0 marketplace platform while keeping the existing Bootstrap framework.
+
+🛠 TECH STACK (DO NOT CHANGE):
+- React 18.2.0 + Bootstrap 5.3.8 + React Bootstrap 2.10.10
+- Primary Color: Emerald Green (#10b981)
+- Icons: Bootstrap Icons
+
+✅ WHAT TO DO:
+- Improve visual aesthetics (gradients, shadows, animations)
+- Enhance empty states and loading states
+- Better mobile responsiveness
+- Improve form validation feedback
+- Add micro-interactions and hover effects
+- Enhance color usage and spacing
+
+❌ WHAT NOT TO DO:
+- DO NOT install Tailwind CSS
+- DO NOT remove Bootstrap
+- DO NOT rewrite components from scratch
+- DO NOT break existing functionality
+
+📚 DOCUMENTATION:
+Read these files in order:
+1. START_HERE_LOVABLE.md
+2. LOVABLE_INSTRUCTIONS.md
+3. FOR_LOVABLE_AI.md
+
+🎯 PRIORITY PAGES:
+1. src/pages/Home.jsx - Landing page
+2. src/pages/Products.jsx - Product listing
+3. src/pages/ProductDetail.jsx - Product details
+4. src/pages/SignIn.jsx & SignUp.jsx - Auth pages
+5. Dashboard pages (Seller, Buyer, Admin)
+
+💡 EXAMPLE:
+```jsx
+// ✅ CORRECT (Bootstrap)
+<Card className="border-0 shadow-lg hover-lift rounded-3">
+  <Card.Body className="p-4">
+    <Button variant="primary" size="lg">
+      <i className="bi bi-cart-plus me-2"></i>
+      Add to Cart
+    </Button>
+  </Card.Body>
+</Card>
+
+// ❌ WRONG (Tailwind)
+<div className="rounded-lg shadow-lg p-4">
+  <button className="bg-blue-500 px-4 py-2">Add to Cart</button>
+</div>
+```
+
+🚀 TEST:
+cd ShareHub2.0/frontend && npm run dev
+Credentials: admin@marketplace.com / admin123
+
+🎨 REMEMBER: BOOTSTRAP ONLY, NO TAILWIND! ENHANCE, DON'T REPLACE!
+
+Read START_HERE_LOVABLE.md for complete instructions.

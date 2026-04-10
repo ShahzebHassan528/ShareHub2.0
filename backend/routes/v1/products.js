@@ -22,7 +22,10 @@ router.get('/', cacheMiddleware(), ProductController.getAllProducts);
 router.get('/nearby', cacheMiddleware(), ProductController.getNearbyProducts);
 
 // GET /api/v1/products/my - Get current seller's products
-router.get('/my', authenticate, ProductController.getMyProducts);
+router.get('/my', authenticate, (req, res, next) => {
+  console.log('🎯 Route /my hit! User:', req.user?.id, req.user?.full_name);
+  next();
+}, ProductController.getMyProducts);
 
 // GET /api/v1/products/:id - Get single product (CACHED)
 router.get('/:id', cacheMiddleware(), ProductController.getProductById);
@@ -44,7 +47,15 @@ router.put('/:id',
 // DELETE /api/v1/products/:id - Delete product (SELLER own products or ADMIN)
 router.delete('/:id',
   authenticate,
-  checkAbility('delete', 'Product'),
+  checkAbility('delete', 'Product', async (req) => {
+    const Product = require('../../models/Product.sequelize.wrapper');
+    const product = await Product.findById(req.params.id);
+    if (!product) {
+      const AppError = require('../../utils/AppError');
+      throw new AppError('Product not found', 404);
+    }
+    return product;
+  }),
   ProductController.deleteProduct
 );
 
