@@ -5,6 +5,16 @@
 
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 24 },
+  visible: (i = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.4, delay: i * 0.07, ease: 'easeOut' },
+  }),
+};
 import { useProduct } from '../hooks/useProduct';
 import { useAuth } from '../contexts/AuthContext';
 import { useCart } from '../contexts/CartContext';
@@ -200,7 +210,7 @@ const ProductDetail = () => {
     : product.image_url ? [product.image_url] : [];
 
   return (
-    <div className="product-detail-page">
+    <motion.div className="product-detail-page" initial="hidden" animate="visible" variants={fadeUp}>
       <div className="container py-4">
         {/* Breadcrumb */}
         <nav aria-label="breadcrumb" className="mb-4">
@@ -527,7 +537,7 @@ const ProductDetail = () => {
           </div>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 };
 

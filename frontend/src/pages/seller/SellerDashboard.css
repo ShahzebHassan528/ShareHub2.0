@@ -9,14 +9,15 @@
 }
 
 .dashboard-header h1 {
+  font-family: var(--font-heading);
   font-size: 2rem;
   font-weight: 700;
-  color: #1a1a1a;
+  color: var(--fg);
   margin-bottom: 0.5rem;
 }
 
 .dashboard-header p {
-  color: #666;
+  color: var(--muted);
   font-size: 1rem;
 }
 
@@ -28,25 +29,26 @@
 }
 
 .stat-card {
-  background: white;
-  border-radius: 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
   padding: 1.5rem;
   display: flex;
   align-items: center;
   gap: 1rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-sm);
   transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .stat-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  box-shadow: var(--shadow-md);
 }
 
 .stat-icon {
   width: 60px;
   height: 60px;
-  border-radius: 12px;
+  border-radius: var(--radius);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -55,40 +57,41 @@
 }
 
 .stat-icon.products {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--primary);
 }
 
 .stat-icon.sales {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  background: var(--primary-dark);
 }
 
 .stat-icon.orders {
-  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  background: #0369a1;
 }
 
 .stat-icon.rating {
-  background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
+  background: #d97706;
 }
 
 .stat-content h3 {
   font-size: 1.75rem;
   font-weight: 700;
-  color: #1a1a1a;
+  color: var(--fg);
   margin: 0;
 }
 
 .stat-content p {
-  color: #666;
+  color: var(--muted);
   margin: 0;
   font-size: 0.9rem;
 }
 
 .dashboard-section {
-  background: white;
-  border-radius: 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
   padding: 1.5rem;
   margin-bottom: 1.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-sm);
 }
 
 .section-header {
@@ -101,19 +104,19 @@
 .section-header h2 {
   font-size: 1.25rem;
   font-weight: 600;
-  color: #1a1a1a;
+  color: var(--fg);
   margin: 0;
 }
 
 .view-all {
-  color: #2ecc71;
+  color: var(--primary);
   text-decoration: none;
   font-weight: 500;
   transition: color 0.2s;
 }
 
 .view-all:hover {
-  color: #27ae60;
+  color: var(--primary-dark);
 }
 
 .orders-list {
@@ -127,24 +130,25 @@
   justify-content: space-between;
   align-items: center;
   padding: 1rem;
-  background: #f8f9fa;
-  border-radius: 8px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
   transition: background 0.2s;
 }
 
 .order-item:hover {
-  background: #e9ecef;
+  background: var(--bg-hover);
 }
 
 .order-info h4 {
   font-size: 1rem;
   font-weight: 600;
-  color: #1a1a1a;
+  color: var(--fg);
   margin: 0 0 0.25rem 0;
 }
 
 .order-info p {
-  color: #666;
+  color: var(--muted);
   margin: 0;
   font-size: 0.9rem;
 }
@@ -157,18 +161,18 @@
 }
 
 .order-status.pending {
-  background: #fff3cd;
-  color: #856404;
+  background: #fef3c7;
+  color: #92400e;
 }
 
 .order-status.processing {
-  background: #cfe2ff;
-  color: #084298;
+  background: #dbeafe;
+  color: #1e40af;
 }
 
 .order-status.completed {
-  background: #d1e7dd;
-  color: #0f5132;
+  background: rgba(45, 107, 74, 0.1);
+  color: var(--primary);
 }
 
 .quick-actions {
@@ -183,17 +187,19 @@
   justify-content: center;
   gap: 0.5rem;
   padding: 1rem;
-  background: #f8f9fa;
-  border-radius: 8px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
   text-decoration: none;
-  color: #1a1a1a;
+  color: var(--fg);
   font-weight: 500;
   transition: all 0.2s;
 }
 
 .action-btn:hover {
-  background: #2ecc71;
-  color: white;
+  background: var(--primary);
+  color: var(--primary-fg);
+  border-color: var(--primary);
   transform: translateY(-2px);
 }
 

@@ -17,14 +17,15 @@
 }
 
 .activity-title {
+  font-family: var(--font-heading);
   font-size: 1.5rem;
   font-weight: 700;
-  color: #1a1a1a;
+  color: var(--fg);
   margin: 0 0 0.2rem 0;
 }
 
 .activity-subtitle {
-  color: #6c757d;
+  color: var(--muted);
   font-size: 0.9rem;
   margin: 0;
 }
@@ -42,21 +43,21 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  background: white;
-  border: 1px solid #dee2e6;
-  border-radius: 8px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
   padding: 8px 14px;
   max-width: 380px;
   transition: border-color 0.2s;
 }
 
 .activity-search:focus-within {
-  border-color: #0d6efd;
-  box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.08);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(45, 107, 74, 0.1);
 }
 
 .activity-search .bi-search {
-  color: #9ca3af;
+  color: var(--muted);
   font-size: 0.9rem;
   flex-shrink: 0;
 }
@@ -65,15 +66,16 @@
   border: none;
   outline: none;
   flex: 1;
+  font-family: var(--font-body);
   font-size: 0.875rem;
-  color: #374151;
+  color: var(--fg);
   background: transparent;
 }
 
 .clear-search {
   background: none;
   border: none;
-  color: #9ca3af;
+  color: var(--muted);
   cursor: pointer;
   padding: 0;
   line-height: 1;
@@ -82,14 +84,14 @@
   align-items: center;
 }
 
-.clear-search:hover { color: #6b7280; }
+.clear-search:hover { color: var(--fg); }
 
 /* Tabs */
 .activity-tabs {
   display: flex;
   gap: 4px;
   flex-wrap: wrap;
-  border-bottom: 2px solid #e9ecef;
+  border-bottom: 2px solid var(--border);
   padding-bottom: 0;
 }
 
@@ -100,7 +102,8 @@
   padding: 7px 13px;
   border: none;
   background: none;
-  color: #6c757d;
+  color: var(--muted);
+  font-family: var(--font-body);
   font-size: 0.855rem;
   font-weight: 500;
   cursor: pointer;
@@ -110,19 +113,19 @@
   white-space: nowrap;
 }
 
-.activity-tab:hover { color: #0d6efd; }
+.activity-tab:hover { color: var(--primary); }
 
 .activity-tab.active {
-  color: #0d6efd;
-  border-bottom-color: #0d6efd;
+  color: var(--primary);
+  border-bottom-color: var(--primary);
 }
 
 .tab-count {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: #e9ecef;
-  color: #495057;
+  background: var(--bg-hover);
+  color: var(--muted);
   font-size: 0.7rem;
   font-weight: 600;
   border-radius: 10px;
@@ -131,8 +134,8 @@
 }
 
 .activity-tab.active .tab-count {
-  background: #dbeafe;
-  color: #1d4ed8;
+  background: rgba(45, 107, 74, 0.15);
+  color: var(--primary);
 }
 
 /* Timeline */
@@ -140,9 +143,10 @@
   display: flex;
   flex-direction: column;
   gap: 0;
-  background: white;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
   border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  box-shadow: var(--shadow-sm);
   overflow: hidden;
 }
 
@@ -153,12 +157,12 @@
   gap: 14px;
   padding: 16px 20px;
   position: relative;
-  border-bottom: 1px solid #f3f4f6;
+  border-bottom: 1px solid var(--border);
   transition: background 0.15s;
 }
 
 .activity-item:last-child { border-bottom: none; }
-.activity-item:hover { background: #fafafa; }
+.activity-item:hover { background: var(--bg-hover); }
 
 /* Icon */
 .activity-icon {
@@ -190,19 +194,19 @@
 .activity-item-title {
   font-size: 0.9rem;
   font-weight: 600;
-  color: #111827;
+  color: var(--fg);
 }
 
 .activity-item-time {
   font-size: 0.78rem;
-  color: #9ca3af;
+  color: var(--muted);
   white-space: nowrap;
   flex-shrink: 0;
 }
 
 .activity-item-desc {
   font-size: 0.855rem;
-  color: #4b5563;
+  color: var(--muted);
   margin: 0 0 5px 0;
   white-space: nowrap;
   overflow: hidden;
@@ -222,20 +226,21 @@
 .activity-empty {
   text-align: center;
   padding: 4rem 2rem;
-  background: white;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
   border-radius: 10px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+  box-shadow: var(--shadow-sm);
 }
 
 .activity-empty .bi-inbox {
   font-size: 3.5rem;
-  color: #dee2e6;
+  color: var(--border);
   display: block;
   margin-bottom: 1rem;
 }
 
 .activity-empty p {
-  color: #6c757d;
+  color: var(--muted);
   font-size: 0.95rem;
   margin: 0;
 }
@@ -246,7 +251,7 @@
 }
 
 .skeleton {
-  background: linear-gradient(90deg, #f0f0f0 25%, #e8e8e8 50%, #f0f0f0 75%);
+  background: linear-gradient(90deg, var(--bg-card) 25%, var(--bg-hover) 50%, var(--bg-card) 75%);
   background-size: 200% 100%;
   animation: shimmer 1.4s infinite;
   border-radius: 6px;

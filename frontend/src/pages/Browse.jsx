@@ -1,5 +1,15 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 24 },
+  visible: (i = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.4, delay: i * 0.07, ease: 'easeOut' },
+  }),
+};
 import { Container, Row, Col, Card, Form, Button, Badge, Spinner } from 'react-bootstrap';
 import { FaFilter, FaShoppingCart, FaHeart, FaExchangeAlt } from 'react-icons/fa';
 import NavigationBar from '../components/Navbar';
@@ -73,7 +83,7 @@ function Browse() {
   };
 
   return (
-    <div className="d-flex flex-column min-vh-100">
+    <motion.div className="d-flex flex-column min-vh-100" initial="hidden" animate="visible" variants={fadeUp}>
       <NavigationBar />
 
       <Container className="py-5 flex-grow-1">
@@ -249,7 +259,7 @@ function Browse() {
       </Container>
 
       <Footer />
-    </div>
+    </motion.div>
   );
 }
 

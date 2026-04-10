@@ -1,6 +1,6 @@
 .my-swaps-page {
   min-height: 100vh;
-  background: #f9fafb;
+  background: var(--bg);
   padding: 2rem 0;
 }
 
@@ -15,14 +15,15 @@
 }
 
 .page-header h1 {
+  font-family: var(--font-heading);
   font-size: 2rem;
-  color: #111827;
+  color: var(--fg);
   margin: 0 0 0.5rem 0;
 }
 
 .page-subtitle {
   font-size: 1rem;
-  color: #6b7280;
+  color: var(--muted);
   margin: 0;
 }
 
@@ -35,16 +36,17 @@
   align-items: center;
   justify-content: center;
   min-height: 400px;
-  background: white;
-  border-radius: 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
   padding: 3rem 1rem;
 }
 
 .spinner {
   width: 48px;
   height: 48px;
-  border: 4px solid #f3f4f6;
-  border-top-color: #667eea;
+  border: 4px solid var(--border);
+  border-top-color: var(--primary);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
@@ -61,7 +63,7 @@
 }
 
 .swaps-error {
-  border: 1px solid #fecaca;
+  border-color: #fecaca;
 }
 
 .swaps-error h2 {
@@ -79,7 +81,7 @@
   background: #dc2626;
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
   font-size: 1rem;
   transition: background 0.2s;
@@ -89,23 +91,19 @@
   background: #b91c1c;
 }
 
-.swaps-empty {
-  border: 1px solid #e5e7eb;
-}
-
 .swaps-empty h2 {
-  color: #374151;
+  color: var(--fg);
   margin-bottom: 0.5rem;
 }
 
 .swaps-empty p {
-  color: #6b7280;
+  color: var(--muted);
   margin-bottom: 0.5rem;
 }
 
 .empty-hint {
   font-size: 0.875rem;
-  color: #9ca3af;
+  color: var(--muted);
 }
 
 /* Swaps List */
@@ -115,15 +113,15 @@
 }
 
 .swap-card {
-  background: white;
-  border-radius: 12px;
-  border: 1px solid #e5e7eb;
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
   overflow: hidden;
   transition: box-shadow 0.2s;
 }
 
 .swap-card:hover {
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--shadow-md);
 }
 
 .swap-card-header {
@@ -131,13 +129,13 @@
   justify-content: space-between;
   align-items: center;
   padding: 1rem 1.5rem;
-  background: #f9fafb;
-  border-bottom: 1px solid #e5e7eb;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
 }
 
 .swap-date {
   font-size: 0.875rem;
-  color: #6b7280;
+  color: var(--muted);
 }
 
 .swap-card-body {
@@ -158,7 +156,7 @@
 .swap-item h4 {
   font-size: 0.75rem;
   font-weight: 600;
-  color: #6b7280;
+  color: var(--muted);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin: 0 0 0.75rem 0;
@@ -168,9 +166,9 @@
   display: flex;
   gap: 1rem;
   padding: 1rem;
-  background: #f9fafb;
-  border-radius: 8px;
-  border: 1px solid #e5e7eb;
+  background: var(--bg);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
 }
 
 .item-image {
@@ -188,7 +186,7 @@
 
 .item-info h3 {
   font-size: 1rem;
-  color: #111827;
+  color: var(--fg);
   margin: 0 0 0.5rem 0;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -197,22 +195,22 @@
 
 .item-price {
   font-size: 0.875rem;
-  color: #059669;
+  color: var(--primary);
   font-weight: 600;
   margin: 0;
 }
 
 .swap-arrow {
   font-size: 2rem;
-  color: #667eea;
+  color: var(--primary);
   font-weight: bold;
 }
 
 /* Swap Details */
 .swap-details {
   padding: 1rem;
-  background: #f9fafb;
-  border-radius: 8px;
+  background: var(--bg);
+  border-radius: var(--radius-sm);
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
@@ -226,38 +224,39 @@
 .detail-label {
   font-size: 0.875rem;
   font-weight: 600;
-  color: #6b7280;
+  color: var(--muted);
   min-width: 80px;
   flex-shrink: 0;
 }
 
 .detail-value {
   font-size: 0.875rem;
-  color: #111827;
+  color: var(--fg);
   flex: 1;
 }
 
 .message-text {
   font-style: italic;
-  color: #6b7280;
+  color: var(--muted);
 }
 
 /* Card Actions */
 .swap-card-actions {
   padding: 1rem 1.5rem;
-  border-top: 1px solid #e5e7eb;
-  background: #f9fafb;
+  border-top: 1px solid var(--border);
+  background: var(--bg);
   display: flex;
   justify-content: flex-end;
 }
 
 .btn-cancel-swap {
   padding: 0.75rem 1.5rem;
-  background: white;
+  background: var(--bg-card);
   color: #dc2626;
   border: 1px solid #dc2626;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
+  font-family: var(--font-body);
   font-size: 0.875rem;
   font-weight: 600;
   transition: all 0.2s;
@@ -294,8 +293,9 @@
 }
 
 .confirm-modal-content {
-  background: white;
-  border-radius: 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
   max-width: 400px;
   width: 100%;
   padding: 1.5rem;
@@ -314,13 +314,14 @@
 }
 
 .confirm-modal-content h3 {
+  font-family: var(--font-heading);
   font-size: 1.25rem;
-  color: #111827;
+  color: var(--fg);
   margin: 0 0 1rem 0;
 }
 
 .confirm-modal-content p {
-  color: #6b7280;
+  color: var(--muted);
   margin: 0 0 1.5rem 0;
   line-height: 1.5;
 }
@@ -334,21 +335,22 @@
 .btn-modal-confirm {
   flex: 1;
   padding: 0.75rem 1rem;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
+  font-family: var(--font-body);
   font-size: 0.875rem;
   font-weight: 600;
   transition: all 0.2s;
 }
 
 .btn-modal-cancel {
-  background: white;
-  color: #374151;
-  border: 1px solid #d1d5db;
+  background: var(--bg-hover);
+  color: var(--fg);
+  border: 1px solid var(--border);
 }
 
 .btn-modal-cancel:hover {
-  background: #f9fafb;
+  background: var(--border);
 }
 
 .btn-modal-confirm {

@@ -3,9 +3,19 @@
  * Main dashboard for buyer role users
  */
 
+import { motion } from 'framer-motion';
 import { useAuth } from '../../contexts/AuthContext';
 import { useDashboard } from '../../hooks/useDashboard';
 import './BuyerDashboard.css';
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 24 },
+  visible: (i = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.4, delay: i * 0.07, ease: 'easeOut' },
+  }),
+};
 
 const BuyerDashboard = () => {
   const { user } = useAuth();
@@ -41,7 +51,7 @@ const BuyerDashboard = () => {
   }
 
   return (
-    <div className="buyer-dashboard">
+    <motion.div className="buyer-dashboard" initial="hidden" animate="visible" variants={fadeUp}>
       {/* Welcome Section */}
       <div className="dashboard-header">
         <h1>Welcome back, {user?.full_name}!</h1>
@@ -148,7 +158,7 @@ const BuyerDashboard = () => {
           </a>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

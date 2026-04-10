@@ -1,6 +1,6 @@
 .ngo-donations-page {
   min-height: 100vh;
-  background: #f9fafb;
+  background: var(--bg);
   padding: 2rem 0;
 }
 
@@ -18,18 +18,19 @@
 }
 
 .page-header h1 {
+  font-family: var(--font-heading);
   font-size: 2rem;
-  color: #111827;
+  color: var(--fg);
   margin: 0 0 0.5rem 0;
 }
 
 .page-subtitle {
   font-size: 1rem;
-  color: #6b7280;
+  color: var(--muted);
   margin: 0;
 }
 
-/* Loading & Error States (reuse from UserDonations) */
+/* Loading & Error States */
 .donations-loading {
   display: flex;
   flex-direction: column;
@@ -42,8 +43,8 @@
 .spinner {
   width: 48px;
   height: 48px;
-  border: 4px solid #f3f4f6;
-  border-top-color: #f59e0b;
+  border: 4px solid var(--border);
+  border-top-color: var(--primary);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
@@ -55,8 +56,8 @@
 .donations-error {
   text-align: center;
   padding: 3rem 1rem;
-  background: white;
-  border-radius: 12px;
+  background: var(--bg-card);
+  border-radius: var(--radius);
   border: 1px solid #fecaca;
 }
 
@@ -80,7 +81,7 @@
   background: #dc2626;
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
   font-size: 1rem;
   transition: background 0.2s;
@@ -93,9 +94,9 @@
 .donations-empty {
   text-align: center;
   padding: 4rem 1rem;
-  background: white;
-  border-radius: 12px;
-  border: 1px solid #e5e7eb;
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
 }
 
 .empty-icon {
@@ -105,12 +106,12 @@
 }
 
 .donations-empty h2 {
-  color: #374151;
+  color: var(--fg);
   margin-bottom: 0.5rem;
 }
 
 .donations-empty p {
-  color: #6b7280;
+  color: var(--muted);
 }
 
 /* Donations Grid */
@@ -121,15 +122,15 @@
 }
 
 .ngo-donation-card {
-  background: white;
-  border-radius: 12px;
-  border: 1px solid #e5e7eb;
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
   overflow: hidden;
   transition: box-shadow 0.2s;
 }
 
 .ngo-donation-card:hover {
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--shadow-md);
 }
 
 .card-header {
@@ -137,13 +138,13 @@
   justify-content: space-between;
   align-items: center;
   padding: 1rem 1.5rem;
-  background: #f9fafb;
-  border-bottom: 1px solid #e5e7eb;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
 }
 
 .donation-date {
   font-size: 0.75rem;
-  color: #6b7280;
+  color: var(--muted);
 }
 
 .card-body {
@@ -163,7 +164,7 @@
   width: 100px;
   height: 100px;
   object-fit: cover;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   flex-shrink: 0;
 }
 
@@ -174,7 +175,7 @@
 
 .product-details h3 {
   font-size: 1.125rem;
-  color: #111827;
+  color: var(--fg);
   margin: 0 0 0.5rem 0;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -185,22 +186,22 @@
 
 .product-price {
   font-size: 0.875rem;
-  color: #059669;
+  color: var(--primary);
   font-weight: 600;
   margin: 0 0 0.25rem 0;
 }
 
 .product-condition {
   font-size: 0.875rem;
-  color: #6b7280;
+  color: var(--muted);
   margin: 0;
 }
 
 /* Donor Section */
 .donor-section {
   padding: 1rem;
-  background: #f9fafb;
-  border-radius: 8px;
+  background: var(--bg);
+  border-radius: var(--radius-sm);
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -214,27 +215,27 @@
 .info-label {
   font-size: 0.875rem;
   font-weight: 600;
-  color: #6b7280;
+  color: var(--muted);
   min-width: 60px;
 }
 
 .info-value {
   font-size: 0.875rem;
-  color: #111827;
+  color: var(--fg);
 }
 
 /* Message Section */
 .message-section {
   padding: 1rem;
-  background: #fffbeb;
-  border-radius: 8px;
-  border: 1px solid #fde68a;
+  background: rgba(45, 107, 74, 0.05);
+  border-radius: var(--radius-sm);
+  border: 1px solid rgba(45, 107, 74, 0.15);
 }
 
 .message-label {
   font-size: 0.75rem;
   font-weight: 600;
-  color: #92400e;
+  color: var(--primary);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin: 0 0 0.5rem 0;
@@ -242,7 +243,7 @@
 
 .message-text {
   font-size: 0.875rem;
-  color: #374151;
+  color: var(--fg);
   font-style: italic;
   margin: 0;
 }
@@ -252,15 +253,16 @@
   display: flex;
   gap: 0.75rem;
   padding: 1rem 1.5rem;
-  border-top: 1px solid #e5e7eb;
-  background: #f9fafb;
+  border-top: 1px solid var(--border);
+  background: var(--bg);
 }
 
 .btn-action {
   flex: 1;
   padding: 0.75rem 1rem;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
   font-size: 0.875rem;
   font-weight: 600;
   cursor: pointer;
@@ -273,7 +275,7 @@
 }
 
 .btn-reject {
-  background: white;
+  background: var(--bg-card);
   color: #dc2626;
   border: 1px solid #dc2626;
 }
@@ -284,15 +286,15 @@
 
 .btn-accept,
 .btn-action.btn-accept {
-  background: #059669 !important;
-  color: #ffffff !important;
+  background: var(--primary) !important;
+  color: var(--primary-fg) !important;
   border: none;
 }
 
 .btn-accept:hover:not(:disabled),
 .btn-action.btn-accept:hover:not(:disabled) {
-  background: #047857 !important;
-  color: #ffffff !important;
+  background: var(--primary-dark) !important;
+  color: var(--primary-fg) !important;
 }
 
 /* Confirmation Modal */
@@ -317,8 +319,9 @@
 }
 
 .confirm-modal-content {
-  background: white;
-  border-radius: 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
   max-width: 400px;
   width: 100%;
   padding: 1.5rem;
@@ -337,13 +340,14 @@
 }
 
 .confirm-modal-content h3 {
+  font-family: var(--font-heading);
   font-size: 1.25rem;
-  color: #111827;
+  color: var(--fg);
   margin: 0 0 1rem 0;
 }
 
 .confirm-modal-content p {
-  color: #6b7280;
+  color: var(--muted);
   margin: 0 0 1.5rem 0;
   line-height: 1.5;
 }
@@ -356,25 +360,27 @@
 .btn-cancel {
   flex: 1;
   padding: 0.75rem 1rem;
-  background: white;
-  color: #374151;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
+  background: var(--bg-hover);
+  color: var(--fg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
   cursor: pointer;
+  font-family: var(--font-body);
   font-size: 0.875rem;
   transition: all 0.2s;
 }
 
 .btn-cancel:hover {
-  background: #f9fafb;
+  background: var(--border);
 }
 
 .btn-confirm {
   flex: 1;
   padding: 0.75rem 1rem;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
+  font-family: var(--font-body);
   font-size: 0.875rem;
   font-weight: 600;
   transition: all 0.2s;
@@ -382,11 +388,11 @@
 }
 
 .btn-confirm-accept {
-  background: #059669;
+  background: var(--primary);
 }
 
 .btn-confirm-accept:hover {
-  background: #047857;
+  background: var(--primary-dark);
 }
 
 .btn-confirm-reject {

@@ -5,9 +5,19 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import productAPI from '../api/product.api';
 import ProductCard from '../components/products/ProductCard';
 import './ProductListing.css';
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 24 },
+  visible: (i = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.4, delay: i * 0.07, ease: 'easeOut' },
+  }),
+};
 
 // Debounce hook
 const useDebounce = (value, delay) => {
@@ -138,7 +148,7 @@ const ProductListing = () => {
   ];
 
   return (
-    <div className="product-listing-page">
+    <motion.div className="product-listing-page" initial="hidden" animate="visible" variants={fadeUp}>
       <div className="listing-container">
         <div className="listing-layout">
           {/* Filters Sidebar */}
@@ -353,15 +363,17 @@ const ProductListing = () => {
               </div>
             ) : (
               <div className="products-grid">
-                {products.map(product => (
-                  <ProductCard key={product.id} product={product} />
+                {products.map((product, index) => (
+                  <motion.div key={product.id} custom={index} variants={fadeUp} initial="hidden" animate="visible">
+                    <ProductCard product={product} />
+                  </motion.div>
                 ))}
               </div>
             )}
           </main>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

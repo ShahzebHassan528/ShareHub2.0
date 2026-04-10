@@ -5,10 +5,20 @@
 
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { useAuth } from '../../contexts/AuthContext';
 import { useDashboard } from '../../hooks/useDashboard';
 import { getMyProfile } from '../../api/user.api';
 import './SellerDashboard.css';
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 24 },
+  visible: (i = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.4, delay: i * 0.07, ease: 'easeOut' },
+  }),
+};
 
 const SellerDashboard = () => {
   const { user } = useAuth();
@@ -55,7 +65,7 @@ const SellerDashboard = () => {
   }
 
   return (
-    <div className="seller-dashboard">
+    <motion.div className="seller-dashboard" initial="hidden" animate="visible" variants={fadeUp}>
       {/* Welcome Section */}
       <div className="dashboard-header">
         <h1>Welcome back, {user?.full_name}!</h1>
@@ -154,7 +164,7 @@ const SellerDashboard = () => {
           </a>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

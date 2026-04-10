@@ -5,12 +5,22 @@
 
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { useAuth } from '../../contexts/AuthContext';
 import { useToast } from '../../contexts/ToastContext';
 import { getNGODonations, acceptDonation, rejectDonation } from '../../api/donation.api';
 import { getMyProfile } from '../../api/user.api';
 import StatusBadge from '../../components/common/StatusBadge';
 import './NgoDashboard.css';
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 24 },
+  visible: (i = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.4, delay: i * 0.07, ease: 'easeOut' },
+  }),
+};
 
 const NgoDashboard = () => {
   const { user } = useAuth();
@@ -103,7 +113,7 @@ const NgoDashboard = () => {
   const recentDonations = donations.slice(0, 5);
 
   return (
-    <div className="ngo-dashboard">
+    <motion.div className="ngo-dashboard" initial="hidden" animate="visible" variants={fadeUp}>
       <div className="dashboard-container">
         {/* Welcome Section */}
         <div className="welcome-section">
@@ -347,7 +357,7 @@ const NgoDashboard = () => {
           </div>
         </div>
       )}
-    </div>
+    </motion.div>
   );
 };
 

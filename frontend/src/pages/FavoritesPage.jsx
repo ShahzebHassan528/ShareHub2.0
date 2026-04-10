@@ -4,10 +4,20 @@
  */
 
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { useFavorites } from '../contexts/FavoritesContext';
 import { useCart } from '../contexts/CartContext';
 import { useToast } from '../contexts/ToastContext';
 import './FavoritesPage.css';
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 24 },
+  visible: (i = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.4, delay: i * 0.07, ease: 'easeOut' },
+  }),
+};
 
 const FavoritesPage = () => {
   const { favorites, removeFromFavorites, clearFavorites } = useFavorites();
@@ -38,7 +48,7 @@ const FavoritesPage = () => {
   };
 
   return (
-    <div className="favorites-page">
+    <motion.div className="favorites-page" initial="hidden" animate="visible" variants={fadeUp}>
       <div className="container py-4">
 
         {/* Header */}
@@ -143,7 +153,7 @@ const FavoritesPage = () => {
         )}
 
       </div>
-    </div>
+    </motion.div>
   );
 };
 

@@ -5,8 +5,18 @@
 
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import orderAPI from '../api/order.api';
 import './MyOrdersPage.css';
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 24 },
+  visible: (i = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.4, delay: i * 0.07, ease: 'easeOut' },
+  }),
+};
 
 const STATUS_STYLES = {
   pending:   { bg: '#fff8e1', color: '#f59e0b', label: 'Pending' },
@@ -86,7 +96,7 @@ const MyOrdersPage = () => {
   ];
 
   return (
-    <div className="my-orders-page">
+    <motion.div className="my-orders-page" initial="hidden" animate="visible" variants={fadeUp}>
       <div className="container py-4">
 
         {/* Header */}
@@ -251,7 +261,7 @@ const MyOrdersPage = () => {
           </div>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 };
 

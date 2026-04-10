@@ -5,6 +5,7 @@
 
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import { getMyProfile, updateMyProfile, uploadProfileImage } from '../api/user.api';
 import productAPI from '../api/product.api';
@@ -12,6 +13,15 @@ import swapAPI from '../api/swap.api';
 import donationAPI from '../api/donation.api';
 import { useToast } from '../contexts/ToastContext';
 import './Profile.css';
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 24 },
+  visible: (i = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.4, delay: i * 0.07, ease: 'easeOut' },
+  }),
+};
 
 const Profile = () => {
   const { user: authUser } = useAuth();
@@ -229,7 +239,7 @@ const Profile = () => {
   }
 
   return (
-    <div className="profile-page">
+    <motion.div className="profile-page" initial="hidden" animate="visible" variants={fadeUp}>
       <div className="container py-4">
         {/* Profile Header */}
         <div className="profile-header-card">
@@ -654,7 +664,7 @@ const Profile = () => {
           )}
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

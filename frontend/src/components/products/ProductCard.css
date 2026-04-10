@@ -1,9 +1,10 @@
 .product-card {
   display: block;
-  background: white;
-  border-radius: 8px;
+  background: var(--bg-card);
+  border-radius: var(--radius);
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border);
   transition: all 0.3s ease;
   text-decoration: none;
   color: inherit;
@@ -11,14 +12,15 @@
 
 .product-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  box-shadow: var(--shadow-md);
+  border-color: var(--primary);
 }
 
 .product-card-image {
   position: relative;
   width: 100%;
   padding-top: 75%;
-  background: #f8f9fa;
+  background: var(--bg-hover);
   overflow: hidden;
 }
 
@@ -46,7 +48,7 @@
   align-items: center;
   justify-content: center;
   font-size: 3rem;
-  color: #dee2e6;
+  color: var(--border);
 }
 
 .product-card-badge {
@@ -62,13 +64,13 @@
 .condition-badge {
   left: 8px;
   background: rgba(255, 255, 255, 0.9);
-  color: #495057;
+  color: var(--fg);
 }
 
 .featured-badge {
   right: 8px;
-  background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
-  color: white;
+  background: var(--primary);
+  color: var(--primary-fg);
 }
 
 /* Favorite button */
@@ -76,7 +78,7 @@
   position: absolute;
   top: 8px;
   right: 8px;
-  background: white;
+  background: var(--bg-card);
   border: none;
   border-radius: 50%;
   width: 32px;
@@ -85,8 +87,8 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-  color: #adb5bd;
+  box-shadow: var(--shadow);
+  color: var(--muted);
   font-size: 0.95rem;
   transition: color 0.2s ease, transform 0.2s ease;
   z-index: 2;
@@ -105,14 +107,14 @@
 .product-card-price {
   font-size: 1.25rem;
   font-weight: 700;
-  color: #1a1a1a;
+  color: var(--primary);
   margin-bottom: 8px;
 }
 
 .product-card-title {
   font-size: 0.95rem;
   font-weight: 500;
-  color: #495057;
+  color: var(--fg);
   margin: 0 0 8px 0;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -127,7 +129,7 @@
   justify-content: space-between;
   align-items: center;
   font-size: 0.8rem;
-  color: #6c757d;
+  color: var(--muted);
 }
 
 .product-card-location {

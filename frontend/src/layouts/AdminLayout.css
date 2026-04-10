@@ -2,7 +2,7 @@
 
 .admin-layout {
   min-height: 100vh;
-  background: #f0f2f5;
+  background: var(--bg);
 }
 
 .admin-wrapper {
@@ -27,10 +27,10 @@
 
 /* Admin Header */
 .admin-header {
-  background: white;
-  border-bottom: 1px solid #e8ebed;
+  background: var(--bg-card);
+  border-bottom: 1px solid var(--border);
   padding: 20px 24px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+  box-shadow: var(--shadow-sm);
 }
 
 .admin-header-content {
@@ -45,14 +45,15 @@
   display: flex;
   align-items: center;
   gap: 12px;
+  font-family: var(--font-heading);
   font-size: 24px;
   font-weight: 700;
-  color: #002f34;
+  color: var(--fg);
   margin: 0;
 }
 
 .admin-title i {
-  color: #10b981;
+  color: var(--primary);
   font-size: 28px;
 }
 
@@ -65,19 +66,21 @@
   position: relative;
   width: 44px;
   height: 44px;
-  border-radius: 12px;
-  background: #f7f8f9;
-  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--bg-hover);
+  border: 1px solid var(--border);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   transition: all 0.3s ease;
+  color: var(--fg);
 }
 
 .admin-btn:hover {
-  background: #10b981;
-  color: white;
+  background: var(--primary);
+  color: var(--primary-fg);
+  border-color: var(--primary);
 }
 
 .admin-btn i {

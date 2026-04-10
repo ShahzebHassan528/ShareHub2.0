@@ -4,8 +4,18 @@
  */
 
 import { useState } from 'react';
+import { motion } from 'framer-motion';
 import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../contexts/ToastContext';
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 24 },
+  visible: (i = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.4, delay: i * 0.07, ease: 'easeOut' },
+  }),
+};
 
 const Settings = () => {
   const { user } = useAuth();
@@ -26,7 +36,7 @@ const Settings = () => {
   };
 
   return (
-    <div className="container py-4" style={{ maxWidth: '700px' }}>
+    <motion.div className="container py-4" style={{ maxWidth: '700px' }} initial="hidden" animate="visible" variants={fadeUp}>
       <h2 className="mb-4">
         <i className="bi bi-gear me-2"></i>
         Settings
@@ -104,7 +114,7 @@ const Settings = () => {
           </div>
         </div>
       )}
-    </div>
+    </motion.div>
   );
 };
 

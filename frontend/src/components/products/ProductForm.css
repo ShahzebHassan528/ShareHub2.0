@@ -1,8 +1,9 @@
 .product-form {
-  background: white;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
   padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
 }
 
 .form-group {
@@ -13,7 +14,7 @@
   display: block;
   margin-bottom: 0.5rem;
   font-weight: 500;
-  color: #374151;
+  color: var(--fg);
   font-size: 0.95rem;
 }
 
@@ -26,29 +27,32 @@
 .form-group select {
   width: 100%;
   padding: 0.75rem;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
   font-size: 1rem;
-  font-family: inherit;
+  background: var(--bg);
+  color: var(--fg);
   transition: border-color 0.2s;
 }
 
 .form-group input[type="file"] {
   width: 100%;
   padding: 0.5rem;
-  border: 2px dashed #d1d5db;
-  border-radius: 8px;
+  border: 2px dashed var(--border);
+  border-radius: var(--radius-sm);
   font-size: 0.9rem;
   cursor: pointer;
-  background: #f9fafb;
+  background: var(--bg);
+  color: var(--fg);
 }
 
 .form-group input:not([type="file"]):focus,
 .form-group textarea:focus,
 .form-group select:focus {
   outline: none;
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(45, 107, 74, 0.1);
 }
 
 .form-group input:not([type="file"]).error,
@@ -60,7 +64,7 @@
 .form-group input:not([type="file"]):disabled,
 .form-group textarea:disabled,
 .form-group select:disabled {
-  background: #f9fafb;
+  background: var(--bg-hover);
   cursor: not-allowed;
 }
 
@@ -78,7 +82,7 @@
 
 .field-hint {
   display: block;
-  color: #6b7280;
+  color: var(--muted);
   font-size: 0.875rem;
   margin-top: 0.25rem;
 }
@@ -92,15 +96,16 @@
 .form-actions {
   margin-top: 2rem;
   padding-top: 1.5rem;
-  border-top: 1px solid #e5e7eb;
+  border-top: 1px solid var(--border);
 }
 
 .btn-submit {
-  background: #3b82f6;
-  color: white;
+  background: var(--primary);
+  color: var(--primary-fg);
   border: none;
   padding: 0.875rem 2rem;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
   font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
@@ -109,12 +114,12 @@
 }
 
 .btn-submit:hover {
-  background: #2563eb;
+  background: var(--primary-dark);
   transform: translateY(-1px);
 }
 
 .btn-submit:disabled {
-  background: #9ca3af;
+  background: var(--muted);
   cursor: not-allowed;
   transform: none;
 }

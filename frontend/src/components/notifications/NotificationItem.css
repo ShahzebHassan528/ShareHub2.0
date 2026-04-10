@@ -3,27 +3,27 @@
   align-items: flex-start;
   gap: 1rem;
   padding: 1rem;
-  background: white;
-  border-radius: 8px;
-  border: 1px solid #e5e7eb;
+  background: var(--bg-card);
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
   cursor: pointer;
   transition: all 0.2s;
   position: relative;
 }
 
 .notification-item:hover {
-  background: #f9fafb;
-  border-color: #d1d5db;
+  background: var(--bg-hover);
+  border-color: var(--primary);
   transform: translateX(2px);
 }
 
 .notification-item.unread {
-  background: #eff6ff;
-  border-color: #bfdbfe;
+  background: rgba(45, 107, 74, 0.05);
+  border-color: rgba(45, 107, 74, 0.2);
 }
 
 .notification-item.unread:hover {
-  background: #dbeafe;
+  background: rgba(45, 107, 74, 0.1);
 }
 
 .notification-icon {
@@ -43,8 +43,8 @@
 }
 
 .notification-icon.type-donation {
-  background: #fef3c7;
-  color: #d97706;
+  background: rgba(45, 107, 74, 0.1);
+  color: var(--primary);
 }
 
 .notification-icon.type-product {
@@ -53,8 +53,8 @@
 }
 
 .notification-icon.type-system {
-  background: #f3f4f6;
-  color: #6b7280;
+  background: var(--bg-hover);
+  color: var(--muted);
 }
 
 .notification-content {
@@ -65,13 +65,13 @@
 .notification-title {
   font-size: 1rem;
   font-weight: 600;
-  color: #1a1a1a;
+  color: var(--fg);
   margin: 0 0 0.25rem 0;
 }
 
 .notification-message {
   font-size: 0.875rem;
-  color: #6b7280;
+  color: var(--muted);
   margin: 0 0 0.5rem 0;
   line-height: 1.5;
 }
@@ -79,8 +79,8 @@
 .notification-entity {
   display: inline-block;
   font-size: 0.75rem;
-  color: #3b82f6;
-  background: #eff6ff;
+  color: var(--primary);
+  background: rgba(45, 107, 74, 0.08);
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
   margin-bottom: 0.5rem;
@@ -89,14 +89,14 @@
 .notification-time {
   display: block;
   font-size: 0.75rem;
-  color: #9ca3af;
+  color: var(--muted);
   margin-top: 0.5rem;
 }
 
 .unread-indicator {
   width: 8px;
   height: 8px;
-  background: #3b82f6;
+  background: var(--primary);
   border-radius: 50%;
   position: absolute;
   top: 1rem;

@@ -4,9 +4,19 @@
  */
 
 import { Link, useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { useCart } from '../contexts/CartContext';
 import { useAuth } from '../contexts/AuthContext';
 import './CartPage.css';
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 24 },
+  visible: (i = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.4, delay: i * 0.07, ease: 'easeOut' },
+  }),
+};
 
 const CartPage = () => {
   const navigate = useNavigate();
@@ -55,7 +65,7 @@ const CartPage = () => {
   const total = subtotal + shipping + tax;
 
   return (
-    <div className="cart-page">
+    <motion.div className="cart-page" initial="hidden" animate="visible" variants={fadeUp}>
       <div className="container py-4">
         <div className="cart-header">
           <h1>Shopping Cart</h1>
@@ -198,7 +208,7 @@ const CartPage = () => {
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

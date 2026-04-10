@@ -26,8 +26,8 @@
 }
 
 .status-accepted {
-  background: #d1fae5;
-  color: #065f46;
+  background: rgba(45, 107, 74, 0.1);
+  color: var(--primary);
 }
 
 .status-rejected {
@@ -41,13 +41,13 @@
 }
 
 .status-active {
-  background: #d1fae5;
-  color: #065f46;
+  background: rgba(45, 107, 74, 0.1);
+  color: var(--primary);
 }
 
 .status-inactive {
-  background: #f3f4f6;
-  color: #6b7280;
+  background: var(--bg-hover);
+  color: var(--muted);
 }
 
 .status-cancelled {
@@ -56,6 +56,6 @@
 }
 
 .status-default {
-  background: #f3f4f6;
-  color: #374151;
+  background: var(--bg-hover);
+  color: var(--fg);
 }

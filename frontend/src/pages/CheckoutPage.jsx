@@ -5,6 +5,16 @@
 
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 24 },
+  visible: (i = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.4, delay: i * 0.07, ease: 'easeOut' },
+  }),
+};
 import { useCart } from '../contexts/CartContext';
 import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../contexts/ToastContext';
@@ -115,7 +125,7 @@ const CheckoutPage = () => {
   const total = subtotal + shipping + tax;
 
   return (
-    <div className="checkout-page">
+    <motion.div className="checkout-page" initial="hidden" animate="visible" variants={fadeUp}>
       <div className="container py-4">
         <h1 className="checkout-title">Checkout</h1>
 
@@ -335,7 +345,7 @@ const CheckoutPage = () => {
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

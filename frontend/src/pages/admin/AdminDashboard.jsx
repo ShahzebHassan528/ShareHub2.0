@@ -3,9 +3,19 @@
  * Main dashboard for admin role users
  */
 
+import { motion } from 'framer-motion';
 import { useAuth } from '../../contexts/AuthContext';
 import { useDashboard } from '../../hooks/useDashboard';
 import './AdminDashboard.css';
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 24 },
+  visible: (i = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.4, delay: i * 0.07, ease: 'easeOut' },
+  }),
+};
 
 const AdminDashboard = () => {
   const { user } = useAuth();
@@ -41,7 +51,7 @@ const AdminDashboard = () => {
   }
 
   return (
-    <div className="admin-dashboard">
+    <motion.div className="admin-dashboard" initial="hidden" animate="visible" variants={fadeUp}>
       {/* Welcome Section */}
       <div className="dashboard-header">
         <div>
@@ -156,7 +166,7 @@ const AdminDashboard = () => {
           </a>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

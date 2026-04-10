@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { getNotifications, markAsRead, markAllAsRead } from '../api/notification.api';
 import { useToast } from '../contexts/ToastContext';
 import { useNotifications } from '../hooks/useNotifications';
@@ -122,7 +123,7 @@ const Notifications = () => {
   }
 
   return (
-    <div className="notifications-page">
+    <motion.div className="notifications-page" initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4, ease: 'easeOut' }}>
       <div className="container">
         <div className="page-header">
           <div>
@@ -172,7 +173,7 @@ const Notifications = () => {
           ))}
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

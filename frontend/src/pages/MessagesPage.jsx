@@ -5,7 +5,17 @@
 
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import { getUserChats } from '../api/message.api';
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 24 },
+  visible: (i = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.4, delay: i * 0.07, ease: 'easeOut' },
+  }),
+};
 
 const MessagesPage = () => {
   const [chats, setChats] = useState([]);
@@ -53,7 +63,7 @@ const MessagesPage = () => {
   }
 
   return (
-    <div className="container py-4" style={{ maxWidth: '700px' }}>
+    <motion.div className="container py-4" style={{ maxWidth: '700px' }} initial="hidden" animate="visible" variants={fadeUp}>
       <h2 className="mb-1"><i className="bi bi-chat-dots me-2"></i>Messages</h2>
       <p className="text-muted mb-4">Your conversations</p>
 
@@ -100,7 +110,7 @@ const MessagesPage = () => {
           ))}
         </div>
       )}
-    </div>
+    </motion.div>
   );
 };
 

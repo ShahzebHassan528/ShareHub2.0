@@ -6,11 +6,21 @@
 
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useSearchParams } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import productAPI from '../../api/product.api';
 import { useAuth } from '../../contexts/AuthContext';
 import { useToast } from '../../contexts/ToastContext';
 import SwapRequestButton from '../../components/swap/SwapRequestButton';
 import './SwapExplore.css';
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 24 },
+  visible: (i = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.4, delay: i * 0.07, ease: 'easeOut' },
+  }),
+};
 
 const SwapExplore = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -125,7 +135,7 @@ const SwapExplore = () => {
   const conditions = ['New', 'Like New', 'Good', 'Fair'];
 
   return (
-    <div className="swap-explore-page">
+    <motion.div className="swap-explore-page" initial="hidden" animate="visible" variants={fadeUp}>
       <div className="container">
         {/* Hero Header */}
         <div className="swap-hero">
@@ -441,7 +451,7 @@ const SwapExplore = () => {
           </main>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 

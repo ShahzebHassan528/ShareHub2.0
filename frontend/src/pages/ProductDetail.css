@@ -1,21 +1,22 @@
 .product-detail-page {
-  background: #f8f9fa;
+  background: var(--bg);
   min-height: calc(100vh - 200px);
 }
 
 .product-gallery {
-  background: white;
-  border-radius: 8px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
   padding: 1rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow);
 }
 
 .gallery-main {
   width: 100%;
   padding-top: 75%;
   position: relative;
-  background: #f8f9fa;
-  border-radius: 8px;
+  background: var(--bg);
+  border-radius: var(--radius-sm);
   overflow: hidden;
   margin-bottom: 1rem;
 }
@@ -39,7 +40,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: #dee2e6;
+  color: var(--border);
 }
 
 .gallery-no-image i {
@@ -67,11 +68,11 @@
 }
 
 .gallery-thumbnail:hover {
-  border-color: #dee2e6;
+  border-color: var(--border);
 }
 
 .gallery-thumbnail.active {
-  border-color: #2ecc71;
+  border-color: var(--primary);
 }
 
 .gallery-thumbnail img {
@@ -81,10 +82,11 @@
 }
 
 .product-info-card {
-  background: white;
-  border-radius: 8px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
   padding: 1.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow);
 }
 
 .product-header {
@@ -92,9 +94,10 @@
 }
 
 .product-title {
+  font-family: var(--font-heading);
   font-size: 1.75rem;
   font-weight: 700;
-  color: #1a1a1a;
+  color: var(--fg);
   margin-bottom: 0.5rem;
 }
 
@@ -102,7 +105,7 @@
   display: flex;
   gap: 1rem;
   font-size: 0.9rem;
-  color: #6c757d;
+  color: var(--muted);
 }
 
 .product-meta span {
@@ -116,40 +119,43 @@
   justify-content: space-between;
   align-items: center;
   padding: 1rem;
-  background: #f8f9fa;
-  border-radius: 8px;
+  background: var(--bg);
+  border-radius: var(--radius-sm);
   margin-bottom: 1.5rem;
 }
 
 .product-price {
   font-size: 2rem;
   font-weight: 700;
-  color: #2ecc71;
+  color: var(--primary);
 }
 
 .product-condition-badge {
   padding: 0.5rem 1rem;
-  background: white;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
   border-radius: 20px;
   font-size: 0.9rem;
   font-weight: 600;
   text-transform: capitalize;
+  color: var(--fg);
 }
 
 .product-description {
   margin-bottom: 1.5rem;
   padding-bottom: 1.5rem;
-  border-bottom: 1px solid #dee2e6;
+  border-bottom: 1px solid var(--border);
 }
 
 .product-description h5 {
   font-size: 1.1rem;
   font-weight: 600;
   margin-bottom: 0.75rem;
+  color: var(--fg);
 }
 
 .product-description p {
-  color: #495057;
+  color: var(--muted);
   line-height: 1.6;
   margin: 0;
 }
@@ -157,13 +163,14 @@
 .product-details {
   margin-bottom: 1.5rem;
   padding-bottom: 1.5rem;
-  border-bottom: 1px solid #dee2e6;
+  border-bottom: 1px solid var(--border);
 }
 
 .product-details h5 {
   font-size: 1.1rem;
   font-weight: 600;
   margin-bottom: 0.75rem;
+  color: var(--fg);
 }
 
 .details-list {
@@ -180,11 +187,11 @@
 
 .detail-label {
   font-weight: 500;
-  color: #6c757d;
+  color: var(--muted);
 }
 
 .detail-value {
-  color: #1a1a1a;
+  color: var(--fg);
   text-transform: capitalize;
 }
 
@@ -196,6 +203,7 @@
   font-size: 1.1rem;
   font-weight: 600;
   margin-bottom: 0.75rem;
+  color: var(--fg);
 }
 
 .seller-card {
@@ -203,13 +211,13 @@
   align-items: center;
   gap: 1rem;
   padding: 1rem;
-  background: #f8f9fa;
-  border-radius: 8px;
+  background: var(--bg);
+  border-radius: var(--radius-sm);
 }
 
 .seller-avatar {
   font-size: 3rem;
-  color: #6c757d;
+  color: var(--muted);
   flex-shrink: 0;
 }
 
@@ -228,12 +236,12 @@
   font-weight: 600;
   font-size: 1.1rem;
   margin-bottom: 0.25rem;
-  color: #1a1a1a;
+  color: var(--fg);
 }
 
 .seller-meta {
   font-size: 0.85rem;
-  color: #6c757d;
+  color: var(--muted);
   margin-bottom: 0.5rem;
 }
 
@@ -248,33 +256,34 @@
   align-items: center;
   gap: 0.5rem;
   font-size: 0.9rem;
-  color: #495057;
+  color: var(--muted);
   margin-top: 0.5rem;
   padding-top: 0.5rem;
-  border-top: 1px solid #dee2e6;
+  border-top: 1px solid var(--border);
 }
 
 /* Loading Skeleton */
 .skeleton-breadcrumb {
   height: 20px;
   width: 300px;
-  background: white;
+  background: var(--bg-card);
   border-radius: 4px;
   animation: skeleton-loading 1.5s infinite;
 }
 
 .skeleton-gallery {
-  background: white;
-  border-radius: 8px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
   padding: 1rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow);
 }
 
 .skeleton-main-image {
   width: 100%;
   padding-top: 75%;
-  background: #f0f0f0;
-  border-radius: 8px;
+  background: var(--bg-hover);
+  border-radius: var(--radius-sm);
   margin-bottom: 1rem;
   animation: skeleton-loading 1.5s infinite;
 }
@@ -287,21 +296,22 @@
 .skeleton-thumb {
   width: 80px;
   height: 80px;
-  background: #f0f0f0;
+  background: var(--bg-hover);
   border-radius: 4px;
   animation: skeleton-loading 1.5s infinite;
 }
 
 .skeleton-info {
-  background: white;
-  border-radius: 8px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
   padding: 1.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow);
 }
 
 .skeleton-title {
   height: 32px;
-  background: #f0f0f0;
+  background: var(--bg-hover);
   border-radius: 4px;
   margin-bottom: 1rem;
   animation: skeleton-loading 1.5s infinite;
@@ -310,7 +320,7 @@
 .skeleton-meta {
   height: 20px;
   width: 60%;
-  background: #f0f0f0;
+  background: var(--bg-hover);
   border-radius: 4px;
   margin-bottom: 1.5rem;
   animation: skeleton-loading 1.5s infinite;
@@ -318,15 +328,15 @@
 
 .skeleton-price {
   height: 48px;
-  background: #f0f0f0;
-  border-radius: 8px;
+  background: var(--bg-hover);
+  border-radius: var(--radius-sm);
   margin-bottom: 1.5rem;
   animation: skeleton-loading 1.5s infinite;
 }
 
 .skeleton-description {
   height: 100px;
-  background: #f0f0f0;
+  background: var(--bg-hover);
   border-radius: 4px;
   margin-bottom: 1.5rem;
   animation: skeleton-loading 1.5s infinite;
@@ -340,7 +350,7 @@
 
 .skeleton-button {
   height: 48px;
-  background: #f0f0f0;
+  background: var(--bg-hover);
   border-radius: 4px;
   animation: skeleton-loading 1.5s infinite;
 }
@@ -382,9 +392,10 @@
 }
 
 .section-title {
+  font-family: var(--font-heading);
   font-size: 1.75rem;
   font-weight: 700;
-  color: #1a1a1a;
+  color: var(--fg);
   margin-bottom: 1.5rem;
 }
 
@@ -395,10 +406,11 @@
 }
 
 .similar-product-card {
-  background: white;
-  border-radius: 8px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
   overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow);
   transition: all 0.3s ease;
   text-decoration: none;
   color: inherit;
@@ -407,14 +419,14 @@
 
 .similar-product-card:hover {
   transform: translateY(-4px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  box-shadow: var(--shadow-md);
 }
 
 .similar-product-image {
   width: 100%;
   padding-top: 75%;
   position: relative;
-  background: #f8f9fa;
+  background: var(--bg);
   overflow: hidden;
 }
 
@@ -436,7 +448,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #dee2e6;
+  color: var(--border);
   font-size: 3rem;
 }
 
@@ -447,7 +459,7 @@
 .similar-product-title {
   font-size: 1rem;
   font-weight: 600;
-  color: #1a1a1a;
+  color: var(--fg);
   margin-bottom: 0.5rem;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -457,7 +469,7 @@
 .similar-product-price {
   font-size: 1.25rem;
   font-weight: 700;
-  color: #2ecc71;
+  color: var(--primary);
   margin-bottom: 0.5rem;
 }
 
@@ -466,7 +478,7 @@
   justify-content: space-between;
   align-items: center;
   font-size: 0.85rem;
-  color: #6c757d;
+  color: var(--muted);
 }
 
 .similar-product-meta span {
@@ -477,7 +489,7 @@
 
 .similar-product-condition {
   padding: 0.25rem 0.5rem;
-  background: #f8f9fa;
+  background: var(--bg);
   border-radius: 4px;
   font-size: 0.75rem;
   text-transform: capitalize;
@@ -494,7 +506,7 @@
     grid-template-columns: repeat(2, 1fr);
     gap: 1rem;
   }
-  
+
   .section-title {
     font-size: 1.5rem;
   }

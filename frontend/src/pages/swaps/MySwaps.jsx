@@ -1,8 +1,18 @@
 import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
 import { getMySwapRequests, cancelSwap } from '../../api/swap.api';
 import { useToast } from '../../contexts/ToastContext';
 import StatusBadge from '../../components/common/StatusBadge';
 import './MySwaps.css';
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 24 },
+  visible: (i = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.4, delay: i * 0.07, ease: 'easeOut' },
+  }),
+};
 
 const MySwaps = () => {
   const { showToast } = useToast();
@@ -109,7 +119,7 @@ const MySwaps = () => {
   }
 
   return (
-    <div className="my-swaps-page">
+    <motion.div className="my-swaps-page" initial="hidden" animate="visible" variants={fadeUp}>
       <div className="container">
         <div className="page-header">
           <h1>My Swap Requests</h1>
@@ -222,7 +232,7 @@ const MySwaps = () => {
           </div>
         </div>
       )}
-    </div>
+    </motion.div>
   );
 };
 

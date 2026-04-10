@@ -16,7 +16,7 @@
 .btn-back {
   background: none;
   border: none;
-  color: #3b82f6;
+  color: var(--primary);
   font-size: 1rem;
   cursor: pointer;
   padding: 0.5rem 0;
@@ -28,17 +28,18 @@
 }
 
 .btn-back:hover {
-  color: #2563eb;
+  color: var(--primary-dark);
 }
 
 .add-product-page h1 {
+  font-family: var(--font-heading);
   font-size: 2rem;
-  color: #1a1a1a;
+  color: var(--fg);
   margin: 0 0 0.5rem 0;
 }
 
 .add-product-page .page-subtitle {
-  color: #666;
+  color: var(--muted);
   margin: 0;
   font-size: 0.95rem;
 }

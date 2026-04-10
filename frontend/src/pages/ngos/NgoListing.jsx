@@ -6,10 +6,20 @@
 
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
 import donationAPI from '../../api/donation.api';
 import { useAuth } from '../../contexts/AuthContext';
 import { useToast } from '../../contexts/ToastContext';
 import './NgoListing.css';
+
+const fadeUp = {
+  hidden: { opacity: 0, y: 24 },
+  visible: (i = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.4, delay: i * 0.07, ease: 'easeOut' },
+  }),
+};
 
 const NgoListing = () => {
   const navigate = useNavigate();
@@ -74,7 +84,7 @@ const NgoListing = () => {
   };
 
   return (
-    <div className="ngo-listing-page">
+    <motion.div className="ngo-listing-page" initial="hidden" animate="visible" variants={fadeUp}>
       <div className="container">
         {/* Hero Header */}
         <div className="ngo-hero">
@@ -315,7 +325,7 @@ const NgoListing = () => {
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
